@@ -1,26 +1,98 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* ------------------ THEME TOKENS ------------------ */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Light (pastel + limpio) */
+    --bg: #FAFAFA;              /* Fondo principal */
+    --panel: #F1F1F5;           /* Fondo secundario */
+    --text: #2E2E2E;            /* Texto principal */
+    --muted: #6B6B6B;           /* Texto secundario */
+
+    --accent: #A7C7E7;          /* Acento primario */
+    --accent-2: #F4C2C2;        /* Acento secundario */
+
+    --success: #C8E6C9;
+    --warning: #FFE5B4;
+    --error:   #F8BBD0;
+
+    --panel-alpha: color-mix(in oklab, var(--text) 5%, transparent); /* sutil */
+    --ring: color-mix(in oklab, var(--text) 15%, transparent);
+    --shadow: 0 10px 24px 0 color-mix(in oklab, var(--text) 10%, transparent);
   }
+
+  .dark {
+    /* Dark (pastel + elegante) */
+    --bg: #1C1C1E;
+    --panel: #2C2C2E;
+    --text: #EDEDED;
+    --muted: #B0B0B0;
+
+    --accent: #A3C4F3;
+    --accent-2: #F3B0C3;
+
+    --success: #B8E1A9;
+    --warning: #FFD6A5;
+    --error:   #FFB5A7;
+
+    --panel-alpha: color-mix(in oklab, white 6%, transparent);
+    --ring: color-mix(in oklab, white 18%, transparent);
+    --shadow: 0 10px 28px 0 color-mix(in oklab, black 60%, transparent);
+  }
+
+  html, body {
+    @apply min-h-screen antialiased;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  ::selection { @apply bg-zinc-300/60 dark:bg-zinc-700/60; }
+
+  /* Tipografías & links */
+  a { @apply underline-offset-4 decoration-transparent transition; }
+  a:hover { text-decoration-color: var(--accent); }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ------------------ SHARED COMPONENTS ------------------ */
+@layer components {
+  .card {
+    background: color-mix(in oklab, var(--panel) 88%, transparent);
+    box-shadow: var(--shadow);
+    @apply rounded-3xl ring-1;
+    --tw-ring-color: var(--ring);
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--panel) 70%, transparent);
+    @apply backdrop-blur-xl ring-1 rounded-[30px];
+    --tw-ring-color: var(--ring);
+  }
+
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-2xl px-5 py-2.5 font-semibold leading-none transition;
+  }
+  .btn-solid {
+    background: var(--accent);
+    color: #0f172a;
+    @apply shadow hover:-translate-y-0.5 active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply ring-1;
+    --tw-ring-color: var(--ring);
+    background: var(--panel-alpha);
+  }
+  .btn-outline {
+    @apply ring-1;
+    --tw-ring-color: var(--ring);
+    background: transparent;
+  }
+
+  .pill {
+    @apply rounded-full px-6 py-2 font-bold ring-1;
+    --tw-ring-color: var(--ring);
+    background: var(--panel-alpha);
+  }
+
+  .muted { color: var(--muted); }
+  .accent { color: var(--accent); }
 }
