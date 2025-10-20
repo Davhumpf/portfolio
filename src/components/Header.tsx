@@ -18,8 +18,11 @@ export default function Header() {
   const itemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const brandRef = useRef<HTMLSpanElement | null>(null);
   const caretRef = useRef<HTMLSpanElement | null>(null);
+  const brandMobileRef = useRef<HTMLSpanElement | null>(null);
+  const caretMobileRef = useRef<HTMLSpanElement | null>(null);
 
   const [active, setActive] = useState<NavItem["id"]>("about");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems: NavItem[] = useMemo(
     () => [
@@ -52,6 +55,7 @@ export default function Header() {
     }, root);
     return () => ctx.revert();
   }, []);
+
   const phrasesByLang: Record<string, string[]> = {
     es: [
       "<Interfaz Limpia/>",
@@ -78,19 +82,23 @@ export default function Header() {
       "console.log('hallo 👋')",
     ],
   };
+
   useEffect(() => {
     const setText = (s: string) => {
-      const n = brandRef.current;
-      if (n) n.textContent = s;
+      if (brandRef.current) brandRef.current.textContent = s;
+      if (brandMobileRef.current) brandMobileRef.current.textContent = s;
     };
 
     const phrases = phrasesByLang[lang] ?? phrasesByLang.es;
     setText(phrases[0]);
+    
     const caret = caretRef.current;
+    const caretMobile = caretMobileRef.current;
     const blink = caret ? gsap.to(caret, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
+    const blinkMobile = caretMobile ? gsap.to(caretMobile, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
 
     const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return () => { blink?.kill(); };
+    if (reduce) return () => { blink?.kill(); blinkMobile?.kill(); };
 
     const speedType = 0.045, speedErase = 0.03, hold = 0.9;
 
@@ -121,7 +129,7 @@ export default function Header() {
     }
     playRound();
 
-    return () => { tl?.kill(); blink?.kill(); };
+    return () => { tl?.kill(); blink?.kill(); blinkMobile?.kill(); };
   }, [lang]);
 
   useEffect(() => {
@@ -133,12 +141,14 @@ export default function Header() {
     sections.forEach(s => obs.observe(s));
     return () => obs.disconnect();
   }, [navItems]);
+
   function moveIndicator() {
     const ind = indicatorRef.current;
     const el = itemRefs.current[active];
     if (!ind || !el) return;
     gsap.to(ind, { x: el.offsetLeft, width: el.offsetWidth, height: el.offsetHeight, duration: 0.25, ease: "power3.out" });
   }
+
   useEffect(() => {
     moveIndicator();
     const on = () => moveIndicator();
@@ -150,6 +160,7 @@ export default function Header() {
     e.preventDefault();
     document.querySelector(n.href)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setActive(n.id);
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -159,11 +170,12 @@ export default function Header() {
     >
       <div className="glass px-6 py-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          {/* Marca: pill visible SIEMPRE (sin depender de la clase .pill) */}
+          
+          {/* Marca: Desktop - visible siempre */}
           <a
             href="#top"
             title="Top"
-            className="nav-anim inline-flex items-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-semibold no-underline"
+            className="nav-anim hidden lg:inline-flex items-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-semibold no-underline"
             style={{
               color: "var(--text)",
               background: "var(--panel-alpha)",
@@ -181,8 +193,28 @@ export default function Header() {
             />
           </a>
 
-          {/* NAV con indicador */}
-          <div className="relative nav-anim">
+          {/* Marca móvil: ocupa todo el espacio */}
+          <a
+            href="#top"
+            className="nav-anim lg:hidden flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline"
+            style={{
+              color: "var(--text)",
+              background: "var(--panel-alpha)",
+              border: "1px solid var(--ring)",
+            }}
+          >
+            <span ref={brandMobileRef} className="tabular-nums">
+              {"<Detalle Primero/>"}
+            </span>
+            <span
+              ref={caretMobileRef}
+              className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']"
+              aria-hidden
+            />
+          </a>
+
+          {/* NAV con indicador - Desktop */}
+          <div className="relative nav-anim hidden lg:block">
             <div
               ref={navWrapRef}
               className="relative flex items-center gap-2 rounded-2xl ring-1"
@@ -208,12 +240,52 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Menús */}
-          <div className="flex items-center gap-2 nav-anim">
+          {/* Menús - Desktop */}
+          <div className="hidden lg:flex items-center gap-2 nav-anim">
             <LangMenu />
             <ThemeMenu />
           </div>
+
+          {/* Hamburguesa - Móvil */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden nav-anim p-2 rounded-lg ring-1"
+            style={{ borderColor: "var(--ring)", background: "var(--panel-alpha)" }}
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
         </div>
+
+        {/* Menú móvil desplegable */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden mt-4 pt-4 space-y-2 border-t" style={{ borderColor: "var(--ring)" }}>
+            {navItems.map((n) => (
+              <a
+                key={n.id}
+                href={n.href}
+                onClick={(e) => onNavClick(e, n)}
+                className={`block px-4 py-2 rounded-lg text-sm font-semibold transition
+                  ${active === n.id ? "opacity-100" : "opacity-70"}`}
+                style={{
+                  background: active === n.id ? "var(--panel-alpha)" : "transparent"
+                }}
+              >
+                {n.label}
+              </a>
+            ))}
+            
+            <div className="flex gap-2 pt-2">
+              <div className="flex-1">
+                <LangMenu />
+              </div>
+              <div className="flex-1">
+                <ThemeMenu />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
