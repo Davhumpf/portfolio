@@ -13,7 +13,10 @@ type Messages = {
   hero_hello: string;
   hero_im: string;
   hero_role: string;
-  hero_name: string; // si quieres que cambie por idioma, cámbialo aquí
+  hero_name: string;
+  hero_tagline_1: string; // "Diseñando el futuro"
+  hero_tagline_2: string; // "del"
+  hero_tagline_3: string; // "software"
   // About
   about_title: string;
   about_sub: string;
@@ -48,6 +51,9 @@ const messages: Record<Lang, Messages> = {
     hero_im: "Yo soy",
     hero_role: "Software Developer",
     hero_name: "David",
+    hero_tagline_1: "Diseñando el futuro",
+    hero_tagline_2: "del",
+    hero_tagline_3: "software",
 
     about_title: "Sobre mi",
     about_sub: "UI & Frontend — enfoque en detalle y armonía diseño/función.",
@@ -86,6 +92,9 @@ const messages: Record<Lang, Messages> = {
     hero_im: "I am",
     hero_role: "Software Developer",
     hero_name: "David",
+    hero_tagline_1: "Designing the future",
+    hero_tagline_2: "of",
+    hero_tagline_3: "software",
 
     about_title: "About me",
     about_sub: "UI & Frontend — detail-oriented, harmony between design & function.",
@@ -93,7 +102,7 @@ const messages: Record<Lang, Messages> = {
     about_p2: "I care about visual consistency, performance and user delight. This micro-portfolio will grow with UI experiments.",
 
     projects_title: "Projects",
-    projects_sub: "Quick samples — we’ll link repos/demos soon.",
+    projects_sub: "Quick samples — we'll link repos/demos soon.",
     proj_ui: "DreamInCode UI",
     proj_ui_desc: "Pastel/dark components & patterns ready for production.",
     proj_motion: "GSAP Lab",
@@ -108,7 +117,7 @@ const messages: Record<Lang, Messages> = {
     skills_tools: "Tools",
 
     contacts_title: "Contact",
-    contacts_sub: "Let’s talk! Send a message or connect.",
+    contacts_sub: "Let's talk! Send a message or connect.",
     form_name: "Your name",
     form_email: "Email",
     form_msg: "Message",
@@ -124,6 +133,9 @@ const messages: Record<Lang, Messages> = {
     hero_im: "Ich bin",
     hero_role: "Softwareentwickler",
     hero_name: "David",
+    hero_tagline_1: "Die Zukunft der Software",
+    hero_tagline_2: "wird",
+    hero_tagline_3: "gestaltet",
 
     about_title: "Über mich",
     about_sub: "UI & Frontend — Fokus auf Details und Balance zwischen Design & Funktion.",
