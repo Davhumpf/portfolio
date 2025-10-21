@@ -167,58 +167,73 @@ export default function About() {
 
           {/* COLUMNA 2: Botones arriba + Skills abajo */}
           <div className="w-full flex flex-col gap-6">
-            {/* Botones de categorías - MÁS ARRIBA */}
-            <div className="flex gap-3">
-              <button
-                onClick={(e) => handleCategoryClick("frontend", e)}
-                className={`flex-1 px-6 py-3 rounded-xl font-bold text-sm transition-all ${
-                  selectedCategory === "frontend" ? "ring-2 shadow-lg" : "ring-1"
-                }`}
+            {/* Botones de categorías - VERSIÓN MEJORADA SIN SCROLLBAR */}
+            <div className="relative -mx-2">
+              <div 
+                className="flex gap-3 px-2 snap-x snap-mandatory overflow-x-auto"
                 style={{
-                  background: selectedCategory === "frontend" 
-                    ? "var(--accent)" 
-                    : "color-mix(in oklab, var(--panel) 70%, transparent)",
-                  borderColor: "var(--accent)",
-                  color: selectedCategory === "frontend" ? "var(--bg)" : "inherit"
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  WebkitOverflowScrolling: 'touch'
                 }}
               >
-                Frontend
-              </button>
-              <button
-                onClick={(e) => handleCategoryClick("backend", e)}
-                className={`flex-1 px-6 py-3 rounded-xl font-bold text-sm transition-all ${
-                  selectedCategory === "backend" ? "ring-2 shadow-lg" : "ring-1"
-                }`}
-                style={{
-                  background: selectedCategory === "backend" 
-                    ? "var(--accent)" 
-                    : "color-mix(in oklab, var(--panel) 70%, transparent)",
-                  borderColor: "var(--accent)",
-                  color: selectedCategory === "backend" ? "var(--bg)" : "inherit"
-                }}
-              >
-                Backend
-              </button>
-              <button
-                onClick={(e) => handleCategoryClick("cloud", e)}
-                className={`flex-1 px-6 py-3 rounded-xl font-bold text-sm transition-all ${
-                  selectedCategory === "cloud" ? "ring-2 shadow-lg" : "ring-1"
-                }`}
-                style={{
-                  background: selectedCategory === "cloud" 
-                    ? "var(--accent)" 
-                    : "color-mix(in oklab, var(--panel) 70%, transparent)",
-                  borderColor: "var(--accent)",
-                  color: selectedCategory === "cloud" ? "var(--bg)" : "inherit"
-                }}
-              >
-                Cloud
-              </button>
+                <style jsx>{`
+                  div::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
+                
+                <button
+                  onClick={(e) => handleCategoryClick("frontend", e)}
+                  className={`snap-center flex-shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+                    selectedCategory === "frontend" ? "ring-2 shadow-lg" : "ring-1"
+                  }`}
+                  style={{
+                    background: selectedCategory === "frontend" 
+                      ? "var(--accent)" 
+                      : "color-mix(in oklab, var(--panel) 70%, transparent)",
+                    borderColor: "var(--accent)",
+                    color: selectedCategory === "frontend" ? "var(--bg)" : "inherit"
+                  }}
+                >
+                  Frontend
+                </button>
+                <button
+                  onClick={(e) => handleCategoryClick("backend", e)}
+                  className={`snap-center flex-shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+                    selectedCategory === "backend" ? "ring-2 shadow-lg" : "ring-1"
+                  }`}
+                  style={{
+                    background: selectedCategory === "backend" 
+                      ? "var(--accent)" 
+                      : "color-mix(in oklab, var(--panel) 70%, transparent)",
+                    borderColor: "var(--accent)",
+                    color: selectedCategory === "backend" ? "var(--bg)" : "inherit"
+                  }}
+                >
+                  Backend
+                </button>
+                <button
+                  onClick={(e) => handleCategoryClick("cloud", e)}
+                  className={`snap-center flex-shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all ${
+                    selectedCategory === "cloud" ? "ring-2 shadow-lg" : "ring-1"
+                  }`}
+                  style={{
+                    background: selectedCategory === "cloud" 
+                      ? "var(--accent)" 
+                      : "color-mix(in oklab, var(--panel) 70%, transparent)",
+                    borderColor: "var(--accent)",
+                    color: selectedCategory === "cloud" ? "var(--bg)" : "inherit"
+                  }}
+                >
+                  Cloud
+                </button>
+              </div>
             </div>
 
-            {/* Contenedor de iconos */}
+            {/* Contenedor de iconos - CORREGIDO */}
             <div 
-              className="p-6 rounded-2xl ring-1 backdrop-blur-sm min-h-[320px] flex items-start"
+              className="p-6 rounded-2xl ring-1 backdrop-blur-sm min-h-[320px] flex items-start overflow-hidden"
               style={{ 
                 background: "color-mix(in oklab, var(--panel) 50%, transparent)",
                 borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)"
