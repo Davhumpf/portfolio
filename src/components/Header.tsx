@@ -193,17 +193,18 @@ export default function Header() {
             />
           </a>
 
-          {/* Marca móvil: ocupa todo el espacio */}
+          {/* Marca móvil: ocupa todo el espacio - CORREGIDO */}
           <a
             href="#top"
-            className="nav-anim lg:hidden flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline"
+            className="nav-anim lg:hidden flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline
+                       whitespace-nowrap min-w-0"
             style={{
               color: "var(--text)",
               background: "var(--panel-alpha)",
               border: "1px solid var(--ring)",
             }}
           >
-            <span ref={brandMobileRef} className="tabular-nums">
+            <span ref={brandMobileRef} className="tabular-nums truncate">
               {"<Detalle Primero/>"}
             </span>
             <span
