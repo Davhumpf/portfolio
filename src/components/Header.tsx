@@ -57,32 +57,11 @@ export default function Header() {
     return () => ctx.revert();
   }, []);
 
-  /* ---------------- Typewriter animación ---------------- */
+  /* ---------------- Typewriter (robusto en móvil) ---------------- */
   const phrasesByLang: Record<string, string[]> = {
-    es: [
-      "<Interfaz Limpia/>",
-      "<Detalle Primero/>",
-      "render(ideas → interfaz)",
-      "useMotion(GSAP)",
-      "design && code && coffee()",
-      "console.log('hola 👋')",
-    ],
-    en: [
-      "<Clean UI/>",
-      "<Detail First/>",
-      "render(ideas → interface)",
-      "useMotion(GSAP)",
-      "design && code && coffee()",
-      "console.log('hello 👋')",
-    ],
-    de: [
-      "<Klare UI/>",
-      "<Detail zuerst/>",
-      "render(Ideen → Oberfläche)",
-      "useMotion(GSAP)",
-      "design && code && kaffee()",
-      "console.log('hallo 👋')",
-    ],
+    es: ["<Interfaz Limpia/>", "<Detalle Primero/>", "render(ideas → interfaz)", "useMotion(GSAP)", "design && code && coffee()", "console.log('hola 👋')"],
+    en: ["<Clean UI/>", "<Detail First/>", "render(ideas → interface)", "useMotion(GSAP)", "design && code && coffee()", "console.log('hello 👋')"],
+    de: ["<Klare UI/>", "<Detail zuerst/>", "render(Ideen → Oberfläche)", "useMotion(GSAP)", "design && code && kaffee()", "console.log('hallo 👋')"],
   };
 
   useEffect(() => {
@@ -99,10 +78,15 @@ export default function Header() {
     const blink = caret ? gsap.to(caret, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
     const blinkMobile = caretMobile ? gsap.to(caretMobile, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
 
-    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return () => { blink?.kill(); blinkMobile?.kill(); };
+    // En móvil nunca apagamos la animación. Si el usuario tiene "reducir movimiento",
+    // la hacemos más lenta en lugar de desactivarla.
+    const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
-    const speedType = 0.045, speedErase = 0.03, hold = 0.9;
+    const speedType = reduceMotion ? 0.09 : 0.045;
+    const speedErase = reduceMotion ? 0.06 : 0.03;
+    const hold = reduceMotion ? 0.7 : 0.9;
+
     const shuffled = <T,>(arr: T[]) => arr.map(v => [Math.random(), v] as const).sort((a,b)=>a[0]-b[0]).map(([,v])=>v);
 
     let tl: gsap.core.Timeline | null = null;
@@ -117,13 +101,9 @@ export default function Header() {
 
       round.forEach((text) => {
         tline.add(() => { setText(""); });
-        for (let i = 1; i <= text.length; i++) {
-          tline.add(() => { setText(text.slice(0, i)); }, `+=${speedType}`);
-        }
+        for (let i = 1; i <= text.length; i++) tline.add(() => { setText(text.slice(0, i)); }, `+=${speedType}`);
         tline.to({}, { duration: hold });
-        for (let i = text.length - 1; i >= 0; i--) {
-          tline.add(() => { setText(text.slice(0, i)); }, `+=${speedErase}`);
-        }
+        for (let i = text.length - 1; i >= 0; i--) tline.add(() => { setText(text.slice(0, i)); }, `+=${speedErase}`);
         tline.to({}, { duration: 0.2 });
       });
     }
@@ -157,28 +137,26 @@ export default function Header() {
     return () => window.removeEventListener("resize", on);
   }, [active, navItems]);
 
-  /* ---------------- Autoclose burger on scroll ---------------- */
+  /* ---------------- Autoclose burger (scroll/touch/wheel) ---------------- */
   useEffect(() => {
-    const handleScroll = () => {
-      if (mobileMenuOpen) setMobileMenuOpen(false);
+    const close = () => setMobileMenuOpen(false);
+    const onScroll = () => mobileMenuOpen && close();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("touchmove", onScroll, { passive: true });
+    window.addEventListener("wheel", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("touchmove", onScroll);
+      window.removeEventListener("wheel", onScroll);
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
   }, [mobileMenuOpen]);
 
-  /* ---------------- Animación de apertura del menú móvil ---------------- */
+  /* ---------------- Menu open animation ---------------- */
   useEffect(() => {
     const el = mobileMenuRef.current;
     if (!el) return;
     if (mobileMenuOpen) {
-      gsap.fromTo(
-        el,
-        { height: 0, opacity: 0 },
-        { height: "auto", opacity: 1, duration: 0.28, ease: "power2.out" }
-      );
-    } else {
-      // para que no pegue “salto” al cerrar, dejamos que React lo desmonte
-      // (la animación de cierre no es crítica)
+      gsap.fromTo(el, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.28, ease: "power2.out" });
     }
   }, [mobileMenuOpen]);
 
@@ -191,10 +169,7 @@ export default function Header() {
   };
 
   return (
-    <header
-      ref={root}
-      className="fixed top-4 left-1/2 z-[999] w-full max-w-6xl -translate-x-1/2 px-4"
-    >
+    <header ref={root} className="fixed top-4 left-1/2 z-[999] w-full max-w-6xl -translate-x-1/2 px-4">
       <div className="glass px-6 py-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {/* Marca: Desktop */}
@@ -202,56 +177,27 @@ export default function Header() {
             href="#top"
             title="Top"
             className="nav-anim hidden lg:inline-flex items-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-semibold no-underline"
-            style={{
-              color: "var(--text)",
-              background: "var(--panel-alpha)",
-              border: "1px solid var(--ring)",
-              minWidth: "240px",
-            }}
+            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)", minWidth: "240px" }}
           >
-            <span ref={brandRef} className="tabular-nums">
-              {"<Clean UI/>"}
-            </span>
-            <span
-              ref={caretRef}
-              className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']"
-              aria-hidden
-            />
+            <span ref={brandRef} className="tabular-nums">{"<Clean UI/>"}</span>
+            <span ref={caretRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
           </a>
 
-          {/* Marca móvil (caret visible siempre) */}
+          {/* Marca móvil (caret visible) */}
           <a
             href="#top"
             className="nav-anim lg:hidden flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline
                        whitespace-nowrap min-w-0 overflow-visible"
-            style={{
-              color: "var(--text)",
-              background: "var(--panel-alpha)",
-              border: "1px solid var(--ring)",
-            }}
+            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
           >
-            <span ref={brandMobileRef} className="tabular-nums overflow-visible">
-              {"<Detalle Primero/>"}
-            </span>
-            <span
-              ref={caretMobileRef}
-              className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']"
-              aria-hidden
-            />
+            <span ref={brandMobileRef} className="tabular-nums overflow-visible">{"<Detalle Primero/>"}</span>
+            <span ref={caretMobileRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
           </a>
 
           {/* NAV con indicador - Desktop */}
           <div className="relative nav-anim hidden lg:block">
-            <div
-              ref={navWrapRef}
-              className="relative flex items-center gap-2 rounded-2xl ring-1"
-              style={{ borderColor: "var(--ring)" }}
-            >
-              <div
-                ref={indicatorRef}
-                className="absolute left-0 top-0 z-0 rounded-xl"
-                style={{ background: "var(--panel-alpha)" }}
-              />
+            <div ref={navWrapRef} className="relative flex items-center gap-2 rounded-2xl ring-1" style={{ borderColor: "var(--ring)" }}>
+              <div ref={indicatorRef} className="absolute left-0 top-0 z-0 rounded-xl" style={{ background: "var(--panel-alpha)" }} />
               {navItems.map((n) => (
                 <a
                   key={n.id}
@@ -273,32 +219,31 @@ export default function Header() {
             <ThemeMenu />
           </div>
 
-          {/* Burger con morph */}
+          {/* Burger con morph (compatible iOS) */}
           <button
             onClick={() => setMobileMenuOpen((v) => !v)}
             aria-expanded={mobileMenuOpen}
-            className={`lg:hidden nav-anim p-2 rounded-lg ring-1 transition
-                       focus:outline-none focus:ring-2 focus:ring-offset-1`}
+            className="lg:hidden nav-anim p-2 rounded-lg ring-1 transition focus:outline-none focus:ring-2 focus:ring-offset-1"
             style={{ borderColor: "var(--ring)", background: "var(--panel-alpha)" }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" className="block">
-              <g
-                className={`transition-transform duration-300 ease-out ${
-                  mobileMenuOpen ? "translate-y-[1px] rotate-45" : ""
-                }`}
-              >
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <g style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
+                 className={`transition-transform duration-300 ease-out ${mobileMenuOpen ? "translate-y-[1px] rotate-45" : ""}`}>
                 <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      className={`transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
+                      style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
+                      className={`transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
                 <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                      style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
                       className={`transition-transform duration-300 ${mobileMenuOpen ? "rotate-90" : ""}`} />
                 <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      className={`transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
+                      style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
+                      className={`transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
               </g>
             </svg>
           </button>
         </div>
 
-        {/* Menú móvil (apertura animada, autocierre en scroll) */}
+        {/* Menú móvil */}
         {mobileMenuOpen && (
           <div
             ref={mobileMenuRef}
@@ -312,21 +257,14 @@ export default function Header() {
                 onClick={(e) => onNavClick(e, n)}
                 className={`block px-4 py-2 rounded-lg text-sm font-semibold transition
                   ${active === n.id ? "opacity-100" : "opacity-70"}`}
-                style={{
-                  background: active === n.id ? "var(--panel-alpha)" : "transparent"
-                }}
+                style={{ background: active === n.id ? "var(--panel-alpha)" : "transparent" }}
               >
                 {n.label}
               </a>
             ))}
-
             <div className="flex gap-2 pt-2">
-              <div className="flex-1">
-                <LangMenu />
-              </div>
-              <div className="flex-1">
-                <ThemeMenu />
-              </div>
+              <div className="flex-1"><LangMenu /></div>
+              <div className="flex-1"><ThemeMenu /></div>
             </div>
           </div>
         )}
