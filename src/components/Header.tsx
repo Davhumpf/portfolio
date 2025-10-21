@@ -20,6 +20,7 @@ export default function Header() {
   const caretRef = useRef<HTMLSpanElement | null>(null);
   const brandMobileRef = useRef<HTMLSpanElement | null>(null);
   const caretMobileRef = useRef<HTMLSpanElement | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
   const [active, setActive] = useState<NavItem["id"]>("about");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -56,6 +57,7 @@ export default function Header() {
     return () => ctx.revert();
   }, []);
 
+  /* ---------------- Typewriter animación ---------------- */
   const phrasesByLang: Record<string, string[]> = {
     es: [
       "<Interfaz Limpia/>",
@@ -91,7 +93,7 @@ export default function Header() {
 
     const phrases = phrasesByLang[lang] ?? phrasesByLang.es;
     setText(phrases[0]);
-    
+
     const caret = caretRef.current;
     const caretMobile = caretMobileRef.current;
     const blink = caret ? gsap.to(caret, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
@@ -101,9 +103,7 @@ export default function Header() {
     if (reduce) return () => { blink?.kill(); blinkMobile?.kill(); };
 
     const speedType = 0.045, speedErase = 0.03, hold = 0.9;
-
-    const shuffled = <T,>(arr: T[]) =>
-      arr.map(v => [Math.random(), v] as const).sort((a,b)=>a[0]-b[0]).map(([,v])=>v);
+    const shuffled = <T,>(arr: T[]) => arr.map(v => [Math.random(), v] as const).sort((a,b)=>a[0]-b[0]).map(([,v])=>v);
 
     let tl: gsap.core.Timeline | null = null;
 
@@ -132,6 +132,7 @@ export default function Header() {
     return () => { tl?.kill(); blink?.kill(); blinkMobile?.kill(); };
   }, [lang]);
 
+  /* ---------------- Active nav highlight ---------------- */
   useEffect(() => {
     const sections = navItems.map(n => document.getElementById(n.id)).filter(Boolean) as HTMLElement[];
     if (!sections.length) return;
@@ -156,6 +157,32 @@ export default function Header() {
     return () => window.removeEventListener("resize", on);
   }, [active, navItems]);
 
+  /* ---------------- Autoclose burger on scroll ---------------- */
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mobileMenuOpen) setMobileMenuOpen(false);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [mobileMenuOpen]);
+
+  /* ---------------- Animación de apertura del menú móvil ---------------- */
+  useEffect(() => {
+    const el = mobileMenuRef.current;
+    if (!el) return;
+    if (mobileMenuOpen) {
+      gsap.fromTo(
+        el,
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.28, ease: "power2.out" }
+      );
+    } else {
+      // para que no pegue “salto” al cerrar, dejamos que React lo desmonte
+      // (la animación de cierre no es crítica)
+    }
+  }, [mobileMenuOpen]);
+
+  /* ---------------- Nav click ---------------- */
   const onNavClick = (e: React.MouseEvent<HTMLAnchorElement>, n: NavItem) => {
     e.preventDefault();
     document.querySelector(n.href)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -170,8 +197,7 @@ export default function Header() {
     >
       <div className="glass px-6 py-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          
-          {/* Marca: Desktop - visible siempre */}
+          {/* Marca: Desktop */}
           <a
             href="#top"
             title="Top"
@@ -193,18 +219,18 @@ export default function Header() {
             />
           </a>
 
-          {/* Marca móvil: ocupa todo el espacio - CORREGIDO */}
+          {/* Marca móvil (caret visible siempre) */}
           <a
             href="#top"
             className="nav-anim lg:hidden flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline
-                       whitespace-nowrap min-w-0"
+                       whitespace-nowrap min-w-0 overflow-visible"
             style={{
               color: "var(--text)",
               background: "var(--panel-alpha)",
               border: "1px solid var(--ring)",
             }}
           >
-            <span ref={brandMobileRef} className="tabular-nums truncate">
+            <span ref={brandMobileRef} className="tabular-nums overflow-visible">
               {"<Detalle Primero/>"}
             </span>
             <span
@@ -247,21 +273,38 @@ export default function Header() {
             <ThemeMenu />
           </div>
 
-          {/* Hamburguesa - Móvil */}
+          {/* Burger con morph */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden nav-anim p-2 rounded-lg ring-1"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-expanded={mobileMenuOpen}
+            className={`lg:hidden nav-anim p-2 rounded-lg ring-1 transition
+                       focus:outline-none focus:ring-2 focus:ring-offset-1`}
             style={{ borderColor: "var(--ring)", background: "var(--panel-alpha)" }}
           >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" className="block">
+              <g
+                className={`transition-transform duration-300 ease-out ${
+                  mobileMenuOpen ? "translate-y-[1px] rotate-45" : ""
+                }`}
+              >
+                <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                      className={`transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
+                <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                      className={`transition-transform duration-300 ${mobileMenuOpen ? "rotate-90" : ""}`} />
+                <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                      className={`transition-all duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
+              </g>
             </svg>
           </button>
         </div>
 
-        {/* Menú móvil desplegable */}
+        {/* Menú móvil (apertura animada, autocierre en scroll) */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-4 pt-4 space-y-2 border-t" style={{ borderColor: "var(--ring)" }}>
+          <div
+            ref={mobileMenuRef}
+            className="lg:hidden mt-4 pt-4 space-y-2 border-t"
+            style={{ borderColor: "var(--ring)", overflow: "hidden" }}
+          >
             {navItems.map((n) => (
               <a
                 key={n.id}
@@ -276,7 +319,7 @@ export default function Header() {
                 {n.label}
               </a>
             ))}
-            
+
             <div className="flex gap-2 pt-2">
               <div className="flex-1">
                 <LangMenu />
