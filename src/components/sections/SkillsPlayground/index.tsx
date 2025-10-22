@@ -1,36 +1,106 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import {
   ScrollTrigger,
-  ScrollSmoother,
+  ScrollToPlugin,
+  MotionPathPlugin,
+  Draggable,
+  Flip,
+  Observer,
+  TextPlugin,
 } from "gsap/all";
-import Section from "@/components/Section";
 import AnimeIntro from "./animeIntro";
 import GSAPDemos from "./gsapDemos";
 
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+gsap.registerPlugin(
+  ScrollTrigger,
+  ScrollToPlugin,
+  MotionPathPlugin,
+  Draggable,
+  Flip,
+  Observer,
+  TextPlugin
+);
 
-export default function SkillsPage() {
-  const container = useRef<HTMLDivElement | null>(null);
+type Club = {
+  DrawSVGPlugin?: any;
+  MorphSVGPlugin?: any;
+  SplitText?: any;
+  ScrambleTextPlugin?: any;
+  InertiaPlugin?: any;
+  Physics2DPlugin?: any;
+  PhysicsPropsPlugin?: any;
+  GSDevTools?: any;
+  MotionPathHelper?: any;
+  ScrollSmoother?: any;
+};
 
+export default function SkillsPlayground() {
+  const contentRef = useRef(null);
+  const [clubPlugins, setClubPlugins] = useState<Club>({});
+
+  // Carga opcional de plugins Club (si no existen, no rompen)
   useEffect(() => {
-    const smoother = ScrollSmoother.create({
-      wrapper: container.current!,
-      content: container.current!,
-      smooth: 1.2,
-      effects: true,
-    });
+    const tryLoad = async (spec: string) => {
+      try {
+        const mod: any = await import(/* webpackIgnore: true */ spec);
+        const plugin = mod?.default ?? mod;
+        if (plugin) {
+          try { gsap.registerPlugin(plugin); } catch {}
+          return plugin;
+        }
+      } catch {
+        // no instalado: ignorar
+      }
+      return undefined;
+    };
 
-    return () => smoother.kill();
+    (async () => {
+      const [
+        DrawSVGPlugin,
+        MorphSVGPlugin,
+        SplitText,
+        ScrambleTextPlugin,
+        InertiaPlugin,
+        Physics2DPlugin,
+        PhysicsPropsPlugin,
+        GSDevTools,
+        MotionPathHelper,
+        ScrollSmoother,
+      ] = await Promise.all([
+        tryLoad("gsap/DrawSVGPlugin"),
+        tryLoad("gsap/MorphSVGPlugin"),
+        tryLoad("gsap/SplitText"),
+        tryLoad("gsap/ScrambleTextPlugin"),
+        tryLoad("gsap/InertiaPlugin"),
+        tryLoad("gsap/Physics2DPlugin"),
+        tryLoad("gsap/PhysicsPropsPlugin"),
+        tryLoad("gsap/GSDevTools"),
+        tryLoad("gsap/MotionPathHelper"),
+        tryLoad("gsap/ScrollSmoother"),
+      ]);
+      setClubPlugins({
+        DrawSVGPlugin,
+        MorphSVGPlugin,
+        SplitText,
+        ScrambleTextPlugin,
+        InertiaPlugin,
+        Physics2DPlugin,
+        PhysicsPropsPlugin,
+        GSDevTools,
+        MotionPathHelper,
+        ScrollSmoother,
+      });
+    })();
   }, []);
 
   return (
-    <Section id="skills" title="Skill Playground" subtitle="GSAP + Anime.js">
-      <div ref={container} className="relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      <div ref={contentRef}>
         <AnimeIntro />
-        <GSAPDemos />
+        <GSAPDemos clubPlugins={clubPlugins} />
       </div>
-    </Section>
+    </div>
   );
 }
