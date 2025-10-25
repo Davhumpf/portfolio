@@ -21,17 +21,21 @@ gsap.registerPlugin(
   TextPlugin
 );
 
-type Club = {
-  DrawSVG?: any;
-  MorphSVG?: any;
-  SplitText?: any;
-  ScrambleTextPlugin?: any;
-  InertiaPlugin?: any;
-  Physics2DPlugin?: any;
-  PhysicsPropsPlugin?: any;
-  GSDevTools?: any;
-  MotionPathHelper?: any;
-};
+// Evita "any" con un tipo parcial y desconocido (no rompe build ni lint)
+type Club = Partial<{
+  DrawSVG: unknown;
+  MorphSVG: unknown;
+  SplitText: unknown;
+  ScrambleTextPlugin: unknown;
+  InertiaPlugin: unknown;
+  Physics2DPlugin: unknown;
+  PhysicsPropsPlugin: unknown;
+  GSDevTools: unknown;
+  MotionPathHelper: unknown;
+}>;
+
+// Para escribir/leer __goTo sin usar "any"
+type GoToContainer = HTMLDivElement & { __goTo?: (to: string) => void };
 
 export default function GSAPDemos({ clubPlugins = {} as Club }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -41,21 +45,25 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
 
   // accesibilidad: respetar reduced-motion
   const reduceMotion = useMemo(
-    () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
     []
   );
 
   useEffect(() => {
-    const container = rootRef.current!;
+    const container = rootRef.current as GoToContainer | null;
     const track = trackRef.current!;
     const progressEl = progressRef.current!;
     if (!container || !track) return;
 
-    // ---  PERF: promote to GPU & cache setters
+    // PERF
     gsap.set(track, { willChange: "transform" });
-    const setNoiseOpacity = gsap.quickSetter(noiseRef.current, "opacity");
+    const setNoiseOpacity = gsap.quickSetter(noiseRef.current!, "opacity") as (
+      v: number
+    ) => void;
 
-    // === HORIZONTAL PIN & CONTAINER ANIMATION =================================
+    // === HORIZONTAL PIN & CONTAINER ANIMATION ================================
     const getDist = () => track.scrollWidth - window.innerWidth;
 
     const scrollTween = gsap.to(track, {
@@ -71,7 +79,7 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
       },
     });
 
-    // Progress bar ultra precisa
+    // Progress bar precisa
     ScrollTrigger.create({
       trigger: container,
       start: 0,
@@ -79,48 +87,59 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
       scrub: 1,
       onUpdate: (self) => {
         progressEl.style.transform = `scaleX(${self.progress})`;
-        // ruido sutil cuando hay movimiento
         setNoiseOpacity(0.08 + self.getVelocity() / 8000);
       },
       onScrubComplete: () => setNoiseOpacity(0.06),
     });
 
-    // === UTIL: crear triggers atados al containerAnimation =====================
-    const within = (selector: string, cfg: ScrollTrigger.Vars) => ({
-      trigger: selector,
+    // === Helper: triggers con containerAnimation =============================
+    // ⬅️ FIX: aceptar Element | string además de string
+    const within = (
+      trigger: Element | string,
+      cfg: ScrollTrigger.Vars
+    ): ScrollTrigger.Vars => ({
+      trigger,
       containerAnimation: scrollTween,
       ...cfg,
     });
 
-    // === NAV inteligente: ir a sección moviendo la progress del tween =========
+    // === NAV inteligente =====================================================
     const sections = gsap.utils.toArray<HTMLElement>(".sec");
     const goTo = (id: string) => {
       const el = document.querySelector<HTMLElement>(id);
       if (!el) return;
-      const total = getDist();
+      const total = getDist() || 1; // evita div/0 en layouts estrechos
       const progress = el.offsetLeft / total;
       gsap.to(scrollTween, { progress, duration: 0.9, ease: "power3.inOut" });
     };
-    // expone para el nav local (delegación)
-    (container as any).__goTo = goTo;
+    container.__goTo = goTo;
 
-    // === ENTRADAS GLOBALES: clipPath reveal + blur in ==========================
+    // === ENTRADAS GLOBALES ===================================================
     sections.forEach((s) => {
       gsap.fromTo(
         s,
-        { filter: "blur(10px)", opacity: 0, clipPath: "inset(0 30% 0 30% round 24px)" },
+        {
+          filter: "blur(10px)",
+          opacity: 0,
+          clipPath: "inset(0 30% 0 30% round 24px)",
+        },
         {
           opacity: 1,
           filter: "blur(0px)",
           clipPath: "inset(0 0% 0 0% round 24px)",
           duration: reduceMotion ? 0 : 0.9,
           ease: "power3.out",
-          scrollTrigger: within(s, { start: "left 80%", end: "left 40%", scrub: 1 }),
+          // ⬅️ Ahora pasar HTMLElement funciona
+          scrollTrigger: within(s, {
+            start: "left 80%",
+            end: "left 40%",
+            scrub: 1,
+          }),
         }
       );
     });
 
-    // === SCROLLTRIGGER: box coreografía ======================================
+    // === SCROLLTRIGGER: box coreografía =====================================
     gsap.fromTo(
       ".st-box",
       { scale: 0, rotate: -180, opacity: 0 },
@@ -129,7 +148,11 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
         rotate: 0,
         opacity: 1,
         ease: "back.out(1.7)",
-        scrollTrigger: within("#sec-st", { start: "left 75%", end: "left 45%", scrub: 1 }),
+        scrollTrigger: within("#sec-st", {
+          start: "left 75%",
+          end: "left 45%",
+          scrub: 1,
+        }),
       }
     );
     gsap.to(".st-box", {
@@ -139,10 +162,14 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
         { y: 0, rotate: 360, scale: 1, duration: 0.6 },
       ],
       ease: "power2.inOut",
-      scrollTrigger: within("#sec-st", { start: "center center", end: "right center", scrub: 1 }),
+      scrollTrigger: within("#sec-st", {
+        start: "center center",
+        end: "right center",
+        scrub: 1,
+      }),
     });
 
-    // === MOTION PATH: nave con easing suave ===================================
+    // === MOTION PATH =========================================================
     gsap.to(".mp-ship", {
       duration: 10,
       repeat: -1,
@@ -159,7 +186,7 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
       },
     });
 
-    // === FLIP: auto-flip + botón manual ======================================
+    // === FLIP ================================================================
     const flipOnce = () => {
       const items = gsap.utils.toArray<HTMLElement>(".flip-item");
       const state = Flip.getState(items);
@@ -173,34 +200,65 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
         scale: true,
       });
     };
-    ScrollTrigger.create(within("#sec-flip", { start: "center center", end: "right center", onEnter: flipOnce }));
+    ScrollTrigger.create(
+      within("#sec-flip", {
+        start: "center center",
+        end: "right center",
+        onEnter: flipOnce,
+      })
+    );
 
-    // === DRAGGABLE: inercia si existe + snap elegante =========================
+    // === DRAGGABLE ===========================================================
     Draggable.create(".drag-ball", {
       type: "x,y",
       bounds: ".drag-area",
       edgeResistance: 0.65,
-      inertia: !!(clubPlugins?.InertiaPlugin || (window as any).InertiaPlugin),
-      onPress() { gsap.to(this.target, { scale: 1.08, duration: 0.15 }); },
-      onDrag()  { gsap.to(this.target, { rotation: this.x * 0.12, duration: 0.08 }); },
-      onRelease() { gsap.to(this.target, { scale: 1, rotation: 0, duration: 0.28, ease: "back.out(1.6)" }); },
+      inertia:
+        Boolean(clubPlugins?.InertiaPlugin) ||
+        Boolean((window as unknown as { InertiaPlugin?: unknown }).InertiaPlugin),
+      onPress() {
+        gsap.to(this.target, { scale: 1.08, duration: 0.15 });
+      },
+      onDrag() {
+        gsap.to(this.target, { rotation: this.x * 0.12, duration: 0.08 });
+      },
+      onRelease() {
+        gsap.to(this.target, {
+          scale: 1,
+          rotation: 0,
+          duration: 0.28,
+          ease: "back.out(1.6)",
+        });
+      },
     });
 
-    // === OBSERVER: dirección del scroll ======================================
+    // === OBSERVER ============================================================
     Observer.create({
       target: window,
       type: "wheel,touch,scroll",
-      onUp:   () => gsap.to(".obs-arrow", { rotation: -180, y: -22, duration: 0.25 }),
-      onDown: () => gsap.to(".obs-arrow", { rotation: 0,     y:  22, duration: 0.25 }),
+      onUp: () => gsap.to(".obs-arrow", { rotation: -180, y: -22, duration: 0.25 }),
+      onDown: () => gsap.to(".obs-arrow", { rotation: 0, y: 22, duration: 0.25 }),
     });
 
-    // === TEXTO: rotación de palabras =========================================
+    // === TEXTO ===============================================================
     const words = ["PODEROSO", "FLUIDO", "PROFESIONAL", "PRECISO", "ELEGANTE"];
     let i = 0;
-    const tick = () => gsap.to(".text-rot", { duration: 0.55, text: words[(i++) % words.length], ease: "power2.inOut" });
-    ScrollTrigger.create(within("#sec-text", { start: "left 78%", end: "left 40%", onEnter: tick, onEnterBack: tick }));
+    const tick = () =>
+      gsap.to(".text-rot", {
+        duration: 0.55,
+        text: words[i++ % words.length],
+        ease: "power2.inOut",
+      });
+    ScrollTrigger.create(
+      within("#sec-text", {
+        start: "left 78%",
+        end: "left 40%",
+        onEnter: tick,
+        onEnterBack: tick,
+      })
+    );
 
-    // === BOTONES MAGNÉTICOS (micro-interacción) ===============================
+    // === BOTONES MAGNÉTICOS ==================================================
     const magnets = gsap.utils.toArray<HTMLButtonElement>(".magnet");
     magnets.forEach((btn) => {
       const setX = gsap.quickTo(btn, "x", { duration: 0.3, ease: "power3" });
@@ -213,12 +271,15 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
         setX((mx / (r.width / 2)) * strength);
         setY((my / (r.height / 2)) * strength);
       };
-      const leave = () => { setX(0); setY(0); };
+      const leave = () => {
+        setX(0);
+        setY(0);
+      };
       btn.addEventListener("mousemove", enter);
       btn.addEventListener("mouseleave", leave);
     });
 
-    // === 3D tilt en tarjetas (perf con quickSetter) ===========================
+    // === 3D tilt tarjetas ====================================================
     gsap.utils.toArray<HTMLElement>(".tilt").forEach((card) => {
       const rx = gsap.quickSetter(card, "rotateX", "deg");
       const ry = gsap.quickSetter(card, "rotateY", "deg");
@@ -231,12 +292,16 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
         rx(-py * 12);
         tz(24);
       };
-      const off = () => { rx(0); ry(0); tz(0); };
+      const off = () => {
+        rx(0);
+        ry(0);
+        tz(0);
+      };
       card.addEventListener("mousemove", onMove);
       card.addEventListener("mouseleave", off);
     });
 
-    // === Recompute on resize (distancia) ======================================
+    // === Refresh en resize ====================================================
     const ro = new ResizeObserver(() => ScrollTrigger.refresh());
     ro.observe(track);
 
@@ -248,7 +313,8 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
   }, [reduceMotion, clubPlugins?.InertiaPlugin]);
 
   // click handler para el nav (usa __goTo inyectado)
-  const handleNav = (to: string) => (rootRef.current as any)?.__goTo?.(to);
+  const handleNav = (to: string) =>
+    (rootRef.current as GoToContainer | null)?.__goTo?.(to);
 
   return (
     <div ref={rootRef} className="relative w-full h-screen overflow-hidden text-white">
@@ -333,7 +399,11 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
             </div>
 
             <style jsx>{`
-              .flip-grid.alt { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: .75rem; }
+              .flip-grid.alt {
+                display: grid;
+                grid-template-columns: repeat(8, minmax(0, 1fr));
+                gap: 0.75rem;
+              }
             `}</style>
           </div>
         </section>
@@ -379,7 +449,11 @@ export default function GSAPDemos({ clubPlugins = {} as Club }) {
 
       {/* progress bar */}
       <div className="pointer-events-none absolute bottom-6 left-6 right-6 h-[3px] bg-white/10 overflow-hidden rounded">
-        <div ref={progressRef} className="h-full origin-left bg-white/50" style={{ transform: "scaleX(0)" }} />
+        <div
+          ref={progressRef}
+          className="h-full origin-left bg-white/50"
+          style={{ transform: "scaleX(0)" }}
+        />
       </div>
     </div>
   );
