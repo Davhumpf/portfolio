@@ -1,9 +1,11 @@
+// src/app/page.tsx
+import Hero from "@/components/Hero";
 import About from "@/components/sections/About";
 import Projects from "@/components/sections/Projects";
 import Skills from "@/components/sections/Skills";
 import Contacts from "@/components/sections/Contacts";
 
-// nuevas
+// nuevas en src/components/
 import Timeline from "@/components/Timeline";
 import CaseStudies from "@/components/CaseStudies";
 import OpenSource from "@/components/OpenSource";
@@ -16,9 +18,12 @@ import Now from "@/components/Now";
 export default function Home() {
   return (
     <>
+      <Hero />         {/* <- el Hero va aquí, arriba del resto */}
+
       <About />
       <Projects />
       <Skills />
+
       <Timeline />
       <CaseStudies />
       <OpenSource />
@@ -27,7 +32,12 @@ export default function Home() {
       <Talks />
       <Uses />
       <Now />
+
       <Contacts />
+
+      <footer className="mx-auto my-20 max-w-6xl px-4 text-sm muted">
+        © {new Date().getFullYear()} David — UI/Frontend
+      </footer>
     </>
   );
 }
