@@ -1,5 +1,5 @@
 "use client";
-import Section from "../Section";
+import Section from "./Section";
 
 export default function Blog() {
   return (
