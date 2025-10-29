@@ -7,11 +7,11 @@ import LangMenu from "./LangMenu";
 import ThemeMenu from "./ThemeMenu";
 
 type NavItem = {
-  id: string;                  // extensible para nuevas secciones
+  id: string;
   label: string;
-  href: string;                // "#id" o "https://…"
-  external?: boolean;          // true -> target="_blank"
-  badge?: string;              // "New", "★", "5", etc
+  href: string;
+  external?: boolean;
+  badge?: string;
 };
 
 export default function Header() {
@@ -31,29 +31,33 @@ export default function Header() {
   const [active, setActive] = useState<NavItem["id"]>("about");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  /* ---------------- Items (main + nuevas secciones) ---------------- */
-  const navItems: NavItem[] = useMemo(
+  /* ---------------- Items ---------------- */
+  const mainNavItems: NavItem[] = useMemo(
     () => [
-      // core
-      { id: "about",     label: t("about"),     href: "#about" },
-      { id: "projects",  label: t("projects"),  href: "#projects" },
-      { id: "skills",    label: t("skills"),    href: "#skills" },
-      { id: "contacts",  label: t("contacts"),  href: "#contacts" },
-
-      // nuevas (puedes crear secciones con esos ids)
-      { id: "timeline",    label: t("experience") ?? "Experiencia",       href: "#timeline",   badge: "★" },
-      { id: "cases",       label: t("caseStudies") ?? "Casos de estudio",  href: "#cases" },
-      { id: "opensource",  label: "Open Source",                           href: "#opensource" },
-      { id: "blog",        label: "Blog",                                  href: "#blog" },
-      { id: "playground",  label: "Playground",                            href: "#playground", badge: "New" },
-      { id: "talks",       label: t("talks") ?? "Charlas & Workshops",     href: "#talks" },
-      { id: "uses",        label: "Uses",                                  href: "#uses" },
-      { id: "now",         label: "Now()",                                 href: "#now" },
-      // externo (ej. PDF del CV)
-      { id: "cv",          label: "CV / PDF",                              href: "/cv.pdf", external: true },
+      { id: "about", label: t("about"), href: "#about" },
+      { id: "projects", label: t("projects"), href: "#projects" },
+      { id: "skills", label: t("skills"), href: "#skills" },
+      { id: "contacts", label: t("contacts"), href: "#contacts" },
     ],
     [t]
   );
+
+  const secondaryNavItems: NavItem[] = useMemo(
+    () => [
+      { id: "timeline", label: t("experience") ?? "Experiencia", href: "#timeline", badge: "★" },
+      { id: "cases", label: t("caseStudies") ?? "Casos", href: "#cases" },
+      { id: "opensource", label: "Open Source", href: "#opensource" },
+      { id: "blog", label: "Blog", href: "#blog" },
+      { id: "playground", label: "Playground", href: "#playground", badge: "New" },
+      { id: "talks", label: t("talks") ?? "Talks", href: "#talks" },
+      { id: "uses", label: "Uses", href: "#uses" },
+      { id: "now", label: "Now()", href: "#now" },
+      { id: "cv", label: "CV", href: "/cv.pdf", external: true },
+    ],
+    [t]
+  );
+
+  const allNavItems = [...mainNavItems, ...secondaryNavItems];
 
   const setItemRef = (id: NavItem["id"]) => (el: HTMLAnchorElement | null) => {
     itemRefs.current[id] = el;
@@ -64,24 +68,56 @@ export default function Header() {
     gsap.registerPlugin(ScrollTrigger);
     if (!root.current) return;
     const ctx = gsap.context(() => {
-      gsap.from(".nav-anim", { y: -10, opacity: 0, duration: 0.6, ease: "power2.out", stagger: 0.06 });
+      gsap.from(".nav-anim", {
+        y: -20,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.08,
+      });
       const glass = root.current!.querySelector(".glass");
       if (glass) {
         gsap.to(glass, {
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 10px 28px 0 color-mix(in oklab, black 45%, transparent)",
-          scrollTrigger: { trigger: document.documentElement, start: "top top", end: "250 top", scrub: true },
+          backdropFilter: "blur(24px)",
+          boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.12)",
+          scrollTrigger: {
+            trigger: document.documentElement,
+            start: "top top",
+            end: "200 top",
+            scrub: true,
+          },
         });
       }
     }, root);
     return () => ctx.revert();
   }, []);
 
-  /* ---------------- Typewriter (robusto en móvil) ---------------- */
+  /* ---------------- Typewriter (recuperado) ---------------- */
   const phrasesByLang: Record<string, string[]> = {
-    es: ["<Interfaz Limpia/>", "<Detalle Primero/>", "render(ideas → interfaz)", "useMotion(GSAP)", "design && code && coffee()", "console.log('hola 👋')"],
-    en: ["<Clean UI/>", "<Detail First/>", "render(ideas → interface)", "useMotion(GSAP)", "design && code && coffee()", "console.log('hello 👋')"],
-    de: ["<Klare UI/>", "<Detail zuerst/>", "render(Ideen → Oberfläche)", "useMotion(GSAP)", "design && code && kaffee()", "console.log('hallo 👋')"],
+    es: [
+      "<Interfaz Limpia/>",
+      "<Detalle Primero/>",
+      "render(ideas → interfaz)",
+      "useMotion(GSAP)",
+      "design && code && coffee()",
+      "console.log('hola 👋')",
+    ],
+    en: [
+      "<Clean UI/>",
+      "<Detail First/>",
+      "render(ideas → interface)",
+      "useMotion(GSAP)",
+      "design && code && coffee()",
+      "console.log('hello 👋')",
+    ],
+    de: [
+      "<Klare UI/>",
+      "<Detail zuerst/>",
+      "render(Ideen → Oberfläche)",
+      "useMotion(GSAP)",
+      "design && code && kaffee()",
+      "console.log('hallo 👋')",
+    ],
   };
 
   useEffect(() => {
@@ -95,60 +131,110 @@ export default function Header() {
 
     const caret = caretRef.current;
     const caretMobile = caretMobileRef.current;
-    const blink = caret ? gsap.to(caret, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
-    const blinkMobile = caretMobile ? gsap.to(caretMobile, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
+    const blink = caret
+      ? gsap.to(caret, {
+          opacity: 0.2,
+          duration: 0.6,
+          yoyo: true,
+          repeat: -1,
+          ease: "power1.inOut",
+        })
+      : undefined;
+    const blinkMobile = caretMobile
+      ? gsap.to(caretMobile, {
+          opacity: 0.2,
+          duration: 0.6,
+          yoyo: true,
+          repeat: -1,
+          ease: "power1.inOut",
+        })
+      : undefined;
 
-    const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const speedType = reduceMotion ? 0.09 : 0.045;
     const speedErase = reduceMotion ? 0.06 : 0.03;
-    const hold = reduceMotion ? 0.7 : 0.9;
+    const hold = reduceMotion ? 0.7 : 1.2;
 
-    const shuffled = <T,>(arr: T[]) => arr.map(v => [Math.random(), v] as const).sort((a,b)=>a[0]-b[0]).map(([,v])=>v);
+    const shuffled = <T,>(arr: T[]) =>
+      arr
+        .map((v) => [Math.random(), v] as const)
+        .sort((a, b) => a[0] - b[0])
+        .map(([, v]) => v);
 
     let tl: gsap.core.Timeline | null = null;
 
     function playRound() {
       const round = shuffled(phrases);
       const tline = gsap.timeline({
-        repeat: 0, repeatDelay: 0.15, delay: 0.3,
-        onComplete: () => { tline.kill(); playRound(); }
+        repeat: 0,
+        repeatDelay: 0.3,
+        delay: 0.5,
+        onComplete: () => {
+          tline.kill();
+          playRound();
+        },
       });
       tl = tline;
 
       round.forEach((text) => {
-        tline.add(() => { setText(""); });
-        for (let i = 1; i <= text.length; i++) tline.add(() => { setText(text.slice(0, i)); }, `+=${speedType}`);
+        tline.add(() => {
+          setText("");
+        });
+        for (let i = 1; i <= text.length; i++)
+          tline.add(() => {
+            setText(text.slice(0, i));
+          }, `+=${speedType}`);
         tline.to({}, { duration: hold });
-        for (let i = text.length - 1; i >= 0; i--) tline.add(() => { setText(text.slice(0, i)); }, `+=${speedErase}`);
-        tline.to({}, { duration: 0.2 });
+        for (let i = text.length - 1; i >= 0; i--)
+          tline.add(() => {
+            setText(text.slice(0, i));
+          }, `+=${speedErase}`);
+        tline.to({}, { duration: 0.3 });
       });
     }
     playRound();
 
-    return () => { tl?.kill(); blink?.kill(); blinkMobile?.kill(); };
+    return () => {
+      tl?.kill();
+      blink?.kill();
+      blinkMobile?.kill();
+    };
   }, [lang]);
 
   /* ---------------- Active nav highlight ---------------- */
   useEffect(() => {
-    const sections = navItems
-      .filter(n => n.href.startsWith("#"))
-      .map(n => document.getElementById(n.id))
+    const sections = allNavItems
+      .filter((n) => n.href.startsWith("#"))
+      .map((n) => document.getElementById(n.id))
       .filter(Boolean) as HTMLElement[];
 
     if (!sections.length) return;
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id as NavItem["id"]); });
-    }, { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.2, 0.6] });
-    sections.forEach(s => obs.observe(s));
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id as NavItem["id"]);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.2, 0.6] }
+    );
+    sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
-  }, [navItems]);
+  }, [allNavItems]);
 
   function moveIndicator() {
     const ind = indicatorRef.current;
     const el = itemRefs.current[active];
     if (!ind || !el) return;
-    gsap.to(ind, { x: el.offsetLeft, width: el.offsetWidth, height: el.offsetHeight, duration: 0.25, ease: "power3.out" });
+    gsap.to(ind, {
+      x: el.offsetLeft,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+      duration: 0.3,
+      ease: "power2.out",
+    });
   }
 
   useEffect(() => {
@@ -156,9 +242,9 @@ export default function Header() {
     const on = () => moveIndicator();
     window.addEventListener("resize", on);
     return () => window.removeEventListener("resize", on);
-  }, [active, navItems]);
+  }, [active, allNavItems]);
 
-  /* ---------------- Autoclose burger (scroll/touch/wheel) ---------------- */
+  /* ---------------- Autoclose burger ---------------- */
   useEffect(() => {
     const close = () => setMobileMenuOpen(false);
     const onScroll = () => mobileMenuOpen && close();
@@ -177,183 +263,325 @@ export default function Header() {
     const el = mobileMenuRef.current;
     if (!el) return;
     if (mobileMenuOpen) {
-      gsap.fromTo(el, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.28, ease: "power2.out" });
+      gsap.fromTo(
+        el,
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.35, ease: "power2.out" }
+      );
     }
   }, [mobileMenuOpen]);
 
   /* ---------------- Nav click ---------------- */
   const onNavClick = (e: React.MouseEvent<HTMLAnchorElement>, n: NavItem) => {
-    if (n.external) {
-      // dejar comportamiento por defecto (nuevo tab)
-      return;
-    }
+    if (n.external) return;
     e.preventDefault();
     document.querySelector(n.href)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setActive(n.id);
     setMobileMenuOpen(false);
   };
 
-  const renderItem = (n: NavItem) => (
-    <a
-      key={n.id}
-      ref={setItemRef(n.id)}
-      href={n.href}
-      onClick={(e) => onNavClick(e, n)}
-      target={n.external ? "_blank" : undefined}
-      rel={n.external ? "noopener noreferrer" : undefined}
-      className={`relative z-10 rounded-xl px-3 py-2 text-sm font-semibold no-underline transition
-        ${active === n.id ? "opacity-100" : "opacity-70 hover:opacity-100"}`}
-    >
-      <span>{n.label}</span>
-      {n.badge && (
-        <span
-          className="ml-1.5 rounded-full px-1.5 py-0.5 text-[9px] font-bold align-middle"
-          style={{ background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
-        >
-          {n.badge}
-        </span>
-      )}
-    </a>
-  );
-
   return (
-    <header ref={root} className="fixed top-4 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-4">
-      <div className="glass px-4 py-3">
-        {/* Desktop Layout */}
-        <div className="hidden lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-6 lg:items-center">
-          {/* Marca */}
-          <a
-            href="#top"
-            title="Top"
-            className="nav-anim inline-flex items-center whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold no-underline"
-            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)", minWidth: "220px" }}
-          >
-            <span ref={brandRef} className="tabular-nums">{"<Clean UI/>"}</span>
-            <span ref={caretRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
-          </a>
-
-          {/* NAV con indicador - centrado */}
-          <div className="relative nav-anim flex justify-center">
-            <div ref={navWrapRef} className="relative inline-flex items-center gap-1 rounded-2xl ring-1 px-1 py-1" style={{ borderColor: "var(--ring)" }}>
-              <div ref={indicatorRef} className="absolute left-0 top-0 z-0 rounded-xl" style={{ background: "var(--panel-alpha)" }} />
-              {navItems.slice(0, 4).map(renderItem)}
-            </div>
-          </div>
-
-          {/* Menús derecha */}
-          <div className="flex items-center gap-2 nav-anim">
-            <LangMenu />
-            <ThemeMenu />
-          </div>
-        </div>
-
-        {/* Segunda fila Desktop - items adicionales */}
-        <div className="hidden lg:flex mt-3 pt-3 border-t justify-center" style={{ borderColor: "var(--ring)" }}>
-          <div className="nav-anim flex flex-wrap items-center justify-center gap-2">
-            {navItems.slice(4).map((n) => (
-              <a
-                key={n.id}
-                href={n.href}
-                onClick={(e) => onNavClick(e, n)}
-                target={n.external ? "_blank" : undefined}
-                rel={n.external ? "noopener noreferrer" : undefined}
-                className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium no-underline transition opacity-70 hover:opacity-100"
-                style={{ background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
-              >
-                <span>{n.label}</span>
-                {n.badge && (
-                  <span
-                    className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
-                    style={{ background: "var(--ring)", opacity: 0.8 }}
-                  >
-                    {n.badge}
-                  </span>
-                )}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Layout */}
-        <div className="lg:hidden flex items-center justify-between gap-3">
-          {/* Marca móvil */}
-          <a
-            href="#top"
-            className="nav-anim flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline whitespace-nowrap min-w-0"
-            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
-          >
-            <span ref={brandMobileRef} className="tabular-nums truncate">{"<Clean UI/>"}</span>
-            <span ref={caretMobileRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
-          </a>
-
-          {/* Burger */}
-          <button
-            onClick={() => setMobileMenuOpen((v) => !v)}
-            aria-expanded={mobileMenuOpen}
-            aria-label="Menu"
-            className="nav-anim p-2.5 rounded-lg ring-1 transition focus:outline-none focus:ring-2"
-            style={{ borderColor: "var(--ring)", background: "var(--panel-alpha)" }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24">
-              <g style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
-                 className={`transition-transform duration-300 ease-out ${mobileMenuOpen ? "translate-y-[1px] rotate-45" : ""}`}>
-                <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      className={`transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
-                <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      className={`transition-transform duration-300 ${mobileMenuOpen ? "rotate-90" : ""}`} />
-                <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      className={`transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
-              </g>
-            </svg>
-          </button>
-        </div>
-
-        {/* Menú móvil */}
-        {mobileMenuOpen && (
-          <div
-            ref={mobileMenuRef}
-            className="lg:hidden mt-3 pt-3 border-t"
-            style={{ borderColor: "var(--ring)", overflow: "hidden" }}
-          >
-            <div className="grid grid-cols-2 gap-2 mb-3">
-              {navItems.slice(0, 4).map((n) => (
-                <a
-                  key={n.id}
-                  href={n.href}
-                  onClick={(e) => onNavClick(e, n)}
-                  className={`block px-3 py-2 rounded-lg text-xs font-semibold text-center transition
-                    ${active === n.id ? "opacity-100 ring-1" : "opacity-70"}`}
-                  style={{ 
-                    background: active === n.id ? "var(--panel-alpha)" : "transparent",
-                    borderColor: active === n.id ? "var(--ring)" : "transparent"
-                  }}
+    <header
+      ref={root}
+      className="fixed top-3 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-3 sm:px-6"
+    >
+      <div className="glass rounded-2xl">
+        {/* ============ DESKTOP LAYOUT ============ */}
+        <div className="hidden lg:block">
+          {/* Fila 1: Brand + Main Nav + Controls */}
+          <div className="flex items-center justify-between gap-6 px-5 py-3.5">
+            {/* Brand con typewriter */}
+            <a
+              href="#top"
+              title="Top"
+              className="nav-anim group flex items-center gap-2 rounded-xl px-4 py-2.5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+              style={{
+                background: "var(--panel-alpha)",
+                border: "1px solid var(--ring)",
+                minWidth: "240px",
+              }}
+            >
+              <div className="flex items-center gap-1 font-mono text-sm font-semibold">
+                <span
+                  ref={brandRef}
+                  className="tabular-nums"
+                  style={{ color: "var(--text)" }}
                 >
-                  {n.label}
-                </a>
-              ))}
+                  {"<Clean UI/>"}
+                </span>
+                <span
+                  ref={caretRef}
+                  className="inline-block opacity-70"
+                  style={{ color: "var(--accent)" }}
+                  aria-hidden
+                >
+                  |
+                </span>
+              </div>
+            </a>
+
+            {/* Main Navigation con indicador */}
+            <div className="nav-anim flex-1 flex justify-center">
+              <div
+                ref={navWrapRef}
+                className="relative inline-flex items-center gap-1 rounded-xl px-2 py-2"
+                style={{
+                  background: "var(--panel-alpha)",
+                  border: "1px solid var(--ring)",
+                }}
+              >
+                <div
+                  ref={indicatorRef}
+                  className="absolute left-0 top-0 z-0 rounded-lg transition-all"
+                  style={{ background: "var(--accent)", opacity: 0.15 }}
+                />
+                {mainNavItems.map((n) => (
+                  <a
+                    key={n.id}
+                    ref={setItemRef(n.id)}
+                    href={n.href}
+                    onClick={(e) => onNavClick(e, n)}
+                    className={`relative z-10 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200
+                      ${
+                        active === n.id
+                          ? "opacity-100"
+                          : "opacity-60 hover:opacity-90"
+                      }`}
+                    style={{
+                      color: active === n.id ? "var(--accent)" : "var(--text)",
+                    }}
+                  >
+                    {n.label}
+                  </a>
+                ))}
+              </div>
             </div>
-            <div className="space-y-1.5 mb-3">
-              {navItems.slice(4).map((n) => (
+
+            {/* Controls */}
+            <div className="nav-anim flex items-center gap-2">
+              <LangMenu />
+              <ThemeMenu />
+            </div>
+          </div>
+
+          {/* Fila 2: Secondary Nav */}
+          <div
+            className="border-t px-5 py-3"
+            style={{ borderColor: "var(--ring)" }}
+          >
+            <div className="nav-anim flex flex-wrap items-center justify-center gap-2">
+              {secondaryNavItems.map((n) => (
                 <a
                   key={n.id}
                   href={n.href}
                   onClick={(e) => onNavClick(e, n)}
                   target={n.external ? "_blank" : undefined}
                   rel={n.external ? "noopener noreferrer" : undefined}
-                  className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition opacity-70 hover:opacity-100"
-                  style={{ background: "var(--panel-alpha)" }}
+                  className="group inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 hover:scale-105"
+                  style={{
+                    background: "var(--panel-alpha)",
+                    border: "1px solid var(--ring)",
+                    opacity: 0.75,
+                  }}
+                  onMouseEnter={(e) => {
+                    gsap.to(e.currentTarget, {
+                      opacity: 1,
+                      y: -2,
+                      duration: 0.2,
+                      ease: "power2.out",
+                    });
+                  }}
+                  onMouseLeave={(e) => {
+                    gsap.to(e.currentTarget, {
+                      opacity: 0.75,
+                      y: 0,
+                      duration: 0.2,
+                      ease: "power2.out",
+                    });
+                  }}
                 >
                   <span>{n.label}</span>
-                  {n.badge && <span className="text-[9px] opacity-60">({n.badge})</span>}
+                  {n.badge && (
+                    <span
+                      className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
+                      style={{
+                        background: "var(--accent)",
+                        color: "var(--bg)",
+                        opacity: 0.9,
+                      }}
+                    >
+                      {n.badge}
+                    </span>
+                  )}
+                  {n.external && (
+                    <svg
+                      className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
+                    </svg>
+                  )}
                 </a>
               ))}
             </div>
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t" style={{ borderColor: "var(--ring)" }}>
-              <LangMenu />
-              <ThemeMenu />
-            </div>
           </div>
-        )}
+        </div>
+
+        {/* ============ MOBILE LAYOUT ============ */}
+        <div className="lg:hidden px-4 py-3">
+          <div className="flex items-center gap-3">
+            {/* Brand móvil con typewriter */}
+            <a
+              href="#top"
+              className="nav-anim flex-1 flex items-center gap-1 rounded-xl px-3 py-2.5 min-w-0"
+              style={{
+                background: "var(--panel-alpha)",
+                border: "1px solid var(--ring)",
+              }}
+            >
+              <span
+                ref={brandMobileRef}
+                className="font-mono text-xs font-semibold tabular-nums truncate"
+                style={{ color: "var(--text)" }}
+              >
+                {"<Clean UI/>"}
+              </span>
+              <span
+                ref={caretMobileRef}
+                className="inline-block opacity-70 flex-shrink-0"
+                style={{ color: "var(--accent)" }}
+                aria-hidden
+              >
+                |
+              </span>
+            </a>
+
+            {/* Burger mejorado */}
+            <button
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Menu"
+              className="nav-anim p-2.5 rounded-xl transition-all duration-200 active:scale-95"
+              style={{
+                background: "var(--panel-alpha)",
+                border: "1px solid var(--ring)",
+              }}
+            >
+              <div className="w-5 h-5 flex flex-col justify-center gap-1">
+                <span
+                  className={`h-0.5 rounded-full transition-all duration-300 ${
+                    mobileMenuOpen
+                      ? "rotate-45 translate-y-1.5 w-full"
+                      : "w-full"
+                  }`}
+                  style={{ background: "currentColor" }}
+                />
+                <span
+                  className={`h-0.5 rounded-full transition-all duration-300 ${
+                    mobileMenuOpen ? "opacity-0 w-0" : "w-3/4"
+                  }`}
+                  style={{ background: "currentColor" }}
+                />
+                <span
+                  className={`h-0.5 rounded-full transition-all duration-300 ${
+                    mobileMenuOpen
+                      ? "-rotate-45 -translate-y-1.5 w-full"
+                      : "w-full"
+                  }`}
+                  style={{ background: "currentColor" }}
+                />
+              </div>
+            </button>
+          </div>
+
+          {/* Menú móvil */}
+          {mobileMenuOpen && (
+            <div
+              ref={mobileMenuRef}
+              className="mt-3 pt-3 space-y-3 border-t overflow-hidden"
+              style={{ borderColor: "var(--ring)" }}
+            >
+              {/* Main nav - Grid 2x2 */}
+              <div className="grid grid-cols-2 gap-2">
+                {mainNavItems.map((n) => (
+                  <a
+                    key={n.id}
+                    href={n.href}
+                    onClick={(e) => onNavClick(e, n)}
+                    className={`block px-3 py-2.5 rounded-lg text-xs font-semibold text-center transition-all
+                      ${active === n.id ? "ring-1" : "opacity-70"}`}
+                    style={{
+                      background:
+                        active === n.id ? "var(--panel-alpha)" : "transparent",
+                      borderColor: active === n.id ? "var(--ring)" : "transparent",
+                      color: active === n.id ? "var(--accent)" : "var(--text)",
+                    }}
+                  >
+                    {n.label}
+                  </a>
+                ))}
+              </div>
+
+              {/* Secondary nav - Stack vertical */}
+              <div className="space-y-1.5">
+                {secondaryNavItems.map((n) => (
+                  <a
+                    key={n.id}
+                    href={n.href}
+                    onClick={(e) => onNavClick(e, n)}
+                    target={n.external ? "_blank" : undefined}
+                    rel={n.external ? "noopener noreferrer" : undefined}
+                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all opacity-70 active:opacity-100"
+                    style={{ background: "var(--panel-alpha)" }}
+                  >
+                    <span>{n.label}</span>
+                    <div className="flex items-center gap-1.5">
+                      {n.badge && (
+                        <span
+                          className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
+                          style={{ background: "var(--accent)", color: "var(--bg)" }}
+                        >
+                          {n.badge}
+                        </span>
+                      )}
+                      {n.external && (
+                        <svg
+                          className="w-3 h-3 opacity-50"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </a>
+                ))}
+              </div>
+
+              {/* Controls - Grid 2 columnas */}
+              <div
+                className="grid grid-cols-2 gap-2 pt-2 border-t"
+                style={{ borderColor: "var(--ring)" }}
+              >
+                <LangMenu />
+                <ThemeMenu />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
