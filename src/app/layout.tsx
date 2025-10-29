@@ -1,7 +1,9 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import ThemeProvider from "../components/ThemeProvider";
-import LanguageProvider from "../context/LanguageProvider";
+import Header from "@/components/Header";
+import ThemeProvider from "@/components/ThemeProvider";
+import LanguageProvider from "@/context/LanguageProvider";
 
 export const metadata: Metadata = {
   title: "David — UI/Frontend",
@@ -25,9 +27,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
-        <ThemeProvider>
-          <LanguageProvider>{children}</LanguageProvider>
-        </ThemeProvider>
+
+        {/* Providers + Header global */}
+        <LanguageProvider>
+          <ThemeProvider>
+            <Header />
+            {/* margen superior para que el header (fixed) no tape el contenido */}
+            <main id="top" className="pt-24">
+              {children}
+            </main>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
