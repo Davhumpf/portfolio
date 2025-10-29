@@ -6,7 +6,13 @@ import { useLang, useT } from "@/context/LanguageProvider";
 import LangMenu from "./LangMenu";
 import ThemeMenu from "./ThemeMenu";
 
-type NavItem = { id: "about" | "projects" | "skills" | "contacts"; label: string; href: string };
+type NavItem = {
+  id: string;                  // extensible para nuevas secciones
+  label: string;
+  href: string;                // "#id" o "https://…"
+  external?: boolean;          // true -> target="_blank"
+  badge?: string;              // "New", "★", "5", etc
+};
 
 export default function Header() {
   const t = useT();
@@ -25,12 +31,26 @@ export default function Header() {
   const [active, setActive] = useState<NavItem["id"]>("about");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  /* ---------------- Items (main + nuevas secciones) ---------------- */
   const navItems: NavItem[] = useMemo(
     () => [
-      { id: "about", label: t("about"), href: "#about" },
-      { id: "projects", label: t("projects"), href: "#projects" },
-      { id: "skills", label: t("skills"), href: "#skills" },
-      { id: "contacts", label: t("contacts"), href: "#contacts" },
+      // core
+      { id: "about",     label: t("about"),     href: "#about" },
+      { id: "projects",  label: t("projects"),  href: "#projects" },
+      { id: "skills",    label: t("skills"),    href: "#skills" },
+      { id: "contacts",  label: t("contacts"),  href: "#contacts" },
+
+      // nuevas (puedes crear secciones con esos ids)
+      { id: "timeline",    label: t("experience") ?? "Experiencia",       href: "#timeline",   badge: "★" },
+      { id: "cases",       label: t("caseStudies") ?? "Casos de estudio",  href: "#cases" },
+      { id: "opensource",  label: "Open Source",                           href: "#opensource" },
+      { id: "blog",        label: "Blog",                                  href: "#blog" },
+      { id: "playground",  label: "Playground",                            href: "#playground", badge: "New" },
+      { id: "talks",       label: t("talks") ?? "Charlas & Workshops",     href: "#talks" },
+      { id: "uses",        label: "Uses",                                  href: "#uses" },
+      { id: "now",         label: "Now()",                                 href: "#now" },
+      // externo (ej. PDF del CV)
+      { id: "cv",          label: "CV / PDF",                              href: "/cv.pdf", external: true },
     ],
     [t]
   );
@@ -78,10 +98,7 @@ export default function Header() {
     const blink = caret ? gsap.to(caret, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
     const blinkMobile = caretMobile ? gsap.to(caretMobile, { opacity: 0.15, duration: 0.6, yoyo: true, repeat: -1, ease: "none" }) : undefined;
 
-    // En móvil nunca apagamos la animación. Si el usuario tiene "reducir movimiento",
-    // la hacemos más lenta en lugar de desactivarla.
     const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 
     const speedType = reduceMotion ? 0.09 : 0.045;
     const speedErase = reduceMotion ? 0.06 : 0.03;
@@ -114,7 +131,11 @@ export default function Header() {
 
   /* ---------------- Active nav highlight ---------------- */
   useEffect(() => {
-    const sections = navItems.map(n => document.getElementById(n.id)).filter(Boolean) as HTMLElement[];
+    const sections = navItems
+      .filter(n => n.href.startsWith("#"))
+      .map(n => document.getElementById(n.id))
+      .filter(Boolean) as HTMLElement[];
+
     if (!sections.length) return;
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id as NavItem["id"]); });
@@ -162,81 +183,125 @@ export default function Header() {
 
   /* ---------------- Nav click ---------------- */
   const onNavClick = (e: React.MouseEvent<HTMLAnchorElement>, n: NavItem) => {
+    if (n.external) {
+      // dejar comportamiento por defecto (nuevo tab)
+      return;
+    }
     e.preventDefault();
     document.querySelector(n.href)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setActive(n.id);
     setMobileMenuOpen(false);
   };
 
+  const renderItem = (n: NavItem) => (
+    <a
+      key={n.id}
+      ref={setItemRef(n.id)}
+      href={n.href}
+      onClick={(e) => onNavClick(e, n)}
+      target={n.external ? "_blank" : undefined}
+      rel={n.external ? "noopener noreferrer" : undefined}
+      className={`relative z-10 rounded-xl px-3 py-2 text-sm font-semibold no-underline transition
+        ${active === n.id ? "opacity-100" : "opacity-70 hover:opacity-100"}`}
+    >
+      <span>{n.label}</span>
+      {n.badge && (
+        <span
+          className="ml-1.5 rounded-full px-1.5 py-0.5 text-[9px] font-bold align-middle"
+          style={{ background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
+        >
+          {n.badge}
+        </span>
+      )}
+    </a>
+  );
+
   return (
-    <header ref={root} className="fixed top-4 left-1/2 z-[999] w-full max-w-6xl -translate-x-1/2 px-4">
-      <div className="glass px-6 py-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          {/* Marca: Desktop */}
+    <header ref={root} className="fixed top-4 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-4">
+      <div className="glass px-4 py-3">
+        {/* Desktop Layout */}
+        <div className="hidden lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-6 lg:items-center">
+          {/* Marca */}
           <a
             href="#top"
             title="Top"
-            className="nav-anim hidden lg:inline-flex items-center whitespace-nowrap rounded-2xl px-4 py-2 text-sm font-semibold no-underline"
-            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)", minWidth: "240px" }}
+            className="nav-anim inline-flex items-center whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold no-underline"
+            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)", minWidth: "220px" }}
           >
             <span ref={brandRef} className="tabular-nums">{"<Clean UI/>"}</span>
             <span ref={caretRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
           </a>
 
-          {/* Marca móvil (caret visible) */}
-          <a
-            href="#top"
-            className="nav-anim lg:hidden flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline
-                       whitespace-nowrap min-w-0 overflow-visible"
-            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
-          >
-            <span ref={brandMobileRef} className="tabular-nums overflow-visible">{"<Detalle Primero/>"}</span>
-            <span ref={caretMobileRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
-          </a>
-
-          {/* NAV con indicador - Desktop */}
-          <div className="relative nav-anim hidden lg:block">
-            <div ref={navWrapRef} className="relative flex items-center gap-2 rounded-2xl ring-1" style={{ borderColor: "var(--ring)" }}>
+          {/* NAV con indicador - centrado */}
+          <div className="relative nav-anim flex justify-center">
+            <div ref={navWrapRef} className="relative inline-flex items-center gap-1 rounded-2xl ring-1 px-1 py-1" style={{ borderColor: "var(--ring)" }}>
               <div ref={indicatorRef} className="absolute left-0 top-0 z-0 rounded-xl" style={{ background: "var(--panel-alpha)" }} />
-              {navItems.map((n) => (
-                <a
-                  key={n.id}
-                  ref={setItemRef(n.id)}
-                  href={n.href}
-                  onClick={(e) => onNavClick(e, n)}
-                  className={`relative z-10 rounded-xl px-4 py-2 text-sm font-semibold no-underline transition
-                    ${active === n.id ? "opacity-100" : "opacity-80 hover:opacity-100"}`}
-                >
-                  {n.label}
-                </a>
-              ))}
+              {navItems.slice(0, 4).map(renderItem)}
             </div>
           </div>
 
-          {/* Menús - Desktop */}
-          <div className="hidden lg:flex items-center gap-2 nav-anim">
+          {/* Menús derecha */}
+          <div className="flex items-center gap-2 nav-anim">
             <LangMenu />
             <ThemeMenu />
           </div>
+        </div>
 
-          {/* Burger con morph (compatible iOS) */}
+        {/* Segunda fila Desktop - items adicionales */}
+        <div className="hidden lg:flex mt-3 pt-3 border-t justify-center" style={{ borderColor: "var(--ring)" }}>
+          <div className="nav-anim flex flex-wrap items-center justify-center gap-2">
+            {navItems.slice(4).map((n) => (
+              <a
+                key={n.id}
+                href={n.href}
+                onClick={(e) => onNavClick(e, n)}
+                target={n.external ? "_blank" : undefined}
+                rel={n.external ? "noopener noreferrer" : undefined}
+                className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium no-underline transition opacity-70 hover:opacity-100"
+                style={{ background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
+              >
+                <span>{n.label}</span>
+                {n.badge && (
+                  <span
+                    className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
+                    style={{ background: "var(--ring)", opacity: 0.8 }}
+                  >
+                    {n.badge}
+                  </span>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="lg:hidden flex items-center justify-between gap-3">
+          {/* Marca móvil */}
+          <a
+            href="#top"
+            className="nav-anim flex-1 inline-flex items-center rounded-xl px-3 py-2 text-xs font-semibold no-underline whitespace-nowrap min-w-0"
+            style={{ color: "var(--text)", background: "var(--panel-alpha)", border: "1px solid var(--ring)" }}
+          >
+            <span ref={brandMobileRef} className="tabular-nums truncate">{"<Clean UI/>"}</span>
+            <span ref={caretMobileRef} className="ml-1 inline-block opacity-70 after:ml-[1px] after:inline-block after:content-['|']" aria-hidden />
+          </a>
+
+          {/* Burger */}
           <button
             onClick={() => setMobileMenuOpen((v) => !v)}
             aria-expanded={mobileMenuOpen}
-            className="lg:hidden nav-anim p-2 rounded-lg ring-1 transition focus:outline-none focus:ring-2 focus:ring-offset-1"
+            aria-label="Menu"
+            className="nav-anim p-2.5 rounded-lg ring-1 transition focus:outline-none focus:ring-2"
             style={{ borderColor: "var(--ring)", background: "var(--panel-alpha)" }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24">
+            <svg width="20" height="20" viewBox="0 0 24 24">
               <g style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
                  className={`transition-transform duration-300 ease-out ${mobileMenuOpen ? "translate-y-[1px] rotate-45" : ""}`}>
                 <line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
                       className={`transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
                 <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
                       className={`transition-transform duration-300 ${mobileMenuOpen ? "rotate-90" : ""}`} />
                 <line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      style={{ transformOrigin: "50% 50%", transformBox: "fill-box" }}
                       className={`transition-opacity duration-300 ${mobileMenuOpen ? "opacity-0" : "opacity-100"}`} />
               </g>
             </svg>
@@ -247,24 +312,45 @@ export default function Header() {
         {mobileMenuOpen && (
           <div
             ref={mobileMenuRef}
-            className="lg:hidden mt-4 pt-4 space-y-2 border-t"
+            className="lg:hidden mt-3 pt-3 border-t"
             style={{ borderColor: "var(--ring)", overflow: "hidden" }}
           >
-            {navItems.map((n) => (
-              <a
-                key={n.id}
-                href={n.href}
-                onClick={(e) => onNavClick(e, n)}
-                className={`block px-4 py-2 rounded-lg text-sm font-semibold transition
-                  ${active === n.id ? "opacity-100" : "opacity-70"}`}
-                style={{ background: active === n.id ? "var(--panel-alpha)" : "transparent" }}
-              >
-                {n.label}
-              </a>
-            ))}
-            <div className="flex gap-2 pt-2">
-              <div className="flex-1"><LangMenu /></div>
-              <div className="flex-1"><ThemeMenu /></div>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {navItems.slice(0, 4).map((n) => (
+                <a
+                  key={n.id}
+                  href={n.href}
+                  onClick={(e) => onNavClick(e, n)}
+                  className={`block px-3 py-2 rounded-lg text-xs font-semibold text-center transition
+                    ${active === n.id ? "opacity-100 ring-1" : "opacity-70"}`}
+                  style={{ 
+                    background: active === n.id ? "var(--panel-alpha)" : "transparent",
+                    borderColor: active === n.id ? "var(--ring)" : "transparent"
+                  }}
+                >
+                  {n.label}
+                </a>
+              ))}
+            </div>
+            <div className="space-y-1.5 mb-3">
+              {navItems.slice(4).map((n) => (
+                <a
+                  key={n.id}
+                  href={n.href}
+                  onClick={(e) => onNavClick(e, n)}
+                  target={n.external ? "_blank" : undefined}
+                  rel={n.external ? "noopener noreferrer" : undefined}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition opacity-70 hover:opacity-100"
+                  style={{ background: "var(--panel-alpha)" }}
+                >
+                  <span>{n.label}</span>
+                  {n.badge && <span className="text-[9px] opacity-60">({n.badge})</span>}
+                </a>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t" style={{ borderColor: "var(--ring)" }}>
+              <LangMenu />
+              <ThemeMenu />
             </div>
           </div>
         )}

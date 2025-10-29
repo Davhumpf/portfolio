@@ -8,7 +8,7 @@ import Contacts from "@/components/sections/Contacts";
 
 export default function Home() {
   return (
-    <main id="top">
+    <main id="top" className="pt-16 lg:pt-24">
       <Header />
       <Hero />
 
