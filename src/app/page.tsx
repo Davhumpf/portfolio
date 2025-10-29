@@ -1,25 +1,33 @@
-"use client";
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import About from "@/components/sections/About";
-import Projects from "@/components/sections/Projects";
-import Skills from "@/components/sections/Skills";
-import Contacts from "@/components/sections/Contacts";
+import About from "@/app/components/sections/About";
+import Projects from "@/app/components/sections/Projects";
+import Skills from "@/app/components/sections/Skills";
+import Contacts from "@/app/components/sections/Contacts";
+
+// nuevas
+import Timeline from "@/app/components/sections/Timeline";
+import CaseStudies from "@/app/components/sections/CaseStudies";
+import OpenSource from "@/app/components/sections/OpenSource";
+import Blog from "@/app/components/sections/Blog";
+import Playground from "@/app/components/sections/Playground";
+import Talks from "@/app/components/sections/Talks";
+import Uses from "@/app/components/sections/Uses";
+import Now from "@/app/components/sections/Now";
 
 export default function Home() {
   return (
-    <main id="top" className="pt-16 lg:pt-24">
-      <Header />
-      <Hero />
-
+    <>
       <About />
       <Projects />
       <Skills />
+      <Timeline />
+      <CaseStudies />
+      <OpenSource />
+      <Blog />
+      <Playground />
+      <Talks />
+      <Uses />
+      <Now />
       <Contacts />
-
-      <footer className="mx-auto my-20 max-w-6xl px-4 text-sm muted">
-        © {new Date().getFullYear()} David — UI/Frontend
-      </footer>
-    </main>
+    </>
   );
 }

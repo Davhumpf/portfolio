@@ -1,9 +1,11 @@
 "use client";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
+/* ---------------- Types ---------------- */
 export type Lang = "es" | "en" | "de";
 
-type Messages = {
+/** Mensajes base del sitio */
+type BaseMessages = {
   brand: string;
   about: string;
   projects: string;
@@ -14,9 +16,9 @@ type Messages = {
   hero_im: string;
   hero_role: string;
   hero_name: string;
-  hero_tagline_1: string; // "Diseñando el futuro"
-  hero_tagline_2: string; // "del"
-  hero_tagline_3: string; // "software"
+  hero_tagline_1: string;
+  hero_tagline_2: string;
+  hero_tagline_3: string;
   // About
   about_title: string;
   about_sub: string;
@@ -40,6 +42,16 @@ type Messages = {
   form_name: string; form_email: string; form_msg: string; form_send: string;
 };
 
+/** Mensajes extra (nuevas secciones del header) */
+type ExtraMessages = {
+  experience: string;   // "Experiencia"
+  caseStudies: string;  // "Casos de estudio"
+  talks: string;        // "Charlas & Workshops"
+};
+
+type Messages = BaseMessages & ExtraMessages;
+
+/* ---------------- Diccionario ---------------- */
 const messages: Record<Lang, Messages> = {
   es: {
     brand: "<DreamInCode />",
@@ -47,6 +59,7 @@ const messages: Record<Lang, Messages> = {
     projects: "Proyectos",
     skills: "Habilidades",
     contacts: "Contactos",
+
     hero_hello: "¡Hola!",
     hero_im: "Yo soy",
     hero_role: "Software Developer",
@@ -81,6 +94,11 @@ const messages: Record<Lang, Messages> = {
     form_email: "Email",
     form_msg: "Mensaje",
     form_send: "Enviar",
+
+    // Extras del Header
+    experience: "Experiencia",
+    caseStudies: "Casos de estudio",
+    talks: "Charlas & Workshops",
   },
   en: {
     brand: "<DreamInCode />",
@@ -88,6 +106,7 @@ const messages: Record<Lang, Messages> = {
     projects: "Projects",
     skills: "Skills",
     contacts: "Contact",
+
     hero_hello: "Hello!",
     hero_im: "I am",
     hero_role: "Software Developer",
@@ -122,6 +141,11 @@ const messages: Record<Lang, Messages> = {
     form_email: "Email",
     form_msg: "Message",
     form_send: "Send",
+
+    // Extras del Header
+    experience: "Experience",
+    caseStudies: "Case studies",
+    talks: "Talks & Workshops",
   },
   de: {
     brand: "<DreamInCode />",
@@ -129,6 +153,7 @@ const messages: Record<Lang, Messages> = {
     projects: "Projekte",
     skills: "Fähigkeiten",
     contacts: "Kontakt",
+
     hero_hello: "Hallo!",
     hero_im: "Ich bin",
     hero_role: "Softwareentwickler",
@@ -163,9 +188,15 @@ const messages: Record<Lang, Messages> = {
     form_email: "E-Mail",
     form_msg: "Nachricht",
     form_send: "Senden",
+
+    // Extras del Header
+    experience: "Erfahrung",
+    caseStudies: "Fallstudien",
+    talks: "Vorträge & Workshops",
   },
 };
 
+/* ---------------- Context ---------------- */
 type LangContext = {
   lang: Lang;
   setLang: (l: Lang) => void;
@@ -181,13 +212,22 @@ const LanguageContext = createContext<LangContext>({
 export function useLang() { return useContext(LanguageContext); }
 export function useT() { return useLang().t as (key: keyof Messages) => string; }
 
+/* ---------------- Provider ---------------- */
 export default function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<Lang>("es");
 
+  // idioma inicial: localStorage -> navegador -> 'es'
   useEffect(() => {
-    const saved = typeof window !== "undefined" ? (localStorage.getItem("lang") as Lang | null) : null;
-    if (saved && ["es","en","de"].includes(saved)) setLang(saved);
+    if (typeof window === "undefined") return;
+    const saved = localStorage.getItem("lang") as Lang | null;
+    if (saved && ["es","en","de"].includes(saved)) { setLang(saved); return; }
+    const nav = navigator.language?.toLowerCase() || "";
+    if (nav.startsWith("es")) setLang("es");
+    else if (nav.startsWith("de")) setLang("de");
+    else setLang("en");
   }, []);
+
+  // persistir
   useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem("lang", lang);
   }, [lang]);
