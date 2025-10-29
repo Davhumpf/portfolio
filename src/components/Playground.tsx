@@ -1,6 +1,6 @@
 "use client";
 import Section from "./Section";
-import SkillsPlayground from "./SkillsPlayground"; // si usas /sections/SkillsPlayground/index.tsx
+import SkillsPlayground from "./sections/SkillsPlayground";
 
 export default function Playground() {
   return (
