@@ -28,10 +28,10 @@ export default function Dropdown({
     [items, value]
   );
 
-  // Cerrar con click fuera
+  // Cerrar con click/touch fuera
   useEffect(() => {
     if (!open) return;
-    const onDoc = (e: MouseEvent) => {
+    const onDoc = (e: MouseEvent | TouchEvent) => {
       if (
         !btnRef.current?.contains(e.target as Node) &&
         !listRef.current?.contains(e.target as Node)
@@ -40,7 +40,11 @@ export default function Dropdown({
       }
     };
     document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    document.addEventListener("touchstart", onDoc);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("touchstart", onDoc);
+    };
   }, [open]);
 
   // Nav teclado
