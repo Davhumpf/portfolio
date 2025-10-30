@@ -280,6 +280,30 @@ export default function Header() {
     setMobileMenuOpen(false);
   };
 
+  // More menu state
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement | null>(null);
+  const moreBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  // Close more menu when clicking outside
+  useEffect(() => {
+    if (!moreMenuOpen) return;
+    const onDoc = (e: MouseEvent | TouchEvent) => {
+      if (
+        !moreBtnRef.current?.contains(e.target as Node) &&
+        !moreMenuRef.current?.contains(e.target as Node)
+      ) {
+        setMoreMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("touchstart", onDoc);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("touchstart", onDoc);
+    };
+  }, [moreMenuOpen]);
+
   return (
     <header
       ref={root}
@@ -288,17 +312,17 @@ export default function Header() {
       <div className="glass rounded-2xl">
         {/* ============ DESKTOP LAYOUT ============ */}
         <div className="hidden lg:block">
-          {/* Fila 1: Brand + Main Nav + Controls */}
-          <div className="flex items-center justify-between gap-6 px-5 py-3.5">
+          {/* Single Row: Brand + Main Nav + More + Controls */}
+          <div className="flex items-center justify-between gap-4 px-5 py-3.5">
             {/* Brand con typewriter */}
             <a
               href="#top"
               title="Top"
-              className="nav-anim group flex items-center gap-2 rounded-xl px-4 py-2.5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+              className="nav-anim group flex items-center gap-2 rounded-xl px-4 py-2.5 transition-all duration-300 hover:scale-[1.02]"
               style={{
                 background: "var(--panel-alpha)",
                 border: "1px solid var(--ring)",
-                minWidth: "240px",
+                minWidth: "200px",
               }}
             >
               <div className="flex items-center gap-1 font-mono text-sm font-semibold">
@@ -357,86 +381,92 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Controls: More + Lang + Theme */}
             <div className="nav-anim flex items-center gap-2">
-              <LangMenu />
-              <ThemeMenu />
-            </div>
-          </div>
-
-          {/* Fila 2: Secondary Nav */}
-          <div
-            className="border-t px-5 py-3"
-            style={{ borderColor: "var(--ring)" }}
-          >
-            <div className="nav-anim flex flex-wrap items-center justify-center gap-2">
-              {secondaryNavItems.map((n) => (
-                <a
-                  key={n.id}
-                  href={n.href}
-                  onClick={(e) => onNavClick(e, n)}
-                  target={n.external ? "_blank" : undefined}
-                  rel={n.external ? "noopener noreferrer" : undefined}
-                  className="group inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200 hover:scale-105"
+              {/* More dropdown */}
+              <div className="relative">
+                <button
+                  ref={moreBtnRef}
+                  onClick={() => setMoreMenuOpen((v) => !v)}
+                  className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
                   style={{
                     background: "var(--panel-alpha)",
                     border: "1px solid var(--ring)",
-                    opacity: 0.75,
+                    color: "var(--text)",
                   }}
-                  onMouseEnter={(e) => {
-                    gsap.to(e.currentTarget, {
-                      opacity: 1,
-                      y: -2,
-                      duration: 0.2,
-                      ease: "power2.out",
-                    });
-                  }}
-                  onMouseLeave={(e) => {
-                    gsap.to(e.currentTarget, {
-                      opacity: 0.75,
-                      y: 0,
-                      duration: 0.2,
-                      ease: "power2.out",
-                    });
-                  }}
+                  aria-label="More options"
+                  aria-expanded={moreMenuOpen}
                 >
-                  <span>{n.label}</span>
-                  {n.badge && (
-                    <span
-                      className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
-                      style={{
-                        background: "var(--accent)",
-                        color: "var(--bg)",
-                        opacity: 0.9,
-                      }}
-                    >
-                      {n.badge}
-                    </span>
-                  )}
-                  {n.external && (
-                    <svg
-                      className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                  )}
-                </a>
-              ))}
+                  <span>More</span>
+                  <svg
+                    className={`h-4 w-4 transition-transform ${moreMenuOpen ? "rotate-180" : ""}`}
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M5.25 7.5L10 12.25L14.75 7.5" strokeWidth="1.7" strokeLinecap="round" />
+                  </svg>
+                </button>
+
+                {/* More dropdown menu */}
+                {moreMenuOpen && (
+                  <div
+                    ref={moreMenuRef}
+                    className="absolute right-0 mt-2 w-56 rounded-2xl shadow-2xl overflow-hidden"
+                    style={{
+                      background: "var(--panel)",
+                      border: "1px solid var(--ring)",
+                    }}
+                  >
+                    <div className="max-h-96 overflow-y-auto py-2">
+                      {secondaryNavItems.map((n) => (
+                        <a
+                          key={n.id}
+                          href={n.href}
+                          onClick={(e) => {
+                            onNavClick(e, n);
+                            setMoreMenuOpen(false);
+                          }}
+                          target={n.external ? "_blank" : undefined}
+                          rel={n.external ? "noopener noreferrer" : undefined}
+                          className="flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-all hover:bg-[var(--panel-alpha)]"
+                          style={{ color: "var(--text)" }}
+                        >
+                          <span>{n.label}</span>
+                          <div className="flex items-center gap-1.5">
+                            {n.badge && (
+                              <span
+                                className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
+                                style={{
+                                  background: "var(--accent)",
+                                  color: "var(--bg)",
+                                }}
+                              >
+                                {n.badge}
+                              </span>
+                            )}
+                            {n.external && (
+                              <svg className="w-3 h-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            )}
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <LangMenu />
+              <ThemeMenu />
             </div>
           </div>
         </div>
 
         {/* ============ MOBILE LAYOUT ============ */}
         <div className="lg:hidden px-4 py-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-3">
             {/* Brand móvil con typewriter */}
             <a
               href="#top"
@@ -463,7 +493,13 @@ export default function Header() {
               </span>
             </a>
 
-            {/* Burger mejorado */}
+            {/* Controls compactos */}
+            <div className="nav-anim flex items-center gap-2">
+              <LangMenu />
+              <ThemeMenu />
+            </div>
+
+            {/* Burger button */}
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
               aria-expanded={mobileMenuOpen}
@@ -501,14 +537,14 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Menú móvil */}
+          {/* Menú móvil desplegable */}
           {mobileMenuOpen && (
             <div
               ref={mobileMenuRef}
               className="mt-3 pt-3 space-y-3 border-t overflow-hidden"
               style={{ borderColor: "var(--ring)" }}
             >
-              {/* Main nav - Grid 2x2 */}
+              {/* Main navigation - Grid 2x2 */}
               <div className="grid grid-cols-2 gap-2">
                 {mainNavItems.map((n) => (
                   <a
@@ -529,8 +565,8 @@ export default function Header() {
                 ))}
               </div>
 
-              {/* Secondary nav - Stack vertical */}
-              <div className="space-y-1.5">
+              {/* Secondary navigation - Lista vertical compacta */}
+              <div className="space-y-1">
                 {secondaryNavItems.map((n) => (
                   <a
                     key={n.id}
@@ -538,8 +574,8 @@ export default function Header() {
                     onClick={(e) => onNavClick(e, n)}
                     target={n.external ? "_blank" : undefined}
                     rel={n.external ? "noopener noreferrer" : undefined}
-                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all opacity-70 active:opacity-100"
-                    style={{ background: "var(--panel-alpha)" }}
+                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all opacity-70 active:opacity-100 hover:bg-[var(--panel-alpha)]"
+                    style={{ color: "var(--text)" }}
                   >
                     <span>{n.label}</span>
                     <div className="flex items-center gap-1.5">
@@ -569,15 +605,6 @@ export default function Header() {
                     </div>
                   </a>
                 ))}
-              </div>
-
-              {/* Controls - Grid 2 columnas */}
-              <div
-                className="grid grid-cols-2 gap-2 pt-2 border-t"
-                style={{ borderColor: "var(--ring)" }}
-              >
-                <LangMenu />
-                <ThemeMenu />
               </div>
             </div>
           )}
