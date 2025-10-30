@@ -232,14 +232,9 @@ export default function Header() {
     const parent = navWrapRef.current;
     if (!ind || !el || !parent) return;
 
-    // Get the padding of the parent container
-    const parentStyle = window.getComputedStyle(parent);
-    const paddingLeft = parseInt(parentStyle.paddingLeft) || 0;
-    const paddingTop = parseInt(parentStyle.paddingTop) || 0;
-
     gsap.to(ind, {
-      x: el.offsetLeft - paddingLeft,
-      y: el.offsetTop - paddingTop,
+      x: el.offsetLeft,
+      y: el.offsetTop,
       width: el.offsetWidth,
       height: el.offsetHeight,
       duration: 0.3,
