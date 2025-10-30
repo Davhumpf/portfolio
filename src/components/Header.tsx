@@ -68,12 +68,14 @@ export default function Header() {
     gsap.registerPlugin(ScrollTrigger);
     if (!root.current) return;
     const ctx = gsap.context(() => {
+      // Use transform3d for GPU acceleration and avoid conflicts with header positioning
       gsap.from(".nav-anim", {
-        y: -20,
         opacity: 0,
+        scale: 0.95,
         duration: 0.8,
         ease: "power3.out",
         stagger: 0.08,
+        force3D: true,
       });
       const glass = root.current!.querySelector(".glass");
       if (glass) {
@@ -227,13 +229,22 @@ export default function Header() {
   function moveIndicator() {
     const ind = indicatorRef.current;
     const el = itemRefs.current[active];
-    if (!ind || !el) return;
+    const parent = navWrapRef.current;
+    if (!ind || !el || !parent) return;
+
+    // Get the padding of the parent container
+    const parentStyle = window.getComputedStyle(parent);
+    const paddingLeft = parseInt(parentStyle.paddingLeft) || 0;
+    const paddingTop = parseInt(parentStyle.paddingTop) || 0;
+
     gsap.to(ind, {
-      x: el.offsetLeft,
+      x: el.offsetLeft - paddingLeft,
+      y: el.offsetTop - paddingTop,
       width: el.offsetWidth,
       height: el.offsetHeight,
       duration: 0.3,
       ease: "power2.out",
+      force3D: true,
     });
   }
 
@@ -308,8 +319,9 @@ export default function Header() {
     <header
       ref={root}
       className="fixed top-3 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-3 sm:px-6"
+      style={{ willChange: "transform" }}
     >
-      <div className="glass rounded-2xl">
+      <div className="glass rounded-2xl" style={{ willChange: "backdrop-filter, box-shadow" }}>
         {/* ============ DESKTOP LAYOUT ============ */}
         <div className="hidden lg:block">
           {/* Single Row: Brand + Main Nav + More + Controls */}
@@ -322,20 +334,22 @@ export default function Header() {
               style={{
                 background: "var(--panel-alpha)",
                 border: "1px solid var(--ring)",
-                minWidth: "200px",
+                minWidth: "240px",
+                width: "240px",
+                willChange: "transform",
               }}
             >
-              <div className="flex items-center gap-1 font-mono text-sm font-semibold">
+              <div className="flex items-center gap-1 font-mono text-sm font-semibold overflow-hidden w-full">
                 <span
                   ref={brandRef}
-                  className="tabular-nums"
+                  className="tabular-nums flex-shrink-0"
                   style={{ color: "var(--text)" }}
                 >
                   {"<Clean UI/>"}
                 </span>
                 <span
                   ref={caretRef}
-                  className="inline-block opacity-70"
+                  className="inline-block opacity-70 flex-shrink-0"
                   style={{ color: "var(--accent)" }}
                   aria-hidden
                 >
@@ -356,8 +370,15 @@ export default function Header() {
               >
                 <div
                   ref={indicatorRef}
-                  className="absolute left-0 top-0 z-0 rounded-lg transition-all"
-                  style={{ background: "var(--accent)", opacity: 0.15 }}
+                  className="absolute z-0 rounded-lg"
+                  style={{
+                    background: "var(--accent)",
+                    opacity: 0.15,
+                    left: 0,
+                    top: 0,
+                    willChange: "transform, width, height",
+                    transform: "translate3d(0, 0, 0)",
+                  }}
                 />
                 {mainNavItems.map((n) => (
                   <a
@@ -474,23 +495,26 @@ export default function Header() {
               style={{
                 background: "var(--panel-alpha)",
                 border: "1px solid var(--ring)",
+                willChange: "transform",
               }}
             >
-              <span
-                ref={brandMobileRef}
-                className="font-mono text-xs font-semibold tabular-nums truncate"
-                style={{ color: "var(--text)" }}
-              >
-                {"<Clean UI/>"}
-              </span>
-              <span
-                ref={caretMobileRef}
-                className="inline-block opacity-70 flex-shrink-0"
-                style={{ color: "var(--accent)" }}
-                aria-hidden
-              >
-                |
-              </span>
+              <div className="flex items-center gap-1 overflow-hidden w-full">
+                <span
+                  ref={brandMobileRef}
+                  className="font-mono text-xs font-semibold tabular-nums flex-shrink-0"
+                  style={{ color: "var(--text)" }}
+                >
+                  {"<Clean UI/>"}
+                </span>
+                <span
+                  ref={caretMobileRef}
+                  className="inline-block opacity-70 flex-shrink-0"
+                  style={{ color: "var(--accent)" }}
+                  aria-hidden
+                >
+                  |
+                </span>
+              </div>
             </a>
 
             {/* Controls compactos */}
