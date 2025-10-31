@@ -30,7 +30,6 @@ export default function Sidebar() {
     () => [
       { id: "about", label: t("about"), href: "#about" },
       { id: "projects", label: t("projects"), href: "#projects" },
-      { id: "skills", label: t("skills"), href: "#skills" },
       { id: "timeline", label: t("experience") ?? "Experiencia", href: "#timeline", badge: "★" },
       { id: "cases", label: t("caseStudies") ?? "Casos", href: "#cases" },
       { id: "opensource", label: "Open Source", href: "#opensource" },
@@ -162,7 +161,7 @@ export default function Sidebar() {
         stagger: 0.08,
       });
 
-      const glass = sidebarRef.current!.querySelector(".glass");
+      const glass = sidebarRef.current!.querySelector(".glass-sidebar");
       if (glass) {
         gsap.to(glass, {
           backdropFilter: "blur(24px)",
@@ -232,8 +231,9 @@ export default function Sidebar() {
     <aside
       ref={sidebarRef}
       className="hidden lg:flex fixed left-3 top-3 bottom-3 z-[998] w-64"
+      style={{ willChange: "auto" }}
     >
-      <div className="glass h-full w-full flex flex-col overflow-hidden">
+      <div className="glass-sidebar h-full w-full flex flex-col overflow-hidden" style={{ willChange: "backdrop-filter, box-shadow" }}>
         {/* Brand with typewriter */}
         <a
           href="#top"

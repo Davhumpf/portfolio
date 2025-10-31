@@ -2,7 +2,6 @@
 import Hero from "@/components/Hero";
 import About from "@/components/sections/About";
 import Projects from "@/components/sections/Projects";
-import Skills from "@/components/sections/Skills";
 import Contacts from "@/components/sections/Contacts";
 
 // nuevas en src/components/
@@ -22,7 +21,6 @@ export default function Home() {
 
       <About />
       <Projects />
-      <Skills />
 
       <Timeline />
       <CaseStudies />
