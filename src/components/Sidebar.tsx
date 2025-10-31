@@ -1,0 +1,210 @@
+'use client';
+
+import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Home, User, FolderOpen, Mail, ChevronRight, ChevronLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import gsap from 'gsap';
+import LangMenu from './LangMenu';
+import ThemeMenu from './ThemeMenu';
+
+const Sidebar = () => {
+  const [collapsed, setCollapsed] = useState(true);
+  const [isHovering, setIsHovering] = useState(false);
+  const [lang, setLang] = useState<'en' | 'es'>('es');
+  const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const navItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  const sidebarContent = {
+    en: {
+      home: 'Home',
+      about: 'About',
+      projects: 'Projects',
+      contact: 'Contact',
+      brand: 'console.log('
+    },
+    es: {
+      home: 'Inicio',
+      about: 'Sobre mí',
+      projects: 'Proyectos',
+      contact: 'Contacto',
+      brand: 'console.log('
+    }
+  };
+
+  const content = sidebarContent[lang];
+
+  // Auto-expand on hover with smooth transition
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+    setCollapsed(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    // Auto-collapse after a delay if not manually toggled
+    setTimeout(() => {
+      if (!isHovering) {
+        setCollapsed(true);
+      }
+    }, 300);
+  };
+
+  const navItems = [
+    { href: '/', icon: <Home size={20} />, text: content.home },
+    { href: '/about', icon: <User size={20} />, text: content.about },
+    { href: '/projects', icon: <FolderOpen size={20} />, text: content.projects },
+    { href: '/contact', icon: <Mail size={20} />, text: content.contact }
+  ];
+
+  // GSAP animations - isolated to nav items only
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Only animate nav items, not the entire sidebar
+      gsap.fromTo(
+        navItemsRef.current.filter(Boolean),
+        {
+          opacity: 0,
+          x: -30,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power3.out',
+          clearProps: 'all', // Clear all inline styles after animation
+        }
+      );
+    }, sidebarRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <>
+      {/* Main Sidebar Container - Fixed positioning without GSAP interference */}
+      <aside
+        ref={sidebarRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="fixed left-0 top-0 bottom-0 flex flex-col justify-between p-6 backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
+        style={{
+          width: collapsed ? '4rem' : '16rem',
+          zIndex: 10000,
+          borderRadius: '0 48px 48px 0',
+          isolation: 'isolate', // Create new stacking context
+        }}
+      >
+        {/* Brand Section */}
+        <AnimatePresence mode="wait">
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="mb-12"
+            >
+              <div className="w-full p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+                <span className="text-[14px] font-mono text-gray-300">
+                  {content.brand}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Navigation - Icons always visible */}
+        <nav className="flex-1 space-y-2">
+          {navItems.map((item, index) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                ref={(el) => {
+                  navItemsRef.current[index] = el;
+                }}
+                className={`
+                  flex items-center gap-3 px-3 py-3 rounded-xl
+                  transition-all duration-300 ease-out
+                  ${isActive 
+                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/20' 
+                    : 'hover:bg-white/5 border border-transparent'
+                  }
+                `}
+              >
+                <span className={`
+                  transition-all duration-200
+                  ${isActive ? 'text-blue-400' : 'text-gray-400'}
+                `}>
+                  {item.icon}
+                </span>
+                
+                <AnimatePresence mode="wait">
+                  {!collapsed && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className={`
+                        text-sm font-medium overflow-hidden whitespace-nowrap
+                        ${isActive ? 'text-white' : 'text-gray-300'}
+                      `}
+                    >
+                      {item.text}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Controls Section - Hidden when collapsed */}
+        <AnimatePresence mode="wait">
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="space-y-3"
+              style={{
+                position: 'relative',
+                zIndex: 10002, // Higher than sidebar
+              }}
+            >
+              <LangMenu />
+              <ThemeMenu />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </aside>
+
+      {/* Toggle Button - Separate from sidebar to avoid animation issues */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="fixed top-1/2 -translate-y-1/2 p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-r-lg hover:bg-white/20 transition-all duration-300"
+        style={{
+          left: collapsed ? '3.5rem' : '15.5rem',
+          zIndex: 10001,
+          transition: 'left 0.5s ease-in-out',
+        }}
+        aria-label="Toggle sidebar"
+      >
+        {collapsed ? (
+          <ChevronRight size={16} className="text-gray-300" />
+        ) : (
+          <ChevronLeft size={16} className="text-gray-300" />
+        )}
+      </button>
+    </>
+  );
+};
+
+export default Sidebar;
