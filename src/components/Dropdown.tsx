@@ -84,7 +84,12 @@ export default function Dropdown({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={ariaLabel}
-        className="btn btn-ghost h-10 select-none gap-2"
+        className="btn h-10 select-none gap-2 ring-1"
+        style={{
+          background: "var(--panel)",
+          borderColor: "var(--ring)",
+          pointerEvents: "auto",
+        }}
         onClick={() => setOpen((v) => !v)}
       >
         <span className="truncate">{current.label}</span>
@@ -101,8 +106,8 @@ export default function Dropdown({
           ref={listRef}
           role="listbox"
           tabIndex={-1}
-          className="absolute right-0 z-50 mt-2 min-w-40 overflow-hidden rounded-2xl bg-[var(--panel)] shadow-xl ring-1"
-          style={{ borderColor: "var(--ring)" }}
+          className="absolute right-0 z-[999] mt-2 min-w-40 overflow-hidden rounded-2xl bg-[var(--panel)] shadow-xl ring-1"
+          style={{ borderColor: "var(--ring)", pointerEvents: "auto" }}
         >
           {items.map((it, i) => {
             const active = i === activeIdx;

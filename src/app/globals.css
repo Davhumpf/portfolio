@@ -64,7 +64,15 @@
 
   .glass {
     background: color-mix(in oklab, var(--panel) 70%, transparent);
-    @apply backdrop-blur-xl ring-1 rounded-[30px];
+    @apply backdrop-blur-xl ring-1;
+    border-radius: 40px;
+    --tw-ring-color: var(--ring);
+  }
+
+  .glass-sidebar {
+    background: color-mix(in oklab, var(--panel) 85%, transparent);
+    @apply backdrop-blur-xl ring-1;
+    border-radius: 48px;
     --tw-ring-color: var(--ring);
   }
 

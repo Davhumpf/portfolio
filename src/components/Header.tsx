@@ -31,7 +31,6 @@ export default function Header() {
     () => [
       { id: "about", label: t("about"), href: "#about" },
       { id: "projects", label: t("projects"), href: "#projects" },
-      { id: "skills", label: t("skills"), href: "#skills" },
       { id: "contacts", label: t("contacts"), href: "#contacts" },
     ],
     [t]
