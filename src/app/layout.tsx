@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <BrandPopout />
 
             {/* Main content - margin for mobile header top, padding for desktop sidebar left */}
-            <main id="top" className="pt-24 lg:pt-0 lg:pl-64">
+            <main id="top" className="pt-24 lg:pt-0 lg:pl-72">
               {children}
             </main>
           </ThemeProvider>
