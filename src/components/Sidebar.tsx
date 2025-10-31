@@ -18,12 +18,15 @@ export default function Sidebar() {
   const t = useT();
   const { lang } = useLang();
   const [active, setActive] = useState<NavItem["id"]>("about");
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const indicatorRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const brandRef = useRef<HTMLSpanElement | null>(null);
   const caretRef = useRef<HTMLSpanElement | null>(null);
+
+  const isExpanded = !collapsed || isHovered;
 
   /* ---------------- Navigation Items ---------------- */
   const navItems: NavItem[] = useMemo(
@@ -153,12 +156,25 @@ export default function Sidebar() {
     gsap.registerPlugin(ScrollTrigger);
     if (!sidebarRef.current) return;
     const ctx = gsap.context(() => {
+      // Wrap animation in a container to prevent z-index interference
+      const animationWrapper = document.createElement("div");
+      animationWrapper.style.position = "relative";
+      animationWrapper.style.zIndex = "1";
+
       gsap.from(".sidebar-nav-item", {
         opacity: 0,
         x: -20,
         duration: 0.8,
         ease: "power3.out",
         stagger: 0.08,
+        // Don't apply will-change during animation to prevent stacking context issues
+        onComplete: function() {
+          // @ts-ignore
+          if (this.targets()[0]) {
+            // @ts-ignore
+            this.targets()[0].style.willChange = "auto";
+          }
+        }
       });
 
       const glass = sidebarRef.current!.querySelector(".glass-sidebar");
@@ -230,41 +246,65 @@ export default function Sidebar() {
   return (
     <aside
       ref={sidebarRef}
-      className="hidden lg:flex fixed left-3 top-3 bottom-3 z-[998] w-64"
-      style={{ willChange: "auto" }}
+      className="hidden lg:flex fixed left-0 top-0 bottom-0 z-[10000] transition-all duration-300 ease-in-out"
+      style={{
+        width: isExpanded ? "16rem" : "4rem",
+        willChange: "width"
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="glass-sidebar h-full w-full flex flex-col overflow-hidden" style={{ willChange: "backdrop-filter, box-shadow" }}>
+      <div
+        className="glass-sidebar h-full w-full flex flex-col overflow-hidden relative ml-3 mt-3 mb-3"
+        style={{
+          willChange: "backdrop-filter, box-shadow",
+          borderTopLeftRadius: "48px",
+          borderBottomLeftRadius: "48px",
+          borderTopRightRadius: isExpanded ? "48px" : "0px",
+          borderBottomRightRadius: isExpanded ? "48px" : "0px"
+        }}
+      >
         {/* Brand with typewriter */}
-        <a
-          href="#top"
-          title="Top"
-          className="sidebar-nav-item group flex items-center gap-2 m-3 rounded-xl px-4 py-3 transition-all duration-300 hover:scale-[1.02]"
-          style={{
-            background: "var(--panel-alpha)",
-            border: "1px solid var(--ring)",
-          }}
-        >
-          <div className="flex items-center gap-1 font-mono text-xs font-semibold w-full">
-            <span
-              ref={brandRef}
-              className="tabular-nums truncate flex-1"
-              style={{ color: "var(--text)" }}
-            >
-              {"<Clean UI/>"}
-            </span>
-            <span
-              ref={caretRef}
-              className="inline-block opacity-70 flex-shrink-0"
-              style={{ color: "var(--accent)" }}
-              aria-hidden
-            >
-              |
-            </span>
-          </div>
-        </a>
+        <div className="relative">
+          <a
+            href="#top"
+            title="Top"
+            className="sidebar-nav-item group flex items-center gap-2 m-3 rounded-xl px-4 py-3 transition-all duration-300 hover:scale-[1.02]"
+            style={{
+              background: "var(--panel-alpha)",
+              border: "1px solid var(--ring)",
+              opacity: isExpanded ? 1 : 0,
+              pointerEvents: isExpanded ? "auto" : "none"
+            }}
+          >
+            <div className="flex items-center gap-1 font-mono text-xs font-semibold w-full">
+              <span
+                ref={brandRef}
+                className="tabular-nums truncate flex-1"
+                style={{ color: "var(--text)" }}
+              >
+                {"<Clean UI/>"}
+              </span>
+              <span
+                ref={caretRef}
+                className="inline-block opacity-70 flex-shrink-0"
+                style={{ color: "var(--accent)" }}
+                aria-hidden
+              >
+                |
+              </span>
+            </div>
+          </a>
+        </div>
 
         {/* Controls */}
-        <div className="sidebar-nav-item flex items-center gap-2 mx-3 mb-3">
+        <div
+          className="sidebar-nav-item flex items-center gap-2 mx-3 mb-3 transition-opacity duration-300"
+          style={{
+            opacity: isExpanded ? 1 : 0,
+            pointerEvents: isExpanded ? "auto" : "none"
+          }}
+        >
           <LangMenu />
           <ThemeMenu />
         </div>
@@ -311,9 +351,23 @@ export default function Sidebar() {
                   {n.label.charAt(0).toUpperCase()}
                 </div>
 
-                <span className="flex-1 truncate">{n.label}</span>
+                <span
+                  className="flex-1 truncate transition-opacity duration-300"
+                  style={{
+                    opacity: isExpanded ? 1 : 0,
+                    width: isExpanded ? "auto" : 0,
+                    overflow: "hidden"
+                  }}
+                >
+                  {n.label}
+                </span>
 
-                <div className="flex items-center gap-1.5">
+                <div
+                  className="flex items-center gap-1.5 transition-opacity duration-300"
+                  style={{
+                    opacity: isExpanded ? 1 : 0
+                  }}
+                >
                   {n.badge && (
                     <span
                       className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
@@ -340,6 +394,32 @@ export default function Sidebar() {
             ))}
           </div>
         </nav>
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-12 flex items-center justify-center cursor-pointer transition-all duration-300 hover:bg-opacity-80"
+          style={{
+            background: "rgba(255, 255, 255, 0.1)",
+            borderRadius: "0 6px 6px 0",
+            color: "var(--text)",
+            zIndex: 10001
+          }}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <svg
+            className="w-3 h-3 transition-transform duration-300"
+            style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
       </div>
     </aside>
   );

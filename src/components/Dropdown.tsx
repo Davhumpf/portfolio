@@ -106,8 +106,14 @@ export default function Dropdown({
           ref={listRef}
           role="listbox"
           tabIndex={-1}
-          className="absolute right-0 z-[999] mt-2 min-w-40 overflow-hidden rounded-2xl bg-[var(--panel)] shadow-xl ring-1"
-          style={{ borderColor: "var(--ring)", pointerEvents: "auto" }}
+          className="absolute right-0 z-[9999] mt-2 min-w-40 overflow-hidden rounded-2xl shadow-xl ring-1"
+          style={{
+            borderColor: "var(--ring)",
+            pointerEvents: "auto",
+            background: "color-mix(in oklab, var(--panel) 95%, transparent)",
+            backdropFilter: "blur(16px)",
+            boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.3)"
+          }}
         >
           {items.map((it, i) => {
             const active = i === activeIdx;
