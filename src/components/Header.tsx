@@ -19,11 +19,6 @@ export default function Header() {
   const { lang } = useLang();
 
   const root = useRef<HTMLDivElement | null>(null);
-  const navWrapRef = useRef<HTMLDivElement | null>(null);
-  const indicatorRef = useRef<HTMLDivElement | null>(null);
-  const itemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const brandRef = useRef<HTMLSpanElement | null>(null);
-  const caretRef = useRef<HTMLSpanElement | null>(null);
   const brandMobileRef = useRef<HTMLSpanElement | null>(null);
   const caretMobileRef = useRef<HTMLSpanElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
@@ -59,23 +54,17 @@ export default function Header() {
 
   const allNavItems = [...mainNavItems, ...secondaryNavItems];
 
-  const setItemRef = (id: NavItem["id"]) => (el: HTMLAnchorElement | null) => {
-    itemRefs.current[id] = el;
-  };
-
-  /* ---------------- Entrada + glass ---------------- */
+  /* ---------------- Entrada + glass (mobile only) ---------------- */
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     if (!root.current) return;
     const ctx = gsap.context(() => {
-      // Use transform3d for GPU acceleration and avoid conflicts with header positioning
       gsap.from(".nav-anim", {
         opacity: 0,
         scale: 0.95,
         duration: 0.8,
         ease: "power3.out",
         stagger: 0.08,
-        force3D: true,
       });
       const glass = root.current!.querySelector(".glass");
       if (glass) {
@@ -124,24 +113,13 @@ export default function Header() {
 
   useEffect(() => {
     const setText = (s: string) => {
-      if (brandRef.current) brandRef.current.textContent = s;
       if (brandMobileRef.current) brandMobileRef.current.textContent = s;
     };
 
     const phrases = phrasesByLang[lang] ?? phrasesByLang.es;
     setText(phrases[0]);
 
-    const caret = caretRef.current;
     const caretMobile = caretMobileRef.current;
-    const blink = caret
-      ? gsap.to(caret, {
-          opacity: 0.2,
-          duration: 0.6,
-          yoyo: true,
-          repeat: -1,
-          ease: "power1.inOut",
-        })
-      : undefined;
     const blinkMobile = caretMobile
       ? gsap.to(caretMobile, {
           opacity: 0.2,
@@ -201,12 +179,11 @@ export default function Header() {
 
     return () => {
       tl?.kill();
-      blink?.kill();
       blinkMobile?.kill();
     };
   }, [lang]);
 
-  /* ---------------- Active nav highlight ---------------- */
+  /* ---------------- Active section tracking ---------------- */
   useEffect(() => {
     const sections = allNavItems
       .filter((n) => n.href.startsWith("#"))
@@ -225,30 +202,6 @@ export default function Header() {
     sections.forEach((s) => obs.observe(s));
     return () => obs.disconnect();
   }, [allNavItems]);
-
-  function moveIndicator() {
-    const ind = indicatorRef.current;
-    const el = itemRefs.current[active];
-    const parent = navWrapRef.current;
-    if (!ind || !el || !parent) return;
-
-    gsap.to(ind, {
-      x: el.offsetLeft,
-      y: el.offsetTop,
-      width: el.offsetWidth,
-      height: el.offsetHeight,
-      duration: 0.3,
-      ease: "power2.out",
-      force3D: true,
-    });
-  }
-
-  useEffect(() => {
-    moveIndicator();
-    const on = () => moveIndicator();
-    window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
-  }, [active, allNavItems]);
 
   /* ---------------- Autoclose burger ---------------- */
   useEffect(() => {
@@ -286,202 +239,13 @@ export default function Header() {
     setMobileMenuOpen(false);
   };
 
-  // More menu state
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-  const moreMenuRef = useRef<HTMLDivElement | null>(null);
-  const moreBtnRef = useRef<HTMLButtonElement | null>(null);
-
-  // Close more menu when clicking outside
-  useEffect(() => {
-    if (!moreMenuOpen) return;
-    const onDoc = (e: MouseEvent | TouchEvent) => {
-      if (
-        !moreBtnRef.current?.contains(e.target as Node) &&
-        !moreMenuRef.current?.contains(e.target as Node)
-      ) {
-        setMoreMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onDoc);
-    document.addEventListener("touchstart", onDoc);
-    return () => {
-      document.removeEventListener("mousedown", onDoc);
-      document.removeEventListener("touchstart", onDoc);
-    };
-  }, [moreMenuOpen]);
-
   return (
     <header
       ref={root}
-      className="fixed top-3 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-3 sm:px-6"
+      className="lg:hidden fixed top-3 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-3 sm:px-6"
       style={{ willChange: "transform" }}
     >
-      <div className="glass rounded-2xl" style={{ willChange: "backdrop-filter, box-shadow" }}>
-        {/* ============ DESKTOP LAYOUT ============ */}
-        <div className="hidden lg:block">
-          {/* Single Row: Brand + Main Nav + More + Controls */}
-          <div className="flex items-center justify-between gap-4 px-5 py-3.5">
-            {/* Brand con typewriter */}
-            <a
-              href="#top"
-              title="Top"
-              className="nav-anim group flex items-center gap-2 rounded-xl px-4 py-2.5 transition-all duration-300 hover:scale-[1.02]"
-              style={{
-                background: "var(--panel-alpha)",
-                border: "1px solid var(--ring)",
-                minWidth: "240px",
-                width: "240px",
-                willChange: "transform",
-              }}
-            >
-              <div className="flex items-center gap-1 font-mono text-sm font-semibold overflow-hidden w-full">
-                <span
-                  ref={brandRef}
-                  className="tabular-nums flex-shrink-0"
-                  style={{ color: "var(--text)" }}
-                >
-                  {"<Clean UI/>"}
-                </span>
-                <span
-                  ref={caretRef}
-                  className="inline-block opacity-70 flex-shrink-0"
-                  style={{ color: "var(--accent)" }}
-                  aria-hidden
-                >
-                  |
-                </span>
-              </div>
-            </a>
-
-            {/* Main Navigation con indicador */}
-            <div className="nav-anim flex-1 flex justify-center">
-              <div
-                ref={navWrapRef}
-                className="relative inline-flex items-center gap-1 rounded-xl px-2 py-2"
-                style={{
-                  background: "var(--panel-alpha)",
-                  border: "1px solid var(--ring)",
-                }}
-              >
-                <div
-                  ref={indicatorRef}
-                  className="absolute z-0 rounded-lg"
-                  style={{
-                    background: "var(--accent)",
-                    opacity: 0.15,
-                    left: 0,
-                    top: 0,
-                    willChange: "transform, width, height",
-                    transform: "translate3d(0, 0, 0)",
-                  }}
-                />
-                {mainNavItems.map((n) => (
-                  <a
-                    key={n.id}
-                    ref={setItemRef(n.id)}
-                    href={n.href}
-                    onClick={(e) => onNavClick(e, n)}
-                    className={`relative z-10 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200
-                      ${
-                        active === n.id
-                          ? "opacity-100"
-                          : "opacity-60 hover:opacity-90"
-                      }`}
-                    style={{
-                      color: active === n.id ? "var(--accent)" : "var(--text)",
-                    }}
-                  >
-                    {n.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Controls: More + Lang + Theme */}
-            <div className="nav-anim flex items-center gap-2">
-              {/* More dropdown */}
-              <div className="relative">
-                <button
-                  ref={moreBtnRef}
-                  onClick={() => setMoreMenuOpen((v) => !v)}
-                  className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.02]"
-                  style={{
-                    background: "var(--panel-alpha)",
-                    border: "1px solid var(--ring)",
-                    color: "var(--text)",
-                  }}
-                  aria-label="More options"
-                  aria-expanded={moreMenuOpen}
-                >
-                  <span>More</span>
-                  <svg
-                    className={`h-4 w-4 transition-transform ${moreMenuOpen ? "rotate-180" : ""}`}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M5.25 7.5L10 12.25L14.75 7.5" strokeWidth="1.7" strokeLinecap="round" />
-                  </svg>
-                </button>
-
-                {/* More dropdown menu */}
-                {moreMenuOpen && (
-                  <div
-                    ref={moreMenuRef}
-                    className="absolute right-0 mt-2 w-56 rounded-2xl shadow-2xl overflow-hidden"
-                    style={{
-                      background: "var(--panel)",
-                      border: "1px solid var(--ring)",
-                    }}
-                  >
-                    <div className="max-h-96 overflow-y-auto py-2">
-                      {secondaryNavItems.map((n) => (
-                        <a
-                          key={n.id}
-                          href={n.href}
-                          onClick={(e) => {
-                            onNavClick(e, n);
-                            setMoreMenuOpen(false);
-                          }}
-                          target={n.external ? "_blank" : undefined}
-                          rel={n.external ? "noopener noreferrer" : undefined}
-                          className="flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-all hover:bg-[var(--panel-alpha)]"
-                          style={{ color: "var(--text)" }}
-                        >
-                          <span>{n.label}</span>
-                          <div className="flex items-center gap-1.5">
-                            {n.badge && (
-                              <span
-                                className="rounded-full px-1.5 py-0.5 text-[9px] font-bold"
-                                style={{
-                                  background: "var(--accent)",
-                                  color: "var(--bg)",
-                                }}
-                              >
-                                {n.badge}
-                              </span>
-                            )}
-                            {n.external && (
-                              <svg className="w-3 h-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                            )}
-                          </div>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <LangMenu />
-              <ThemeMenu />
-            </div>
-          </div>
-        </div>
-
-        {/* ============ MOBILE LAYOUT ============ */}
-        <div className="lg:hidden px-4 py-3">
+      <div className="glass rounded-2xl px-4 py-3" style={{ willChange: "backdrop-filter, box-shadow" }}>
           <div className="flex items-center justify-between gap-3">
             {/* Brand móvil con typewriter */}
             <a
@@ -627,7 +391,6 @@ export default function Header() {
               </div>
             </div>
           )}
-        </div>
       </div>
     </header>
   );
