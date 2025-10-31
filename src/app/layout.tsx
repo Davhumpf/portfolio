@@ -2,6 +2,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
+import BrandPopout from "@/components/BrandPopout";
 import ThemeProvider from "@/components/ThemeProvider";
 import LanguageProvider from "@/context/LanguageProvider";
 
@@ -28,12 +30,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Providers + Header global */}
+        {/* Providers + Navigation */}
         <LanguageProvider>
           <ThemeProvider>
+            {/* Header for mobile only */}
             <Header />
-            {/* margen superior para que el header (fixed) no tape el contenido */}
-            <main id="top" className="pt-24">
+
+            {/* Sidebar for desktop only */}
+            <Sidebar />
+
+            {/* Brand popout with typewriter animations */}
+            <BrandPopout />
+
+            {/* Main content - margin for mobile header top, padding for desktop sidebar left */}
+            <main id="top" className="pt-24 lg:pt-0 lg:pl-64">
               {children}
             </main>
           </ThemeProvider>
