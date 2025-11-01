@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, User, FolderOpen, Mail } from 'lucide-react';
+import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Gamepad2, Mic, Wrench, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import LangMenu from './LangMenu';
@@ -16,16 +16,30 @@ const Sidebar = () => {
 
   const sidebarContent = {
     en: {
-      home: 'Home',
       about: 'About',
       projects: 'Projects',
+      timeline: 'Timeline',
+      cases: 'Case Studies',
+      opensource: 'Open Source',
+      blog: 'Blog',
+      playground: 'Playground',
+      talks: 'Talks',
+      uses: 'Uses',
+      now: 'Now',
       contact: 'Contact',
       footer: 'Created with ❤️ by Davhumpf'
     },
     es: {
-      home: 'Inicio',
       about: 'Sobre mí',
       projects: 'Proyectos',
+      timeline: 'Experiencia',
+      cases: 'Casos de estudio',
+      opensource: 'Open Source',
+      blog: 'Blog',
+      playground: 'Playground',
+      talks: 'Charlas',
+      uses: 'Uses',
+      now: 'Now',
       contact: 'Contacto',
       footer: 'Created with ❤️ by Davhumpf'
     }
@@ -43,9 +57,17 @@ const Sidebar = () => {
   };
 
   const navItems = [
-    { id: 'about', href: '#about', icon: <User size={20} />, text: content.about },
-    { id: 'projects', href: '#projects', icon: <FolderOpen size={20} />, text: content.projects },
-    { id: 'contacts', href: '#contacts', icon: <Mail size={20} />, text: content.contact }
+    { id: 'about', href: '#about', icon: <User size={18} />, text: content.about },
+    { id: 'projects', href: '#projects', icon: <FolderOpen size={18} />, text: content.projects },
+    { id: 'timeline', href: '#timeline', icon: <Clock size={18} />, text: content.timeline },
+    { id: 'cases', href: '#cases', icon: <FileText size={18} />, text: content.cases },
+    { id: 'opensource', href: '#opensource', icon: <GitBranch size={18} />, text: content.opensource },
+    { id: 'blog', href: '#blog', icon: <BookOpen size={18} />, text: content.blog },
+    { id: 'playground', href: '#playground', icon: <Gamepad2 size={18} />, text: content.playground },
+    { id: 'talks', href: '#talks', icon: <Mic size={18} />, text: content.talks },
+    { id: 'uses', href: '#uses', icon: <Wrench size={18} />, text: content.uses },
+    { id: 'now', href: '#now', icon: <Calendar size={18} />, text: content.now },
+    { id: 'contacts', href: '#contacts', icon: <Mail size={18} />, text: content.contact }
   ];
 
   // Handle navigation click with smooth scroll
@@ -106,23 +128,42 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <aside
-      ref={sidebarRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between p-6 backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
-      style={{
-        width: collapsed ? '4rem' : '16rem',
-        zIndex: 10000,
-        borderRadius: '0 48px 48px 0',
-        isolation: 'isolate', // Create new stacking context
-      }}
-    >
+    <>
+      <style jsx>{`
+        aside::-webkit-scrollbar {
+          width: 6px;
+        }
+        aside::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        aside::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        aside::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      `}</style>
+      <aside
+        ref={sidebarRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out overflow-y-auto overflow-x-hidden"
+        style={{
+          width: collapsed ? '4.5rem' : '14rem',
+          zIndex: 10000,
+          borderRadius: '0 32px 32px 0',
+          isolation: 'isolate',
+          padding: '1.25rem 0.75rem',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(255, 255, 255, 0.1) transparent',
+        }}
+      >
         {/* Top spacer for balance */}
         <div className="h-4" />
 
         {/* Navigation - Icons always visible */}
-        <nav className="flex-1 space-y-3">
+        <nav className="flex-1 space-y-2">
           {navItems.map((item, index) => {
             const isActive = activeSection === item.id;
             return (
@@ -134,17 +175,39 @@ const Sidebar = () => {
                   navItemsRef.current[index] = el;
                 }}
                 className={`
-                  flex items-center gap-3 px-3 py-3 rounded-xl
-                  transition-all duration-300 ease-out cursor-pointer
+                  relative flex items-center gap-3 rounded-lg
+                  transition-all duration-300 ease-out cursor-pointer group
+                  ${collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'}
                   ${isActive
-                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/20 shadow-lg'
-                    : 'hover:bg-white/5 border border-transparent hover:border-white/10'
+                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-lg'
+                    : 'hover:bg-white/5'
                   }
                 `}
+                style={{
+                  border: isActive ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid transparent',
+                }}
               >
+                {/* Active indicator line */}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full"
+                    style={{
+                      height: 'calc(100% - 8px)',
+                      background: 'linear-gradient(to bottom, #60a5fa, #a78bfa)',
+                    }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 380,
+                      damping: 30,
+                    }}
+                  />
+                )}
+
                 <span className={`
-                  transition-all duration-200 flex-shrink-0
-                  ${isActive ? 'text-blue-400' : 'text-gray-400'}
+                  transition-all duration-200 flex items-center justify-center
+                  ${collapsed ? 'w-5 h-5' : 'w-5 h-5 flex-shrink-0'}
+                  ${isActive ? 'text-blue-400' : 'text-gray-400 group-hover:text-gray-300'}
                 `}>
                   {item.icon}
                 </span>
@@ -157,8 +220,8 @@ const Sidebar = () => {
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className={`
-                        text-sm font-medium overflow-hidden whitespace-nowrap
-                        ${isActive ? 'text-white' : 'text-gray-300'}
+                        text-xs font-medium overflow-hidden whitespace-nowrap
+                        ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
                       `}
                     >
                       {item.text}
@@ -212,6 +275,7 @@ const Sidebar = () => {
           </AnimatePresence>
         </div>
       </aside>
+    </>
   );
 };
 
