@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar } from 'lucide-react';
+import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from 'next-themes';
 import gsap from 'gsap';
+import { useLang, type Lang } from '@/context/LanguageProvider';
 import LangMenu from './LangMenu';
 import ThemeMenu from './ThemeMenu';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [activeSection, setActiveSection] = useState('about');
-  const [lang, setLang] = useState<'en' | 'es'>('es');
+  const { lang, setLang } = useLang();
+  const { theme, setTheme } = useTheme();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const navItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
 
@@ -39,6 +42,19 @@ const Sidebar = () => {
       uses: 'Uses',
       now: 'Now',
       contact: 'Contacto',
+      footer: 'Created with ❤️ by Davhumpf'
+    },
+    de: {
+      about: 'Über mich',
+      projects: 'Projekte',
+      timeline: 'Erfahrung',
+      cases: 'Fallstudien',
+      opensource: 'Open Source',
+      blog: 'Blog',
+      talks: 'Vorträge',
+      uses: 'Uses',
+      now: 'Now',
+      contact: 'Kontakt',
       footer: 'Created with ❤️ by Davhumpf'
     }
   };
@@ -215,9 +231,49 @@ const Sidebar = () => {
 
         {/* Bottom Section - Controls + Footer */}
         <div className="space-y-4">
-          {/* Controls Section - Hidden when collapsed */}
-          <AnimatePresence mode="wait">
-            {!collapsed && (
+          {/* Controls Section */}
+          {collapsed ? (
+            /* Collapsed: Icon-only buttons */
+            <div className="flex flex-col gap-2">
+              {/* Language Toggle Button */}
+              <button
+                onClick={() => {
+                  const langs: Lang[] = ['es', 'en', 'de'];
+                  const currentIndex = langs.indexOf(lang);
+                  const nextIndex = (currentIndex + 1) % langs.length;
+                  setLang(langs[nextIndex]);
+                }}
+                className="flex items-center justify-center w-full py-2.5 px-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200"
+                aria-label={`Current language: ${lang.toUpperCase()}`}
+                title={`Switch language (${lang.toUpperCase()})`}
+              >
+                <span className="text-xs font-bold text-gray-300">
+                  {lang.toUpperCase()}
+                </span>
+              </button>
+
+              {/* Theme Toggle Button */}
+              <button
+                onClick={() => {
+                  const themes = ['light', 'dark', 'system'];
+                  const currentIndex = themes.indexOf(theme || 'system');
+                  const nextIndex = (currentIndex + 1) % themes.length;
+                  setTheme(themes[nextIndex]);
+                }}
+                className="flex items-center justify-center w-full py-2.5 px-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200"
+                aria-label={`Current theme: ${theme || 'system'}`}
+                title={`Switch theme (${theme || 'system'})`}
+              >
+                {theme === 'light' ? (
+                  <Sun size={18} className="text-gray-300" />
+                ) : (
+                  <Moon size={18} className="text-gray-300" />
+                )}
+              </button>
+            </div>
+          ) : (
+            /* Expanded: Dropdown menus */
+            <AnimatePresence mode="wait">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -232,8 +288,8 @@ const Sidebar = () => {
                 <LangMenu />
                 <ThemeMenu />
               </motion.div>
-            )}
-          </AnimatePresence>
+            </AnimatePresence>
+          )}
 
           {/* Footer - Hidden when collapsed */}
           <AnimatePresence mode="wait">
