@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Gamepad2, Mic, Wrench, Calendar } from 'lucide-react';
+import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import LangMenu from './LangMenu';
@@ -22,7 +22,6 @@ const Sidebar = () => {
       cases: 'Case Studies',
       opensource: 'Open Source',
       blog: 'Blog',
-      playground: 'Playground',
       talks: 'Talks',
       uses: 'Uses',
       now: 'Now',
@@ -36,7 +35,6 @@ const Sidebar = () => {
       cases: 'Casos de estudio',
       opensource: 'Open Source',
       blog: 'Blog',
-      playground: 'Playground',
       talks: 'Charlas',
       uses: 'Uses',
       now: 'Now',
@@ -63,7 +61,6 @@ const Sidebar = () => {
     { id: 'cases', href: '#cases', icon: <FileText size={18} />, text: content.cases },
     { id: 'opensource', href: '#opensource', icon: <GitBranch size={18} />, text: content.opensource },
     { id: 'blog', href: '#blog', icon: <BookOpen size={18} />, text: content.blog },
-    { id: 'playground', href: '#playground', icon: <Gamepad2 size={18} />, text: content.playground },
     { id: 'talks', href: '#talks', icon: <Mic size={18} />, text: content.talks },
     { id: 'uses', href: '#uses', icon: <Wrench size={18} />, text: content.uses },
     { id: 'now', href: '#now', icon: <Calendar size={18} />, text: content.now },
@@ -129,34 +126,17 @@ const Sidebar = () => {
 
   return (
     <>
-      <style jsx>{`
-        aside::-webkit-scrollbar {
-          width: 6px;
-        }
-        aside::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        aside::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 3px;
-        }
-        aside::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.2);
-        }
-      `}</style>
       <aside
         ref={sidebarRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out overflow-y-auto overflow-x-hidden"
+        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
         style={{
           width: collapsed ? '4.5rem' : '14rem',
           zIndex: 10000,
           borderRadius: '0 32px 32px 0',
           isolation: 'isolate',
           padding: '1.25rem 0.75rem',
-          scrollbarWidth: 'thin',
-          scrollbarColor: 'rgba(255, 255, 255, 0.1) transparent',
         }}
       >
         {/* Top spacer for balance */}
