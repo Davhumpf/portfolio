@@ -1,38 +1,30 @@
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React from 'react';
+import { useLang, type Lang } from '@/context/LanguageProvider';
 import Dropdown from './Dropdown';
 
-// Create a simple context for language if store doesn't exist
-const LangContext = createContext<{
-  lang: 'en' | 'es';
-  setLang: (lang: 'en' | 'es') => void;
-} | null>(null);
-
-// Hook to use language context
-export const useLangContext = () => {
-  const context = useContext(LangContext);
-  // If no context provider, use local state as fallback
-  const [localLang, setLocalLang] = useState<'en' | 'es'>('es');
-  
-  if (!context) {
-    return { lang: localLang, setLang: setLocalLang };
-  }
-  return context;
-};
-
 const LangMenu = () => {
-  const { lang, setLang } = useLangContext();
+  const { lang, setLang } = useLang();
 
-  const handleLanguageChange = (newLang: 'en' | 'es') => {
+  const handleLanguageChange = (newLang: Lang) => {
     setLang(newLang);
+  };
+
+  const getLangLabel = () => {
+    switch (lang) {
+      case 'en': return 'English';
+      case 'es': return 'Español';
+      case 'de': return 'Deutsch';
+      default: return 'Español';
+    }
   };
 
   return (
     <Dropdown
       trigger={
         <span className="text-sm font-medium text-gray-300">
-          {lang === 'en' ? 'English' : 'Español'}
+          {getLangLabel()}
         </span>
       }
     >
@@ -50,9 +42,15 @@ const LangMenu = () => {
       >
         English
       </button>
+      <button
+        onClick={() => handleLanguageChange('de')}
+        className="text-sm text-gray-300 hover:text-white"
+        aria-label="Zu Deutsch wechseln"
+      >
+        Deutsch
+      </button>
     </Dropdown>
   );
 };
 
 export default LangMenu;
-export { LangContext };
