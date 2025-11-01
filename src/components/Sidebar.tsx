@@ -110,7 +110,9 @@ const Sidebar = () => {
       ref={sidebarRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between p-6 backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
+      className={`hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out ${
+        collapsed ? 'py-6 px-3' : 'p-6'
+      }`}
       style={{
         width: collapsed ? '4rem' : '16rem',
         zIndex: 10000,
@@ -134,8 +136,9 @@ const Sidebar = () => {
                   navItemsRef.current[index] = el;
                 }}
                 className={`
-                  flex items-center gap-3 px-3 py-3 rounded-xl
+                  flex items-center gap-3 py-3 rounded-xl
                   transition-all duration-300 ease-out cursor-pointer
+                  ${collapsed ? 'px-2 justify-center' : 'px-3'}
                   ${isActive
                     ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/20 shadow-lg'
                     : 'hover:bg-white/5 border border-transparent hover:border-white/10'
