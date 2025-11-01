@@ -23,14 +23,14 @@ const Sidebar = () => {
       about: 'About',
       projects: 'Projects',
       contact: 'Contact',
-      brand: 'console.log('
+      footer: 'Created with ❤️ by Davhumpf'
     },
     es: {
       home: 'Inicio',
       about: 'Sobre mí',
       projects: 'Proyectos',
       contact: 'Contacto',
-      brand: 'console.log('
+      footer: 'Created with ❤️ by Davhumpf'
     }
   };
 
@@ -98,24 +98,8 @@ const Sidebar = () => {
           isolation: 'isolate', // Create new stacking context
         }}
       >
-        {/* Brand Section */}
-        <AnimatePresence mode="wait">
-          {!collapsed && (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="mb-12"
-            >
-              <div className="w-full p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <span className="text-[14px] font-mono text-gray-300">
-                  {content.brand}
-                </span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Top spacer for balance */}
+        <div className="h-4" />
 
         {/* Navigation - Icons always visible */}
         <nav className="flex-1 space-y-2">
@@ -165,25 +149,47 @@ const Sidebar = () => {
           })}
         </nav>
 
-        {/* Controls Section - Hidden when collapsed */}
-        <AnimatePresence mode="wait">
-          {!collapsed && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="space-y-3"
-              style={{
-                position: 'relative',
-                zIndex: 10002, // Higher than sidebar
-              }}
-            >
-              <LangMenu />
-              <ThemeMenu />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Bottom Section - Controls + Footer */}
+        <div className="space-y-4">
+          {/* Controls Section - Hidden when collapsed */}
+          <AnimatePresence mode="wait">
+            {!collapsed && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="space-y-3"
+                style={{
+                  position: 'relative',
+                  zIndex: 10002, // Higher than sidebar
+                }}
+              >
+                <LangMenu />
+                <ThemeMenu />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Footer - Hidden when collapsed */}
+          <AnimatePresence mode="wait">
+            {!collapsed && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3, ease: 'easeInOut', delay: 0.1 }}
+                className="pt-4 border-t border-white/10"
+              >
+                <div className="w-full p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                  <p className="text-[11px] text-center text-gray-400 leading-relaxed">
+                    {content.footer}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </aside>
 
       {/* Toggle Button - Separate from sidebar to avoid animation issues */}
