@@ -116,16 +116,16 @@ export default function Contacts() {
                   target={contact.name !== "Gmail" ? "_blank" : undefined}
                   rel={contact.name !== "Gmail" ? "noopener noreferrer" : undefined}
                   onClick={(e) => handleButtonClick(contact.url, e)}
-                  className="contact-btn group relative flex flex-col items-center justify-center gap-3 px-4 py-6 rounded-xl ring-1 backdrop-blur-sm transition-all hover:scale-105 hover:ring-2 cursor-pointer"
-                  style={{ 
+                  className="contact-btn group relative flex items-center justify-center p-6 rounded-xl ring-1 backdrop-blur-sm transition-all hover:scale-105 hover:ring-2 cursor-pointer"
+                  style={{
                     background: "color-mix(in oklab, var(--panel) 60%, transparent)",
                     borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)"
                   }}
                 >
                   {/* Icono */}
-                  <div 
-                    className="w-14 h-14 flex items-center justify-center rounded-lg ring-1"
-                    style={{ 
+                  <div
+                    className="w-16 h-16 flex items-center justify-center rounded-lg ring-1"
+                    style={{
                       background: "color-mix(in oklab, var(--panel) 80%, transparent)",
                       borderColor: "color-mix(in oklab, var(--accent) 20%, transparent)"
                     }}
@@ -133,18 +133,17 @@ export default function Contacts() {
                     <img
                       src={`/${contact.icon}.png`}
                       alt={contact.name}
-                      className="w-8 h-8 object-contain"
+                      className={`w-10 h-10 object-contain transition-all ${
+                        contact.icon === "github" ? "dark:invert" : ""
+                      }`}
                       loading="eager"
                     />
                   </div>
 
-                  {/* Nombre */}
-                  <div className="font-bold text-sm text-center">{contact.name}</div>
-
                   {/* Hover effect */}
-                  <div 
+                  <div
                     className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity -z-10 blur-md"
-                    style={{ background: "color-mix(in oklab, var(--accent) 20%, transparent)" }} 
+                    style={{ background: "color-mix(in oklab, var(--accent) 20%, transparent)" }}
                   />
                 </a>
               ))}
