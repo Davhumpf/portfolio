@@ -146,13 +146,14 @@ const Sidebar = () => {
         ref={sidebarRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
+        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-[width] duration-300 ease-out"
         style={{
           width: collapsed ? '4.5rem' : '14rem',
           zIndex: 10000,
           borderRadius: '0 32px 32px 0',
           isolation: 'isolate',
           padding: '1.25rem 0.75rem',
+          willChange: 'width',
         }}
       >
         {/* Top spacer for balance */}

@@ -65,14 +65,14 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, children, className = '' }
               onClick={() => setIsOpen(false)}
             />
             
-            {/* Dropdown Menu with enhanced styling */}
+            {/* Dropdown Menu with enhanced styling - positioned to the right */}
             <motion.div
               ref={menuRef}
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
-              className="absolute left-0 right-0 mt-2 py-2 rounded-xl overflow-hidden shadow-2xl"
+              initial={{ opacity: 0, x: -10, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -10, scale: 0.95 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="absolute left-full ml-2 mt-2 py-2 rounded-xl overflow-hidden shadow-2xl whitespace-nowrap"
               style={{
                 zIndex: 19999,
                 backgroundColor: 'rgba(17, 17, 17, 0.98)', // Dark solid background
@@ -81,6 +81,8 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, children, className = '' }
                 boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.2)',
                 pointerEvents: 'auto',
                 isolation: 'isolate',
+                minWidth: '160px',
+                top: '0',
               }}
               onClick={handleMenuClick}
             >
