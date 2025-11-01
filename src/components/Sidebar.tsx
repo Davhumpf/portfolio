@@ -146,7 +146,7 @@ const Sidebar = () => {
         ref={sidebarRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-[width] duration-300 ease-out"
+        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-300 ease-in-out"
         style={{
           width: collapsed ? '4.5rem' : '14rem',
           zIndex: 10000,
@@ -212,12 +212,12 @@ const Sidebar = () => {
                 <AnimatePresence mode="wait">
                   {!collapsed && (
                     <motion.span
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: 'auto' }}
-                      exit={{ opacity: 0, width: 0 }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                       className={`
-                        text-xs font-medium overflow-hidden whitespace-nowrap
+                        text-xs font-medium whitespace-nowrap
                         ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
                       `}
                     >
@@ -276,9 +276,9 @@ const Sidebar = () => {
             /* Expanded: Dropdown menus */
             <AnimatePresence mode="wait">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="space-y-3"
                 style={{
@@ -296,10 +296,10 @@ const Sidebar = () => {
           <AnimatePresence mode="wait">
             {!collapsed && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3, ease: 'easeInOut', delay: 0.1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className="pt-4 border-t border-white/10"
               >
                 <div className="w-full p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
