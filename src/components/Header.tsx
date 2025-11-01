@@ -42,7 +42,6 @@ export default function Header() {
       { id: "cases", label: t("caseStudies") ?? "Casos", href: "#cases" },
       { id: "opensource", label: "Open Source", href: "#opensource" },
       { id: "blog", label: "Blog", href: "#blog" },
-      { id: "playground", label: "Playground", href: "#playground", badge: "New" },
       { id: "talks", label: t("talks") ?? "Talks", href: "#talks" },
       { id: "uses", label: "Uses", href: "#uses" },
       { id: "now", label: "Now()", href: "#now" },
