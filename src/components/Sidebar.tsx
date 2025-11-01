@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, User, FolderOpen, Mail, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Home, User, FolderOpen, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import LangMenu from './LangMenu';
@@ -11,9 +9,8 @@ import ThemeMenu from './ThemeMenu';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(true);
-  const [isHovering, setIsHovering] = useState(false);
+  const [activeSection, setActiveSection] = useState('about');
   const [lang, setLang] = useState<'en' | 'es'>('es');
-  const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const navItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
 
@@ -38,26 +35,51 @@ const Sidebar = () => {
 
   // Auto-expand on hover with smooth transition
   const handleMouseEnter = () => {
-    setIsHovering(true);
     setCollapsed(false);
   };
 
   const handleMouseLeave = () => {
-    setIsHovering(false);
-    // Auto-collapse after a delay if not manually toggled
-    setTimeout(() => {
-      if (!isHovering) {
-        setCollapsed(true);
-      }
-    }, 300);
+    setCollapsed(true);
   };
 
   const navItems = [
-    { href: '/', icon: <Home size={20} />, text: content.home },
-    { href: '/about', icon: <User size={20} />, text: content.about },
-    { href: '/projects', icon: <FolderOpen size={20} />, text: content.projects },
-    { href: '/contact', icon: <Mail size={20} />, text: content.contact }
+    { id: 'about', href: '#about', icon: <User size={20} />, text: content.about },
+    { id: 'projects', href: '#projects', icon: <FolderOpen size={20} />, text: content.projects },
+    { id: 'contacts', href: '#contacts', icon: <Mail size={20} />, text: content.contact }
   ];
+
+  // Handle navigation click with smooth scroll
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof navItems[0]) => {
+    e.preventDefault();
+    const target = document.querySelector(item.href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveSection(item.id);
+    }
+  };
+
+  // Track active section with IntersectionObserver
+  useEffect(() => {
+    const sections = navItems
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.2, 0.6] }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   // GSAP animations - isolated to nav items only
   useEffect(() => {
@@ -84,50 +106,49 @@ const Sidebar = () => {
   }, []);
 
   return (
-    <>
-      {/* Main Sidebar Container - Fixed positioning without GSAP interference */}
-      <aside
-        ref={sidebarRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        className="fixed left-0 top-0 bottom-0 flex flex-col justify-between p-6 backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
-        style={{
-          width: collapsed ? '4rem' : '16rem',
-          zIndex: 10000,
-          borderRadius: '0 48px 48px 0',
-          isolation: 'isolate', // Create new stacking context
-        }}
-      >
+    <aside
+      ref={sidebarRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between p-6 backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-500 ease-in-out"
+      style={{
+        width: collapsed ? '4rem' : '16rem',
+        zIndex: 10000,
+        borderRadius: '0 48px 48px 0',
+        isolation: 'isolate', // Create new stacking context
+      }}
+    >
         {/* Top spacer for balance */}
         <div className="h-4" />
 
         {/* Navigation - Icons always visible */}
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-3">
           {navItems.map((item, index) => {
-            const isActive = pathname === item.href;
+            const isActive = activeSection === item.id;
             return (
-              <Link
-                key={item.href}
+              <a
+                key={item.id}
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item)}
                 ref={(el) => {
                   navItemsRef.current[index] = el;
                 }}
                 className={`
                   flex items-center gap-3 px-3 py-3 rounded-xl
-                  transition-all duration-300 ease-out
-                  ${isActive 
-                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/20' 
-                    : 'hover:bg-white/5 border border-transparent'
+                  transition-all duration-300 ease-out cursor-pointer
+                  ${isActive
+                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-white/20 shadow-lg'
+                    : 'hover:bg-white/5 border border-transparent hover:border-white/10'
                   }
                 `}
               >
                 <span className={`
-                  transition-all duration-200
+                  transition-all duration-200 flex-shrink-0
                   ${isActive ? 'text-blue-400' : 'text-gray-400'}
                 `}>
                   {item.icon}
                 </span>
-                
+
                 <AnimatePresence mode="wait">
                   {!collapsed && (
                     <motion.span
@@ -144,7 +165,7 @@ const Sidebar = () => {
                     </motion.span>
                   )}
                 </AnimatePresence>
-              </Link>
+              </a>
             );
           })}
         </nav>
@@ -191,25 +212,6 @@ const Sidebar = () => {
           </AnimatePresence>
         </div>
       </aside>
-
-      {/* Toggle Button - Separate from sidebar to avoid animation issues */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="fixed top-1/2 -translate-y-1/2 p-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-r-lg hover:bg-white/20 transition-all duration-300"
-        style={{
-          left: collapsed ? '3.5rem' : '15.5rem',
-          zIndex: 10001,
-          transition: 'left 0.5s ease-in-out',
-        }}
-        aria-label="Toggle sidebar"
-      >
-        {collapsed ? (
-          <ChevronRight size={16} className="text-gray-300" />
-        ) : (
-          <ChevronLeft size={16} className="text-gray-300" />
-        )}
-      </button>
-    </>
   );
 };
 
