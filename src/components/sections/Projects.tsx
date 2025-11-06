@@ -239,12 +239,26 @@ export default function Projects() {
   // Navegación por teclado
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") prev();
-      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+      }
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [prev, next]);
+
+  // Soporte para prefers-reduced-motion
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (prefersReducedMotion.matches && timelineRef.current) {
+      timelineRef.current.duration(0.1);
+    }
+  }, []);
 
   // Inicializar primer slide
   useEffect(() => {
@@ -428,43 +442,57 @@ export default function Projects() {
           {/* Flechas de navegación */}
           <button
             onClick={prev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 backdrop-blur-xl transition-all hover:scale-110 hover:shadow-md active:scale-95"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 rounded-full backdrop-blur-xl transition-all hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{
-              background: "color-mix(in oklab, var(--panel) 70%, transparent)",
+              background: "color-mix(in oklab, var(--panel) 80%, transparent)",
               border: "1px solid var(--border)",
+              padding: "clamp(8px, 2vw, 12px)",
+              boxShadow: "var(--shadow-md)",
             }}
             aria-label="Proyecto anterior"
+            title="Proyecto anterior (←)"
           >
-            <ChevronLeft width={24} height={24} />
+            <ChevronLeft width={20} height={20} />
           </button>
 
           <button
             onClick={next}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 rounded-full p-3 backdrop-blur-xl transition-all hover:scale-110 hover:shadow-md active:scale-95"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 rounded-full backdrop-blur-xl transition-all hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{
-              background: "color-mix(in oklab, var(--panel) 70%, transparent)",
+              background: "color-mix(in oklab, var(--panel) 80%, transparent)",
               border: "1px solid var(--border)",
+              padding: "clamp(8px, 2vw, 12px)",
+              boxShadow: "var(--shadow-md)",
             }}
             aria-label="Siguiente proyecto"
+            title="Siguiente proyecto (→)"
           >
-            <ChevronRight width={24} height={24} />
+            <ChevronRight width={20} height={20} />
           </button>
 
           {/* Dots */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          <div
+            className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20 backdrop-blur-sm rounded-full px-3 py-2"
+            style={{
+              background: "color-mix(in oklab, var(--panel) 60%, transparent)",
+              border: "1px solid var(--border)",
+            }}
+          >
             {projects.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => goToSlide(idx)}
-                className="rounded-full transition-all duration-300"
+                className="rounded-full transition-all duration-300 focus-visible:ring-2 focus-visible:ring-offset-1 hover:opacity-100"
                 style={{
-                  width: current === idx ? "20px" : "6px",
-                  height: "6px",
-                  background: current === idx ? "var(--accent)" : "var(--border)",
-                  opacity: current === idx ? 1 : 0.5,
+                  width: current === idx ? "clamp(16px, 4vw, 24px)" : "clamp(6px, 1.5vw, 8px)",
+                  height: "clamp(6px, 1.5vw, 8px)",
+                  background: current === idx ? "var(--accent)" : "var(--text-2)",
+                  opacity: current === idx ? 1 : 0.4,
+                  cursor: "pointer",
                 }}
-                aria-label={`Ir al proyecto ${idx + 1}`}
+                aria-label={`Ir al proyecto ${idx + 1}: ${projects[idx].name}`}
                 aria-current={current === idx ? "true" : "false"}
+                title={`${projects[idx].name}`}
               />
             ))}
           </div>

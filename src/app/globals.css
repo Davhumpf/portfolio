@@ -4,15 +4,15 @@
 @layer base {
   :root {
     /* Light Mode - Suave con sombras profesionales */
-    --bg-page: #F6F7FB;         /* Fondo principal suave */
+    --bg-page: #F8F9FC;         /* Fondo principal más suave (no blanco puro) */
     --bg-card: #FFFFFF;         /* Cards con blanco puro */
-    --bg: #F6F7FB;              /* Fondo principal (alias) */
+    --bg: #F8F9FC;              /* Fondo principal (alias) */
     --panel: #FFFFFF;           /* Fondo secundario (alias) */
-    --text-1: #0F172A;          /* Texto principal */
-    --text-2: #475569;          /* Texto secundario */
+    --text-1: #0F172A;          /* Texto principal con buen contraste */
+    --text-2: #64748B;          /* Texto secundario más legible */
     --text: #0F172A;            /* Texto principal (alias) */
-    --muted: #475569;           /* Texto secundario (alias) */
-    --border: #E7EAF0;          /* Bordes sutiles */
+    --muted: #64748B;           /* Texto secundario (alias) */
+    --border: #E2E8F0;          /* Bordes sutiles y profesionales */
 
     --accent: #7C3AED;          /* Acento violeta moderno */
     --accent-2: #A78BFA;        /* Acento secundario */
@@ -21,13 +21,14 @@
     --warning: #F59E0B;
     --error:   #EF4444;
 
-    --ring: #7C3AED33;          /* Focus ring con transparencia */
+    --ring: #7C3AED40;          /* Focus ring accesible */
     --panel-alpha: color-mix(in oklab, var(--text) 5%, transparent);
 
-    /* Sistema de sombras profesional */
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.10);
+    /* Sistema de sombras profesional y suave */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.09), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
     --shadow: var(--shadow-md);
 
     /* Altura fija del footer de la sidebar */
@@ -237,9 +238,59 @@
     }
   }
 
+  /* Responsividad extrema - 150px y más */
+  @media (max-width: 280px) {
+    body {
+      font-size: 12px;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    h2 {
+      font-size: 1.25rem;
+    }
+    h3 {
+      font-size: 1.125rem;
+    }
+    .responsive-padding {
+      padding: 0.5rem;
+    }
+    .container {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+
+  /* Modo reducción de movimiento - accesibilidad */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   /* Imágenes y media siempre responsivos */
   img, video, canvas {
     max-width: 100%;
     height: auto;
+  }
+
+  /* Asegurar que nada desborde */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Prevenir scroll horizontal global */
+  html {
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+    position: relative;
   }
 }
