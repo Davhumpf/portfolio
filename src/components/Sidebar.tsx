@@ -293,15 +293,22 @@ const Sidebar = () => {
             </div>
           </div>
 
-          {/* Footer - Hidden when collapsed */}
+          {/* Footer - Always reserves space */}
           <div
-            className="overflow-hidden transition-all duration-300 ease-in-out"
+            className="relative pt-4 border-t border-white/10"
             style={{
-              opacity: collapsed ? 0 : 1,
-              maxHeight: collapsed ? '0px' : '200px',
+              minHeight: '60px',
             }}
           >
-            <div className="pt-4 border-t border-white/10">
+            <div
+              className="absolute inset-x-0 top-4"
+              style={{
+                opacity: collapsed ? 0 : 1,
+                transform: collapsed ? 'translateY(-8px)' : 'translateY(0)',
+                transition: 'opacity .2s ease, transform .3s ease',
+                pointerEvents: collapsed ? 'none' : 'auto',
+              }}
+            >
               <div className="w-full p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                 <p className="text-[11px] text-center text-gray-400 leading-relaxed">
                   {content.footer}
