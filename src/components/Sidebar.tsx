@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar, Sun, Moon } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import gsap from 'gsap';
 import { useLang, type Lang } from '@/context/LanguageProvider';
@@ -172,9 +172,8 @@ const Sidebar = () => {
                   navItemsRef.current[index] = el;
                 }}
                 className={`
-                  relative flex items-center gap-3 rounded-lg
+                  relative flex items-center justify-start gap-3 rounded-lg px-3 py-2.5
                   transition-all duration-300 ease-out cursor-pointer group
-                  ${collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'}
                   ${isActive
                     ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-lg'
                     : 'hover:bg-white/5'
@@ -202,29 +201,26 @@ const Sidebar = () => {
                 )}
 
                 <span className={`
-                  transition-all duration-200 flex items-center justify-center
-                  ${collapsed ? 'w-5 h-5' : 'w-5 h-5 flex-shrink-0'}
+                  flex items-center justify-center flex-shrink-0 w-5 h-5
+                  transition-colors duration-200
                   ${isActive ? 'text-blue-400' : 'text-gray-400 group-hover:text-gray-300'}
                 `}>
                   {item.icon}
                 </span>
 
-                <AnimatePresence mode="wait">
-                  {!collapsed && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className={`
-                        text-xs font-medium whitespace-nowrap
-                        ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
-                      `}
-                    >
-                      {item.text}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
+                <span
+                  className={`
+                    text-xs font-medium whitespace-nowrap overflow-hidden
+                    transition-all duration-300 ease-in-out
+                    ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
+                  `}
+                  style={{
+                    opacity: collapsed ? 0 : 1,
+                    maxWidth: collapsed ? '0px' : '150px',
+                  }}
+                >
+                  {item.text}
+                </span>
               </a>
             );
           })}
@@ -233,9 +229,17 @@ const Sidebar = () => {
         {/* Bottom Section - Controls + Footer */}
         <div className="space-y-4">
           {/* Controls Section */}
-          {collapsed ? (
-            /* Collapsed: Icon-only buttons */
-            <div className="flex flex-col gap-2">
+          <div className="relative">
+            {/* Icon-only buttons - Always visible */}
+            <div
+              className="flex flex-col gap-2 transition-opacity duration-300 ease-in-out"
+              style={{
+                opacity: collapsed ? 1 : 0,
+                pointerEvents: collapsed ? 'auto' : 'none',
+                position: collapsed ? 'relative' : 'absolute',
+                inset: 0,
+              }}
+            >
               {/* Language Toggle Button */}
               <button
                 onClick={() => {
@@ -272,44 +276,39 @@ const Sidebar = () => {
                 )}
               </button>
             </div>
-          ) : (
-            /* Expanded: Dropdown menus */
-            <AnimatePresence mode="wait">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="space-y-3"
-                style={{
-                  position: 'relative',
-                  zIndex: 10002, // Higher than sidebar
-                }}
-              >
-                <LangMenu />
-                <ThemeMenu />
-              </motion.div>
-            </AnimatePresence>
-          )}
+
+            {/* Expanded: Dropdown menus */}
+            <div
+              className="space-y-3 transition-opacity duration-300 ease-in-out"
+              style={{
+                opacity: collapsed ? 0 : 1,
+                pointerEvents: collapsed ? 'none' : 'auto',
+                position: collapsed ? 'absolute' : 'relative',
+                inset: 0,
+                zIndex: 10002,
+              }}
+            >
+              <LangMenu />
+              <ThemeMenu />
+            </div>
+          </div>
 
           {/* Footer - Hidden when collapsed */}
-          <AnimatePresence mode="wait">
-            {!collapsed && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="pt-4 border-t border-white/10"
-              >
-                <div className="w-full p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                  <p className="text-[11px] text-center text-gray-400 leading-relaxed">
-                    {content.footer}
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div
+            className="overflow-hidden transition-all duration-300 ease-in-out"
+            style={{
+              opacity: collapsed ? 0 : 1,
+              maxHeight: collapsed ? '0px' : '200px',
+            }}
+          >
+            <div className="pt-4 border-t border-white/10">
+              <div className="w-full p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                <p className="text-[11px] text-center text-gray-400 leading-relaxed">
+                  {content.footer}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
     </>
