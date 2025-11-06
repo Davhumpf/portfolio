@@ -228,7 +228,7 @@ export default function Contacts() {
               color: "var(--text-2)",
             }}
           >
-            {t("contacts_available") || "Disponible para colaboraciones y consultas profesionales"}
+            Disponible para colaboraciones y consultas profesionales
           </p>
         </div>
       </Section>
