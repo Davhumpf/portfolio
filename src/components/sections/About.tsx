@@ -9,6 +9,13 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// GitHub Icon SVG - mismo componente que en Contacts
+const GitHubIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+  </svg>
+);
+
 const TECH_STACK = {
   frontend: [
     "javascript",
@@ -45,6 +52,7 @@ type CategoryType = "frontend" | "backend" | "cloud";
 export default function About() {
   const t = useT();
   const scope = useRef<HTMLDivElement>(null);
+  const githubIconRef = useRef<HTMLAnchorElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("frontend");
 
   useEffect(() => {
@@ -80,6 +88,52 @@ export default function About() {
         ease: "power3.out"
       });
 
+      // Animación del icono de GitHub - mismo estilo que Contacts
+      gsap.from(".github-icon", {
+        scrollTrigger: {
+          trigger: ".github-icon",
+          start: "top 80%",
+          once: true,
+          toggleActions: "play none none none",
+        },
+        scale: 0,
+        opacity: 0,
+        duration: 0.6,
+        ease: "back.out(1.7)",
+        clearProps: "all",
+      });
+
+      // Efecto magnético en hover para GitHub icon
+      const githubIcon = githubIconRef.current;
+      if (githubIcon) {
+        const handleMouseMove = (e: MouseEvent) => {
+          const rect = githubIcon.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+
+          gsap.to(githubIcon, {
+            x: x * 0.15,
+            y: y * 0.15,
+            scale: 1.08,
+            duration: 0.4,
+            ease: "power2.out",
+          });
+        };
+
+        const handleMouseLeave = () => {
+          gsap.to(githubIcon, {
+            x: 0,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: "elastic.out(1, 0.5)",
+          });
+        };
+
+        githubIcon.addEventListener("mousemove", handleMouseMove);
+        githubIcon.addEventListener("mouseleave", handleMouseLeave);
+      }
+
       // Refrescar ScrollTrigger después de cargar
       setTimeout(() => {
         ScrollTrigger.refresh();
@@ -87,6 +141,14 @@ export default function About() {
     }, scope);
 
     return () => ctx.revert();
+  }, []);
+
+  // Soporte para prefers-reduced-motion
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (prefersReducedMotion.matches) {
+      gsap.globalTimeline.timeScale(0.1);
+    }
   }, []);
 
   // Animación de click en botones de categoría
@@ -132,14 +194,14 @@ export default function About() {
                 margin: '0 auto',
               }}>
                 {/* Borde con glow */}
-                <div 
+                <div
                   className="absolute inset-0 rounded-3xl ring-2"
-                  style={{ 
+                  style={{
                     borderColor: "var(--accent)",
                     boxShadow: "0 0 20px var(--accent)/30, inset 0 0 10px var(--accent)/10"
-                  }} 
+                  }}
                 />
-                
+
                 {/* Imagen */}
                 <div className="absolute inset-0 rounded-3xl overflow-hidden"
                      style={{ background: "var(--panel)" }}>
@@ -156,14 +218,73 @@ export default function About() {
                     }}
                   />
                 </div>
-                
+
                 {/* Glow effect exterior */}
-                <div 
+                <div
                   className="absolute -inset-3 rounded-3xl opacity-20 blur-xl -z-10"
-                  style={{ background: "var(--accent)" }} 
+                  style={{ background: "var(--accent)" }}
                 />
               </div>
             </div>
+
+            {/* GitHub Icon - mismo estilo que Contactos */}
+            <a
+              ref={githubIconRef}
+              href="https://github.com/Davhumpf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="github-icon group relative flex items-center justify-center cursor-pointer"
+              style={{
+                aspectRatio: "1 / 1",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "clamp(16px, 3vw, 24px)",
+                boxShadow: "var(--shadow-sm)",
+                transition: "box-shadow 0.3s ease",
+                minHeight: "clamp(80px, 20vw, 140px)",
+                maxWidth: "clamp(80px, 20vw, 140px)",
+                margin: "0 auto",
+                willChange: "transform",
+              }}
+              aria-label="GitHub"
+              title="Ver perfil en GitHub"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-lg)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-lg)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+              }}
+            >
+              {/* Ícono */}
+              <div
+                className="relative z-10 transition-colors"
+                style={{
+                  width: "clamp(40px, 12vw, 64px)",
+                  height: "clamp(40px, 12vw, 64px)",
+                  color: "var(--text-1)",
+                }}
+              >
+                <GitHubIcon />
+              </div>
+
+              {/* Glow effect en hover - color GitHub */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl"
+                style={{
+                  background: "radial-gradient(circle at center, #18171720, transparent 70%)",
+                  borderRadius: "clamp(16px, 3vw, 24px)",
+                }}
+              />
+
+              {/* Nombre en tooltip accesible */}
+              <span className="sr-only">GitHub</span>
+            </a>
 
             {/* Textos */}
             <div className="w-full flex flex-col" style={{
