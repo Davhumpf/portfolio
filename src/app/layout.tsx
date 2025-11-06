@@ -17,15 +17,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className="min-h-screen antialiased">
+      <body className="min-h-screen antialiased overflow-x-hidden">
         {/* Gradiente de fondo */}
         <div
           aria-hidden
           className="pointer-events-none fixed inset-0 -z-10"
           style={{
             background: `
-              radial-gradient(900px circle at 20% 10%, var(--accent)/12 0, transparent 60%),
-              radial-gradient(800px circle at 80% 30%, var(--accent-2)/10 0, transparent 60%)
+              radial-gradient(clamp(400px, 50vw, 900px) circle at 20% 10%, var(--accent)/12 0, transparent 60%),
+              radial-gradient(clamp(350px, 45vw, 800px) circle at 80% 30%, var(--accent-2)/10 0, transparent 60%)
             `,
           }}
         />
@@ -43,7 +43,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <BrandPopout />
 
             {/* Main content - margin for mobile header top, padding for desktop sidebar left */}
-            <main id="top" className="pt-24 lg:pt-0 lg:pl-72">
+            <main id="top" className="w-full max-w-full overflow-x-hidden" style={{
+              paddingTop: 'clamp(5rem, 12vw, 6rem)',
+              paddingLeft: '0',
+              paddingRight: '0',
+            }}>
+              <style jsx>{`
+                @media (min-width: 1024px) {
+                  main {
+                    padding-top: 0 !important;
+                    padding-left: clamp(16rem, 20vw, 18rem) !important;
+                  }
+                }
+              `}</style>
               {children}
             </main>
           </ThemeProvider>

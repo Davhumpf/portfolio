@@ -146,14 +146,15 @@ const Sidebar = () => {
         ref={sidebarRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-300 ease-in-out"
+        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-300 ease-in-out overflow-hidden"
         style={{
-          width: collapsed ? '4.5rem' : '14rem',
+          width: collapsed ? 'clamp(3.5rem, 5vw, 4.5rem)' : 'clamp(12rem, 15vw, 14rem)',
           zIndex: 10000,
-          borderRadius: '0 32px 32px 0',
+          borderRadius: '0 clamp(24px, 3vw, 32px) clamp(24px, 3vw, 32px) 0',
           isolation: 'isolate',
-          padding: '1.25rem 0.75rem',
+          padding: 'clamp(1rem, 1.5vw, 1.25rem) clamp(0.5rem, 1vw, 0.75rem)',
           willChange: 'width',
+          maxWidth: '18rem',
         }}
       >
         {/* Top spacer for balance */}
@@ -210,13 +211,15 @@ const Sidebar = () => {
 
                 <span
                   className={`
-                    text-xs font-medium whitespace-nowrap overflow-hidden
-                    transition-all duration-300 ease-in-out
+                    font-medium whitespace-nowrap overflow-hidden
+                    transition-opacity duration-300 ease-in-out
                     ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
                   `}
                   style={{
                     opacity: collapsed ? 0 : 1,
                     maxWidth: collapsed ? '0px' : '150px',
+                    fontSize: 'clamp(11px, 0.8vw, 12px)',
+                    transition: 'opacity 0.3s ease-in-out',
                   }}
                 >
                   {item.text}
@@ -295,22 +298,28 @@ const Sidebar = () => {
 
           {/* Footer - Always reserves space */}
           <div
-            className="relative pt-4 border-t border-white/10"
+            className="relative border-t border-white/10"
             style={{
-              minHeight: '60px',
+              minHeight: 'clamp(50px, 8vw, 60px)',
+              paddingTop: 'clamp(0.75rem, 1.5vw, 1rem)',
             }}
           >
             <div
-              className="absolute inset-x-0 top-4"
+              className="absolute inset-x-0"
               style={{
+                top: 'clamp(0.75rem, 1.5vw, 1rem)',
                 opacity: collapsed ? 0 : 1,
                 transform: collapsed ? 'translateY(-8px)' : 'translateY(0)',
-                transition: 'opacity .2s ease, transform .3s ease',
+                transition: 'opacity 0.2s ease, transform 0.3s ease',
                 pointerEvents: collapsed ? 'none' : 'auto',
               }}
             >
-              <div className="w-full p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
-                <p className="text-[11px] text-center text-gray-400 leading-relaxed">
+              <div className="w-full rounded-xl bg-white/5 backdrop-blur-sm border border-white/10" style={{
+                padding: 'clamp(0.5rem, 1vw, 0.75rem)',
+              }}>
+                <p className="text-center text-gray-400 leading-relaxed" style={{
+                  fontSize: 'clamp(9px, 0.7vw, 11px)',
+                }}>
                   {content.footer}
                 </p>
               </div>
