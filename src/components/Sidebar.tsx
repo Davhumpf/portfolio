@@ -146,9 +146,11 @@ const Sidebar = () => {
         ref={sidebarRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 transition-all duration-300 ease-in-out overflow-hidden"
+        data-state={collapsed ? 'collapsed' : 'expanded'}
+        className="sidebar hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 overflow-hidden"
         style={{
-          width: collapsed ? 'clamp(3.5rem, 5vw, 4.5rem)' : 'clamp(12rem, 15vw, 14rem)',
+          width: collapsed ? '84px' : '280px',
+          transition: 'width 0.3s ease',
           zIndex: 10000,
           borderRadius: '0 clamp(24px, 3vw, 32px) clamp(24px, 3vw, 32px) 0',
           isolation: 'isolate',
@@ -211,15 +213,14 @@ const Sidebar = () => {
 
                 <span
                   className={`
-                    font-medium whitespace-nowrap overflow-hidden
-                    transition-opacity duration-300 ease-in-out
+                    label font-medium whitespace-nowrap overflow-hidden text-ellipsis
                     ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
                   `}
                   style={{
                     opacity: collapsed ? 0 : 1,
                     maxWidth: collapsed ? '0px' : '150px',
                     fontSize: 'clamp(11px, 0.8vw, 12px)',
-                    transition: 'opacity 0.3s ease-in-out',
+                    transition: 'opacity 0.2s ease, max-width 0.3s ease',
                   }}
                 >
                   {item.text}
@@ -296,20 +297,19 @@ const Sidebar = () => {
             </div>
           </div>
 
-          {/* Footer - Always reserves space */}
+          {/* Footer - Altura fija sin brinco */}
           <div
-            className="relative border-t border-white/10"
+            className="sidebar__footer relative border-t border-white/10"
             style={{
-              minHeight: 'clamp(50px, 8vw, 60px)',
-              paddingTop: 'clamp(0.75rem, 1.5vw, 1rem)',
+              height: 'var(--footer-h)',
+              padding: '12px 14px 16px',
             }}
           >
             <div
-              className="absolute inset-x-0"
+              className="footer__credit absolute left-[14px] right-[14px] bottom-[12px] whitespace-nowrap overflow-hidden text-ellipsis"
               style={{
-                top: 'clamp(0.75rem, 1.5vw, 1rem)',
                 opacity: collapsed ? 0 : 1,
-                transform: collapsed ? 'translateY(-8px)' : 'translateY(0)',
+                transform: collapsed ? 'translateY(8px)' : 'translateY(0)',
                 transition: 'opacity 0.2s ease, transform 0.3s ease',
                 pointerEvents: collapsed ? 'none' : 'auto',
               }}
