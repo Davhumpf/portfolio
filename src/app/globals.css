@@ -3,34 +3,48 @@
 /* ------------------ THEME TOKENS ------------------ */
 @layer base {
   :root {
-    /* Light (pastel + limpio) */
-    --bg: #FAFAFA;              /* Fondo principal */
-    --panel: #F1F1F5;           /* Fondo secundario */
-    --text: #2E2E2E;            /* Texto principal */
-    --muted: #6B6B6B;           /* Texto secundario */
+    /* Light Mode - Suave con sombras profesionales */
+    --bg-page: #F6F7FB;         /* Fondo principal suave */
+    --bg-card: #FFFFFF;         /* Cards con blanco puro */
+    --bg: #F6F7FB;              /* Fondo principal (alias) */
+    --panel: #FFFFFF;           /* Fondo secundario (alias) */
+    --text-1: #0F172A;          /* Texto principal */
+    --text-2: #475569;          /* Texto secundario */
+    --text: #0F172A;            /* Texto principal (alias) */
+    --muted: #475569;           /* Texto secundario (alias) */
+    --border: #E7EAF0;          /* Bordes sutiles */
 
-    --accent: #A7C7E7;          /* Acento primario */
-    --accent-2: #F4C2C2;        /* Acento secundario */
+    --accent: #7C3AED;          /* Acento violeta moderno */
+    --accent-2: #A78BFA;        /* Acento secundario */
 
-    --success: #C8E6C9;
-    --warning: #FFE5B4;
-    --error:   #F8BBD0;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --error:   #EF4444;
 
-    --panel-alpha: color-mix(in oklab, var(--text) 5%, transparent); /* sutil */
-    --ring: color-mix(in oklab, var(--text) 15%, transparent);
-    --shadow: 0 4px 12px 0 color-mix(in oklab, var(--text) 12%, transparent),
-              0 2px 4px 0 color-mix(in oklab, var(--text) 8%, transparent);
-    --shadow-sm: 0 2px 8px 0 color-mix(in oklab, var(--text) 8%, transparent);
-    --shadow-lg: 0 8px 24px 0 color-mix(in oklab, var(--text) 16%, transparent),
-                 0 4px 8px 0 color-mix(in oklab, var(--text) 10%, transparent);
+    --ring: #7C3AED33;          /* Focus ring con transparencia */
+    --panel-alpha: color-mix(in oklab, var(--text) 5%, transparent);
+
+    /* Sistema de sombras profesional */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.10);
+    --shadow: var(--shadow-md);
+
+    /* Altura fija del footer de la sidebar */
+    --footer-h: 112px;
   }
 
   .dark {
-    /* Dark (pastel + elegante) */
+    /* Dark Mode - Conserva el esquema original */
+    --bg-page: #1C1C1E;
+    --bg-card: #2C2C2E;
     --bg: #1C1C1E;
     --panel: #2C2C2E;
+    --text-1: #EDEDED;
+    --text-2: #B0B0B0;
     --text: #EDEDED;
     --muted: #B0B0B0;
+    --border: #3C3C3E;
 
     --accent: #A3C4F3;
     --accent-2: #F3B0C3;
@@ -39,21 +53,34 @@
     --warning: #FFD6A5;
     --error:   #FFB5A7;
 
-    --panel-alpha: color-mix(in oklab, white 6%, transparent);
     --ring: color-mix(in oklab, white 18%, transparent);
-    --shadow: 0 10px 28px 0 color-mix(in oklab, black 60%, transparent);
+    --panel-alpha: color-mix(in oklab, white 6%, transparent);
+    --shadow-sm: 0 2px 8px 0 color-mix(in oklab, black 30%, transparent);
+    --shadow-md: 0 6px 16px 0 color-mix(in oklab, black 40%, transparent);
+    --shadow-lg: 0 10px 28px 0 color-mix(in oklab, black 60%, transparent);
+    --shadow: var(--shadow-md);
   }
 
   html, body {
     @apply min-h-screen antialiased;
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg-page);
+    color: var(--text-1);
     overflow-x: hidden;
     max-width: 100vw;
   }
 
   * {
     max-width: 100%;
+  }
+
+  /* Focus rings para accesibilidad */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 
   /* Tipografía fluida base */
@@ -97,10 +124,10 @@
 /* ------------------ SHARED COMPONENTS ------------------ */
 @layer components {
   .card {
-    background: color-mix(in oklab, var(--panel) 88%, transparent);
-    box-shadow: var(--shadow);
-    @apply rounded-3xl ring-1;
-    --tw-ring-color: var(--ring);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
     max-width: 100%;
     overflow-wrap: break-word;
   }
@@ -165,6 +192,12 @@
     gap: clamp(0.5rem, 1.5vw, 0.75rem);
   }
 
+  .auto-grid {
+    display: grid;
+    gap: clamp(8px, 2vw, 24px);
+    grid-template-columns: repeat(auto-fit, minmax(clamp(160px, 45vw, 360px), 1fr));
+  }
+
   .responsive-flex {
     display: flex;
     flex-wrap: wrap;
@@ -192,5 +225,21 @@
     .hide-xs {
       display: none !important;
     }
+  }
+
+  /* Responsividad extrema - 360px y menos */
+  @media (max-width: 360px) {
+    .toolbar > * {
+      flex-basis: 100%;
+    }
+    .hero {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Imágenes y media siempre responsivos */
+  img, video, canvas {
+    max-width: 100%;
+    height: auto;
   }
 }
