@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import BrandPopout from "@/components/BrandPopout";
 import ThemeProvider from "@/components/ThemeProvider";
 import LanguageProvider from "@/context/LanguageProvider";
+import MainContent from "@/components/MainContent";
 
 export const metadata: Metadata = {
   title: "David — UI/Frontend",
@@ -43,21 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <BrandPopout />
 
             {/* Main content - margin for mobile header top, padding for desktop sidebar left */}
-            <main id="top" className="w-full max-w-full overflow-x-hidden" style={{
-              paddingTop: 'clamp(5rem, 12vw, 6rem)',
-              paddingLeft: '0',
-              paddingRight: '0',
-            }}>
-              <style jsx>{`
-                @media (min-width: 1024px) {
-                  main {
-                    padding-top: 0 !important;
-                    padding-left: clamp(16rem, 20vw, 18rem) !important;
-                  }
-                }
-              `}</style>
+            <MainContent>
               {children}
-            </main>
+            </MainContent>
           </ThemeProvider>
         </LanguageProvider>
       </body>
