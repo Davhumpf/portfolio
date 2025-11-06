@@ -240,26 +240,42 @@ export default function Header() {
   return (
     <header
       ref={root}
-      className="lg:hidden fixed top-3 left-1/2 z-[999] w-full max-w-7xl -translate-x-1/2 px-3 sm:px-6"
-      style={{ willChange: "transform" }}
+      className="lg:hidden fixed z-[999] w-full max-w-full overflow-x-hidden"
+      style={{
+        willChange: "transform",
+        top: 'clamp(0.5rem, 1vw, 0.75rem)',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        paddingLeft: 'clamp(0.5rem, 1.5vw, 1rem)',
+        paddingRight: 'clamp(0.5rem, 1.5vw, 1rem)',
+      }}
     >
-      <div className="glass rounded-2xl px-4 py-3" style={{ willChange: "backdrop-filter, box-shadow" }}>
-          <div className="flex items-center justify-between gap-3">
+      <div className="glass w-full max-w-full overflow-hidden" style={{
+        willChange: "backdrop-filter, box-shadow",
+        borderRadius: 'clamp(12px, 3vw, 16px)',
+        padding: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+      }}>
+          <div className="flex items-center justify-between gap-2 flex-wrap w-full">
             {/* Brand móvil con typewriter */}
             <a
               href="#top"
-              className="nav-anim flex-1 flex items-center gap-1 rounded-xl px-3 py-2.5 min-w-0"
+              className="nav-anim flex items-center gap-1 rounded-xl min-w-0 flex-shrink-0"
               style={{
                 background: "var(--panel-alpha)",
                 border: "1px solid var(--ring)",
                 willChange: "transform",
+                padding: 'clamp(0.375rem, 1vw, 0.625rem) clamp(0.5rem, 1.5vw, 0.75rem)',
+                maxWidth: 'min(180px, 45vw)',
               }}
             >
               <div className="flex items-center gap-1 overflow-hidden w-full">
                 <span
                   ref={brandMobileRef}
-                  className="font-mono text-xs font-semibold tabular-nums flex-shrink-0"
-                  style={{ color: "var(--text)" }}
+                  className="font-mono font-semibold tabular-nums truncate"
+                  style={{
+                    color: "var(--text)",
+                    fontSize: 'clamp(9px, 1.2vw, 12px)',
+                  }}
                 >
                   {"<Clean UI/>"}
                 </span>
@@ -275,7 +291,7 @@ export default function Header() {
             </a>
 
             {/* Controls compactos */}
-            <div className="nav-anim flex items-center gap-2">
+            <div className="nav-anim flex items-center gap-1 flex-shrink-0">
               <LangMenu />
               <ThemeMenu />
             </div>
@@ -285,13 +301,19 @@ export default function Header() {
               onClick={() => setMobileMenuOpen((v) => !v)}
               aria-expanded={mobileMenuOpen}
               aria-label="Menu"
-              className="nav-anim p-2.5 rounded-xl transition-all duration-200 active:scale-95"
+              className="nav-anim rounded-xl transition-all duration-200 active:scale-95 flex-shrink-0"
               style={{
                 background: "var(--panel-alpha)",
                 border: "1px solid var(--ring)",
+                padding: 'clamp(0.375rem, 1vw, 0.625rem)',
+                minWidth: '36px',
+                minHeight: '36px',
               }}
             >
-              <div className="w-5 h-5 flex flex-col justify-center gap-1">
+              <div className="flex flex-col justify-center gap-1" style={{
+                width: 'clamp(16px, 4vw, 20px)',
+                height: 'clamp(16px, 4vw, 20px)',
+              }}>
                 <span
                   className={`h-0.5 rounded-full transition-all duration-300 ${
                     mobileMenuOpen
@@ -322,23 +344,33 @@ export default function Header() {
           {mobileMenuOpen && (
             <div
               ref={mobileMenuRef}
-              className="mt-3 pt-3 space-y-3 border-t overflow-hidden"
-              style={{ borderColor: "var(--ring)" }}
+              className="overflow-hidden border-t w-full max-w-full"
+              style={{
+                borderColor: "var(--ring)",
+                marginTop: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                paddingTop: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+              }}
             >
-              {/* Main navigation - Grid 2x2 */}
-              <div className="grid grid-cols-2 gap-2">
+              {/* Main navigation - Grid responsive */}
+              <div className="responsive-grid w-full" style={{
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))',
+                gap: 'clamp(0.375rem, 1vw, 0.5rem)',
+                marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+              }}>
                 {mainNavItems.map((n) => (
                   <a
                     key={n.id}
                     href={n.href}
                     onClick={(e) => onNavClick(e, n)}
-                    className={`block px-3 py-2.5 rounded-lg text-xs font-semibold text-center transition-all
+                    className={`block rounded-lg font-semibold text-center transition-all
                       ${active === n.id ? "ring-1" : "opacity-70"}`}
                     style={{
                       background:
                         active === n.id ? "var(--panel-alpha)" : "transparent",
                       borderColor: active === n.id ? "var(--ring)" : "transparent",
                       color: active === n.id ? "var(--accent)" : "var(--text)",
+                      padding: 'clamp(0.375rem, 1vw, 0.625rem) clamp(0.5rem, 1.5vw, 0.75rem)',
+                      fontSize: 'clamp(10px, 1.2vw, 12px)',
                     }}
                   >
                     {n.label}
@@ -347,7 +379,11 @@ export default function Header() {
               </div>
 
               {/* Secondary navigation - Lista vertical compacta */}
-              <div className="space-y-1">
+              <div className="w-full" style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'clamp(0.25rem, 0.5vw, 0.375rem)',
+              }}>
                 {secondaryNavItems.map((n) => (
                   <a
                     key={n.id}
@@ -355,22 +391,35 @@ export default function Header() {
                     onClick={(e) => onNavClick(e, n)}
                     target={n.external ? "_blank" : undefined}
                     rel={n.external ? "noopener noreferrer" : undefined}
-                    className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all opacity-70 active:opacity-100 hover:bg-[var(--panel-alpha)]"
-                    style={{ color: "var(--text)" }}
+                    className="flex items-center justify-between rounded-lg font-medium transition-all opacity-70 active:opacity-100 hover:bg-[var(--panel-alpha)] w-full"
+                    style={{
+                      color: "var(--text)",
+                      padding: 'clamp(0.375rem, 1vw, 0.5rem) clamp(0.5rem, 1.5vw, 0.75rem)',
+                      fontSize: 'clamp(10px, 1.2vw, 12px)',
+                    }}
                   >
-                    <span>{n.label}</span>
-                    <div className="flex items-center gap-1.5">
+                    <span className="truncate flex-1">{n.label}</span>
+                    <div className="flex items-center gap-1 flex-shrink-0">
                       {n.badge && (
                         <span
-                          className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
-                          style={{ background: "var(--accent)", color: "var(--bg)" }}
+                          className="rounded-full font-bold"
+                          style={{
+                            background: "var(--accent)",
+                            color: "var(--bg)",
+                            fontSize: 'clamp(8px, 1vw, 9px)',
+                            padding: 'clamp(0.125rem, 0.3vw, 0.25rem) clamp(0.25rem, 0.6vw, 0.375rem)',
+                          }}
                         >
                           {n.badge}
                         </span>
                       )}
                       {n.external && (
                         <svg
-                          className="w-3 h-3 opacity-50"
+                          className="opacity-50"
+                          style={{
+                            width: 'clamp(10px, 2vw, 12px)',
+                            height: 'clamp(10px, 2vw, 12px)',
+                          }}
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"

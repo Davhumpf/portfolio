@@ -94,85 +94,138 @@ export default function Hero() {
   }, [t]);
 
   return (
-    <section ref={scope} className="mx-auto mt-24 max-w-6xl px-4">
-      <div className="w-full relative overflow-hidden rounded-3xl p-6 md:p-8 ring-1 ring-white/5"
-           style={{ background: "color-mix(in oklab, var(--panel) 90%, transparent)" }}>
-        
+    <section ref={scope} className="w-full max-w-6xl mx-auto overflow-hidden" style={{
+      marginTop: 'clamp(1.5rem, 4vw, 2rem)',
+      paddingLeft: 'clamp(0.75rem, 2vw, 1rem)',
+      paddingRight: 'clamp(0.75rem, 2vw, 1rem)',
+    }}>
+      <div className="w-full relative overflow-hidden ring-1 ring-white/5"
+           style={{
+             background: "color-mix(in oklab, var(--panel) 90%, transparent)",
+             borderRadius: 'clamp(16px, 4vw, 24px)',
+             padding: 'clamp(1rem, 3vw, 2rem)',
+           }}>
+
         {/* Background gradient */}
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-40 blur-3xl"
-             style={{ background: "radial-gradient(600px circle at 30% 40%, var(--accent)/15, transparent 70%)" }} />
+             style={{ background: "radial-gradient(clamp(300px, 40vw, 600px) circle at 30% 40%, var(--accent)/15, transparent 70%)" }} />
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
+        <div className="w-full flex flex-col gap-6 items-stretch">
           {/* Contenido principal */}
-          <div>
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight">
-              <span className="hero-text block muted mb-1">
+          <div className="w-full">
+            <h1 className="font-bold leading-tight" style={{
+              fontSize: 'clamp(1.25rem, 5vw, 3rem)',
+            }}>
+              <span className="hero-text block muted" style={{
+                marginBottom: 'clamp(0.25rem, 0.5vw, 0.5rem)',
+              }}>
                 {t("hero_tagline_1")}
               </span>
-              <span className="hero-text block mb-3">
+              <span className="hero-text block" style={{
+                marginBottom: 'clamp(0.5rem, 1vw, 0.75rem)',
+              }}>
                 {t("hero_tagline_2")} <span className="accent font-extrabold">{t("hero_tagline_3")}</span>.
               </span>
             </h1>
 
-            <div className="hero-line h-0.5 w-20 rounded-full mb-4" 
-                 style={{ background: "var(--accent)" }} />
+            <div className="hero-line rounded-full"
+                 style={{
+                   background: "var(--accent)",
+                   height: 'clamp(1px, 0.15vw, 2px)',
+                   width: 'clamp(3rem, 10vw, 5rem)',
+                   marginBottom: 'clamp(0.5rem, 1vw, 1rem)',
+                 }} />
 
-            <p className="hero-name text-lg md:text-xl font-medium">
+            <p className="hero-name font-medium" style={{
+              fontSize: 'clamp(0.875rem, 2.5vw, 1.25rem)',
+            }}>
               — <span className="accent">{t("hero_name")}</span>
             </p>
           </div>
 
           {/* Terminal de código con typing effect */}
-          <div className="code-container relative">
-            <div className="rounded-2xl p-3 ring-[3px]"
-                 style={{ 
+          <div className="code-container relative w-full">
+            <div className="ring-[3px] w-full"
+                 style={{
                    background: "color-mix(in oklab, var(--panel) 70%, transparent)",
                    borderColor: "var(--accent)",
                    boxShadow: `
                      0 0 0 1px var(--accent),
                      0 0 30px var(--accent)/30,
                      inset 0 0 20px var(--accent)/5
-                   `
+                   `,
+                   borderRadius: 'clamp(12px, 3vw, 16px)',
+                   padding: 'clamp(0.5rem, 1.5vw, 0.75rem)',
                  }}>
-              
+
               {/* Header del terminal */}
-              <div className="flex items-center gap-2 mb-3 pb-2 border-b-2"
-                   style={{ borderColor: "var(--accent)/40" }}>
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
+              <div className="flex items-center gap-2 border-b-2"
+                   style={{
+                     borderColor: "var(--accent)/40",
+                     marginBottom: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                     paddingBottom: 'clamp(0.375rem, 1vw, 0.5rem)',
+                   }}>
+                <div className="flex gap-1 hide-xs">
+                  <div className="rounded-full bg-red-500" style={{
+                    width: 'clamp(6px, 1.5vw, 10px)',
+                    height: 'clamp(6px, 1.5vw, 10px)',
+                  }} />
+                  <div className="rounded-full bg-yellow-500" style={{
+                    width: 'clamp(6px, 1.5vw, 10px)',
+                    height: 'clamp(6px, 1.5vw, 10px)',
+                  }} />
+                  <div className="rounded-full bg-green-500" style={{
+                    width: 'clamp(6px, 1.5vw, 10px)',
+                    height: 'clamp(6px, 1.5vw, 10px)',
+                  }} />
                 </div>
-                <span className="text-[11px] font-mono font-semibold" style={{ color: "var(--accent)" }}>
+                <span className="font-mono font-semibold truncate" style={{
+                  color: "var(--accent)",
+                  fontSize: 'clamp(9px, 1.2vw, 11px)',
+                }}>
                   ~/coding-live
                 </span>
               </div>
 
               {/* Código con efecto typing */}
-              <div className="font-mono text-[12px] leading-relaxed min-h-[120px] relative">
-                <pre className="whitespace-pre-wrap break-words" style={{ color: "var(--text)" }}>
+              <div className="font-mono leading-relaxed relative w-full overflow-hidden" style={{
+                fontSize: 'clamp(9px, 1.3vw, 12px)',
+                minHeight: 'clamp(80px, 15vw, 120px)',
+              }}>
+                <pre className="whitespace-pre-wrap break-words w-full" style={{ color: "var(--text)" }}>
                   {displayedCode}
                   {/* Cursor parpadeante */}
                   {isTyping && (
-                    <span className="inline-block w-1.5 h-3.5 ml-0.5 align-middle animate-pulse"
-                          style={{ background: "var(--accent)" }} />
+                    <span className="inline-block ml-0.5 align-middle animate-pulse"
+                          style={{
+                            background: "var(--accent)",
+                            width: 'clamp(4px, 0.8vw, 6px)',
+                            height: 'clamp(10px, 2vw, 14px)',
+                          }} />
                   )}
                 </pre>
-                
+
                 {/* Cursor en reposo cuando termina */}
                 {!isTyping && (
-                  <div className="mt-1">
+                  <div style={{ marginTop: 'clamp(0.25rem, 0.5vw, 0.5rem)' }}>
                     <span className="text-accent">{'>'}</span>
-                    <span className="inline-block w-1.5 h-3.5 ml-1 animate-pulse"
-                          style={{ background: "var(--accent)" }} />
+                    <span className="inline-block ml-1 animate-pulse"
+                          style={{
+                            background: "var(--accent)",
+                            width: 'clamp(4px, 0.8vw, 6px)',
+                            height: 'clamp(10px, 2vw, 14px)',
+                          }} />
                   </div>
                 )}
               </div>
             </div>
 
             {/* Efecto de brillo externo más fuerte */}
-            <div className="absolute -inset-2 rounded-2xl opacity-40 blur-2xl pointer-events-none -z-10"
-                 style={{ background: "var(--accent)" }} />
+            <div className="absolute rounded-2xl opacity-40 blur-2xl pointer-events-none -z-10 hide-xs"
+                 style={{
+                   background: "var(--accent)",
+                   inset: 'clamp(-0.5rem, -1vw, -0.25rem)',
+                 }} />
           </div>
         </div>
       </div>

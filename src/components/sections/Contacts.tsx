@@ -100,15 +100,25 @@ export default function Contacts() {
   return (
     <div ref={scope}>
       <Section id="contacts" title={t("contacts_title")} subtitle={t("contacts_sub")}>
-        <div className="max-w-4xl mx-auto space-y-8">
-          
+        <div className="w-full max-w-4xl mx-auto" style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'clamp(1.5rem, 4vw, 2rem)',
+        }}>
+
           {/* Botones de contacto en grid horizontal */}
-          <div className="contact-buttons">
-            <h3 className="text-lg font-bold mb-6 text-center opacity-80">
+          <div className="contact-buttons w-full">
+            <h3 className="font-bold text-center opacity-80" style={{
+              fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
+              marginBottom: 'clamp(1rem, 2.5vw, 1.5rem)',
+            }}>
               Métodos de contacto
             </h3>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+            <div className="responsive-grid w-full" style={{
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100px, 100%), 1fr))',
+              gap: 'clamp(0.5rem, 1.5vw, 1rem)',
+            }}>
               {CONTACT_LINKS.map((contact) => (
                 <a
                   key={contact.name}
@@ -116,26 +126,34 @@ export default function Contacts() {
                   target={contact.name !== "Gmail" ? "_blank" : undefined}
                   rel={contact.name !== "Gmail" ? "noopener noreferrer" : undefined}
                   onClick={(e) => handleButtonClick(contact.url, e)}
-                  className="contact-btn group relative flex items-center justify-center p-6 rounded-xl ring-1 backdrop-blur-sm transition-all hover:scale-105 hover:ring-2 cursor-pointer"
+                  className="contact-btn group relative flex items-center justify-center ring-1 backdrop-blur-sm transition-all hover:scale-105 hover:ring-2 cursor-pointer w-full"
                   style={{
                     background: "color-mix(in oklab, var(--panel) 60%, transparent)",
-                    borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)"
+                    borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)",
+                    borderRadius: 'clamp(10px, 2.5vw, 12px)',
+                    padding: 'clamp(0.75rem, 2vw, 1.5rem)',
                   }}
                 >
                   {/* Icono */}
                   <div
-                    className="w-16 h-16 flex items-center justify-center rounded-lg ring-1"
+                    className="flex items-center justify-center rounded-lg ring-1"
                     style={{
                       background: "color-mix(in oklab, var(--panel) 80%, transparent)",
-                      borderColor: "color-mix(in oklab, var(--accent) 20%, transparent)"
+                      borderColor: "color-mix(in oklab, var(--accent) 20%, transparent)",
+                      width: 'clamp(40px, 12vw, 64px)',
+                      height: 'clamp(40px, 12vw, 64px)',
                     }}
                   >
                     <img
                       src={`/${contact.icon}.png`}
                       alt={contact.name}
-                      className={`w-10 h-10 object-contain transition-all ${
+                      className={`object-contain transition-all ${
                         contact.icon === "github" ? "dark:invert" : ""
                       }`}
+                      style={{
+                        width: 'clamp(24px, 7vw, 40px)',
+                        height: 'clamp(24px, 7vw, 40px)',
+                      }}
                       loading="eager"
                     />
                   </div>
@@ -151,52 +169,84 @@ export default function Contacts() {
           </div>
 
           {/* Formulario de contacto */}
-          <div className="contact-form">
-            <h3 className="text-lg font-bold mb-6 text-center opacity-80">
+          <div className="contact-form w-full">
+            <h3 className="font-bold text-center opacity-80" style={{
+              fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
+              marginBottom: 'clamp(1rem, 2.5vw, 1.5rem)',
+            }}>
               Enviar mensaje
             </h3>
 
-            <form 
-              className="space-y-4"
-              onSubmit={(e) => { 
-                e.preventDefault(); 
+            <form
+              className="w-full"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 'clamp(0.75rem, 2vw, 1rem)',
+              }}
+              onSubmit={(e) => {
+                e.preventDefault();
                 alert("Mensaje enviado correctamente");
               }}
             >
               {/* Nombre y Email en grid */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <input 
-                  className="rounded-xl px-4 py-3 ring-1 bg-transparent transition-all focus:ring-2 outline-none"
-                  style={{ borderColor: "var(--ring)" }} 
-                  placeholder={t("form_name")} 
+              <div className="responsive-grid w-full" style={{
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))',
+                gap: 'clamp(0.5rem, 1.5vw, 1rem)',
+              }}>
+                <input
+                  className="ring-1 bg-transparent transition-all focus:ring-2 outline-none w-full"
+                  style={{
+                    borderColor: "var(--ring)",
+                    borderRadius: 'clamp(10px, 2.5vw, 12px)',
+                    padding: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                    fontSize: 'clamp(12px, 1.5vw, 14px)',
+                  }}
+                  placeholder={t("form_name")}
                   required
                 />
-                
-                <input 
-                  type="email" 
-                  className="rounded-xl px-4 py-3 ring-1 bg-transparent transition-all focus:ring-2 outline-none"
-                  style={{ borderColor: "var(--ring)" }} 
-                  placeholder={t("form_email")} 
+
+                <input
+                  type="email"
+                  className="ring-1 bg-transparent transition-all focus:ring-2 outline-none w-full"
+                  style={{
+                    borderColor: "var(--ring)",
+                    borderRadius: 'clamp(10px, 2.5vw, 12px)',
+                    padding: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                    fontSize: 'clamp(12px, 1.5vw, 14px)',
+                  }}
+                  placeholder={t("form_email")}
                   required
                 />
               </div>
-              
-              {/* Mensaje y botón en grid */}
-              <div className="grid md:grid-cols-[1fr_auto] gap-4 items-end">
-                <textarea 
-                  rows={4} 
-                  className="rounded-xl px-4 py-3 ring-1 bg-transparent transition-all focus:ring-2 outline-none resize-none"
-                  style={{ borderColor: "var(--ring)" }} 
-                  placeholder={t("form_msg")} 
+
+              {/* Mensaje y botón */}
+              <div className="w-full flex flex-col" style={{
+                gap: 'clamp(0.5rem, 1.5vw, 1rem)',
+              }}>
+                <textarea
+                  rows={4}
+                  className="ring-1 bg-transparent transition-all focus:ring-2 outline-none resize-none w-full"
+                  style={{
+                    borderColor: "var(--ring)",
+                    borderRadius: 'clamp(10px, 2.5vw, 12px)',
+                    padding: 'clamp(0.5rem, 1.5vw, 0.75rem)',
+                    fontSize: 'clamp(12px, 1.5vw, 14px)',
+                  }}
+                  placeholder={t("form_msg")}
                   required
                 />
-                
-                <button 
+
+                <button
                   type="submit"
-                  className="h-fit px-8 py-3 rounded-xl font-bold transition-all hover:scale-105"
+                  className="font-bold transition-all hover:scale-105 w-full"
                   style={{
                     background: "var(--accent)",
-                    color: "var(--bg)"
+                    color: "var(--bg)",
+                    borderRadius: 'clamp(10px, 2.5vw, 12px)',
+                    padding: 'clamp(0.625rem, 1.8vw, 0.75rem)',
+                    fontSize: 'clamp(12px, 1.5vw, 14px)',
+                    minHeight: '40px',
                   }}
                 >
                   {t("form_send")}
@@ -206,14 +256,18 @@ export default function Contacts() {
           </div>
 
           {/* Info adicional */}
-          <div 
-            className="p-5 rounded-xl ring-1 text-center"
-            style={{ 
+          <div
+            className="ring-1 text-center w-full"
+            style={{
               background: "color-mix(in oklab, var(--panel) 40%, transparent)",
-              borderColor: "color-mix(in oklab, var(--accent) 20%, transparent)"
+              borderColor: "color-mix(in oklab, var(--accent) 20%, transparent)",
+              borderRadius: 'clamp(10px, 2.5vw, 12px)',
+              padding: 'clamp(0.75rem, 2vw, 1.25rem)',
             }}
           >
-            <p className="text-sm opacity-70 leading-relaxed">
+            <p className="opacity-70 leading-relaxed" style={{
+              fontSize: 'clamp(11px, 1.4vw, 14px)',
+            }}>
               Disponible para colaboraciones, proyectos freelance y consultas profesionales.
             </p>
           </div>
