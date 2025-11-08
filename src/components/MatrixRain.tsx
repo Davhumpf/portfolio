@@ -1,13 +1,21 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 
 export default function MatrixRain() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Evitar problemas de hidratación
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -30,9 +38,9 @@ export default function MatrixRain() {
     const columns = Math.floor(canvas.width / fontSize);
     const drops: number[] = [];
 
-    // Inicializar gotas con posiciones aleatorias
+    // Inicializar gotas - algunas empiezan visibles para efecto inmediato
     for (let i = 0; i < columns; i++) {
-      drops[i] = Math.random() * -100; // Empiezan arriba fuera de vista
+      drops[i] = Math.random() > 0.5 ? Math.random() * -50 : Math.random() * 20;
     }
 
     let lastTime = 0;
@@ -46,17 +54,19 @@ export default function MatrixRain() {
       }
       lastTime = currentTime;
 
-      // Fade effect - se adapta al tema
-      const isDark = resolvedTheme === 'dark';
+      // Usar dark mode por defecto si resolvedTheme es undefined
+      const isDark = resolvedTheme !== 'light';
+
+      // Fade effect más visible
       ctx.fillStyle = isDark
-        ? 'rgba(28, 28, 30, 0.05)' // Fondo oscuro para dark mode
-        : 'rgba(229, 231, 235, 0.05)'; // Fondo claro para light mode
+        ? 'rgba(28, 28, 30, 0.1)' // Fondo oscuro para dark mode
+        : 'rgba(255, 255, 255, 0.1)'; // Fondo claro para light mode
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Color del texto - morado adaptado al tema
+      // Color del texto - morado con opacidad aumentada para mejor visibilidad
       ctx.fillStyle = isDark
-        ? 'rgba(167, 139, 250, 0.7)' // Morado brillante (#A78BFA) para dark mode
-        : 'rgba(124, 58, 237, 0.4)'; // Morado (#7C3AED) para light mode
+        ? 'rgba(167, 139, 250, 0.9)' // Morado brillante (#A78BFA) para dark mode
+        : 'rgba(124, 58, 237, 0.7)'; // Morado (#7C3AED) para light mode
       ctx.font = `${fontSize}px monospace`;
 
       // Dibujar caracteres
@@ -110,7 +120,7 @@ export default function MatrixRain() {
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
-  }, [resolvedTheme]); // Incluir resolvedTheme para que se actualice cuando cambie el tema
+  }, [mounted, resolvedTheme]); // Esperar a que monte y reaccionar a cambios de tema
 
   return (
     <canvas
