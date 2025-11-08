@@ -7,642 +7,429 @@ interface TimelineEvent {
   id: number;
   year: string;
   title: string;
+  subtitle?: string;
   description: string;
-  position: "top" | "bottom";
+  details?: string[];
   color: string;
 }
 
 const timelineEvents: TimelineEvent[] = [
   {
     id: 1,
-    year: "Siglo XIX",
-    title: "Amplían la laguna",
-    description: "Amplían la laguna ante las constantes inundaciones por desborde del río Rocha",
-    position: "bottom",
-    color: "#A78BFA",
+    year: "2019",
+    title: "Primer contacto con la programación",
+    subtitle: "Inicio autodidacta | HTML puro | Curiosidad técnica",
+    description: "Año previo a la pandemia. Estaba en noveno de colegio, emocionado por la idea de estudiar Ingeniería de Sistemas. Sin saberlo, ese entusiasmo fue el inicio de todo: comencé a aprender HTML desde cero, creando mis primeras páginas sin CSS, solo por el gusto de ver algo construido por mis propias manos. Fue mi primer acercamiento real al mundo digital, donde descubrí la satisfacción de convertir ideas en código.",
+    color: "#8B5CF6",
   },
   {
     id: 2,
-    year: "1939",
-    title: "Construcción del túnel",
-    description: "Inicia la construcción del túnel de conexión y la ampliación",
-    position: "top",
-    color: "#8B5CF6",
+    year: "2020",
+    title: "Primeros experimentos y el impulso de los videojuegos",
+    subtitle: "Java | Lógica de programación | Creatividad aplicada",
+    description: "Con más tiempo libre durante la pandemia, me lancé de lleno al aprendizaje con Java, mi primer lenguaje formal. Desarrollé pequeños proyectos y hasta creé un juego propio, que luego borré (pero marcó mi inicio en la programación interactiva). Los videojuegos se convirtieron en mi motivación: quería entender cómo se creaban, y soñaba con construir uno propio algún día.",
+    color: "#A78BFA",
   },
   {
     id: 3,
-    year: "1945",
-    title: "Recibe agua del río Rocha",
-    description: "La Laguna Alalay comienza a recibir agua del río Rocha y se evitan más inundaciones",
-    position: "bottom",
-    color: "#A78BFA",
+    year: "2021",
+    title: "Formación técnica y primeros proyectos personales",
+    subtitle: "Platzi | Autodidacta | Desarrollo full-stack inicial",
+    description: "Ingresé a cursos técnicos en Platzi, donde aprendí desde los fundamentos de la web hasta conceptos avanzados de backend y frontend. Durante este tiempo desarrollé múltiples proyectos personales, pequeños pero significativos.",
+    details: [
+      "Una app de recordatorios simples",
+      "Un sistema para administrar cuentas de streaming",
+      "Una página de plantas dedicada a una persona especial"
+    ],
+    color: "#7C3AED",
   },
   {
     id: 4,
-    year: "Años 80",
-    title: "Proceso de eutrofización",
-    description: "Se acelera el proceso de urbanización y se comienza a sentirse la eutrofización",
-    position: "top",
-    color: "#374151",
+    year: "2022",
+    title: "Consolidación técnica y visión de producto",
+    subtitle: "Node.js / Python / MySQL / Docker / Cloud",
+    description: "Ya con bases más sólidas, comencé a comprender el ecosistema completo del desarrollo. Aprendí sobre servidores, APIs, bases de datos y despliegues, aplicando buenas prácticas con Docker y flujos de CI/CD. Empecé a ver el código no solo como algo funcional, sino como una herramienta para construir productos reales y escalables.",
+    color: "#6D28D9",
   },
   {
     id: 5,
-    year: "1989-1990",
-    title: "Exceso de precipitaciones",
-    description: "Excesos de precipitaciones afectan la laguna",
-    position: "bottom",
-    color: "#8B5CF6",
+    year: "2023",
+    title: "Transición universitaria y proyectos académicos",
+    subtitle: "Matemática aplicada | Cálculo | Java / Python / Frontend avanzado",
+    description: "Al ingresar a la universidad, empecé a sentir que el conocimiento se transformaba en poder crear de verdad. Mi proyecto más destacado fue una calculadora de variables e integrales, desarrollada para mi clase de cálculo, que me mostró cómo la programación podía resolver problemas académicos reales. Ese mismo año nació Nova Store, inicialmente como un proyecto frontend personal… sin imaginar que se convertiría en mi plataforma insignia.",
+    color: "#5B21B6",
   },
   {
     id: 6,
-    year: "1991",
-    title: "Incremento del nivel",
-    description: "El nivel del agua de la laguna incrementa por las lluvias",
-    position: "top",
-    color: "#A78BFA",
+    year: "2023 - 2025",
+    title: "Nova Store: de idea a producto funcional",
+    subtitle: "React / Next.js / Tailwind / Node / Flutter / Cloud / GSAP",
+    description: "Nova Store comenzó como un e-commerce sencillo, pero con el tiempo lo expandí hacia un sistema semi-automatizado que combina la venta de productos digitales y físicos. Integré un backend propio, gestión de usuarios avanzada, panel de administración optimizado y sincronización con la nube. Incluso desarrollé una versión complementaria en Flutter, explorando la convergencia entre web y mobile.",
+    details: [
+      "Hoy, Nova Store genera ganancias tanto para mí como para otros usuarios sin necesidad de inversión directa.",
+      "Es un reflejo de mi evolución: de crear por curiosidad, a diseñar por propósito."
+    ],
+    color: "#4C1D95",
   },
   {
     id: 7,
-    year: "1992-1996",
-    title: "Aguas cristalinas",
-    description: "La laguna tiene períodos de agua cristalina y turbia",
-    position: "bottom",
-    color: "#8B5CF6",
+    year: "2025",
+    title: "Actualidad: Frontend Dev y Experiencia Interactiva",
+    subtitle: "React / Next.js / TypeScript / GSAP / Framer Motion / Tailwind / Supabase",
+    description: "Actualmente me dedico al desarrollo de interfaces modernas con un enfoque en animación, interacción y fluidez visual. Uso herramientas como GSAP, Framer Motion y Anime.js para crear experiencias inmersivas, dinámicas y naturales. Me apasiona que cada detalle tenga intención, que la navegación se sienta ligera y que la interfaz respire.",
+    details: [
+      "Una buena interfaz no solo se ve bien, se siente bien.",
+      "Cada transición, cada microinteracción, cada sombra es parte de una experiencia pensada para el usuario."
+    ],
+    color: "#6D28D9",
   },
   {
     id: 8,
-    year: "Años 90",
-    title: "Plan de restauración",
-    description: "La Alcaldía propuso un plan de restauración",
-    position: "top",
-    color: "#374151",
-  },
-  {
-    id: 9,
-    year: "1997",
-    title: "Remoción y dragado",
-    description: "Remoción y dragado de lodos para recuperar la laguna",
-    position: "bottom",
-    color: "#A78BFA",
+    year: "Visión a Futuro",
+    title: "Diseño interactivo y experiencias inmersivas",
+    subtitle: "Diseño interactivo | Realidad Virtual | Experiencias inmersivas",
+    description: "Mi meta a largo plazo es desarrollar páginas web con realidad virtual, donde el usuario pueda literalmente tocar la interfaz. Quiero fusionar diseño, tecnología y emoción para crear experiencias que no solo se vean o usen, sino que se vivan.",
+    color: "#8B5CF6",
   },
 ];
 
 export default function Timeline() {
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const timelineLineRef = useRef<HTMLDivElement>(null);
-  const pointsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const [activePoint, setActivePoint] = useState<number | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
-  const activeTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prefersReducedMotion = useRef(false);
 
   useEffect(() => {
-    // Detectar preferencia de movimiento reducido
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     prefersReducedMotion.current = mediaQuery.matches;
 
-    // Detectar si es mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    // Configurar GSAP
     gsap.config({
       force3D: true,
       nullTargetWarn: false,
     });
 
-    // Animación inicial de entrada
-    initTimelineAnimation();
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
+    animateCardIn();
   }, []);
 
-  const initTimelineAnimation = () => {
-    if (!timelineLineRef.current) return;
+  const animateCardIn = () => {
+    if (!cardRef.current) return;
 
     const timeScale = prefersReducedMotion.current ? 10 : 1;
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
     tl.timeScale(timeScale);
 
-    // Animar la línea principal
+    const elements = cardRef.current.querySelectorAll('.animate-element');
+
     tl.fromTo(
-      timelineLineRef.current,
-      { scaleX: 0 },
-      { scaleX: 1, duration: 1.2, ease: "power3.out" }
-    );
-
-    // Aparecer los puntos uno por uno
-    pointsRef.current.forEach((point, index) => {
-      if (point) {
-        const dot = point.querySelector(".point-dot");
-        const label = point.querySelector(".point-label");
-
-        tl.fromTo(
-          dot,
-          { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2)" },
-          `-=${index === 0 ? 0.8 : 0.25}`
-        );
-
-        if (label) {
-          tl.fromTo(
-            label,
-            { opacity: 0, y: -10 },
-            { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" },
-            `-=0.35`
-          );
-        }
-      }
-    });
-  };
-
-  const showInfoCircle = (eventId: number) => {
-    if (activeTimelineRef.current) {
-      activeTimelineRef.current.kill();
-    }
-
-    const point = pointsRef.current.find(
-      (p) => p?.getAttribute("data-event-id") === String(eventId)
-    );
-    if (!point) return;
-
-    const dot = point.querySelector(".point-dot") as HTMLElement;
-    const circle = point.querySelector(".info-circle") as HTMLElement;
-    const connectingLine = point.querySelector(".connecting-line") as HTMLElement;
-    const contentItems = circle?.querySelectorAll(".content-item");
-
-    if (!dot || !circle || !connectingLine) return;
-
-    const timeScale = prefersReducedMotion.current ? 10 : 1;
-    const tl = gsap.timeline({ defaults: { ease: "back.out(1.7)" } });
-    tl.timeScale(timeScale);
-    activeTimelineRef.current = tl;
-
-    // Configurar will-change para performance
-    gsap.set([circle, connectingLine, dot], { willChange: "transform, opacity" });
-
-    // 1. Animar el punto pequeño
-    tl.to(dot, {
-      scale: 1.6,
-      backgroundColor: "#8B5CF6",
-      borderColor: "#8B5CF6",
-      boxShadow: "0 0 0 8px rgba(139, 92, 246, 0.2)",
-      duration: 0.3,
-      ease: "elastic.out(1, 0.5)",
-    });
-
-    // 2. Aparecer la línea conectora
-    tl.fromTo(
-      connectingLine,
+      cardRef.current,
       {
-        scaleY: 0,
         opacity: 0,
+        scale: 0.9,
+        rotationY: -15
       },
       {
-        scaleY: 1,
         opacity: 1,
-        duration: 0.35,
-        ease: "power2.out",
-      },
-      "-=0.15"
+        scale: 1,
+        rotationY: 0,
+        duration: 0.8,
+        ease: "power3.out"
+      }
     );
 
-    // 3. Aparecer el círculo de información
-    const event = timelineEvents.find((e) => e.id === eventId);
-    const yOffset = event?.position === "top" ? 20 : -20;
-
     tl.fromTo(
-      circle,
+      elements,
       {
-        scale: 0.5,
         opacity: 0,
-        y: yOffset,
+        y: 30
       },
       {
-        scale: 1,
         opacity: 1,
         y: 0,
-        duration: 0.5,
-        ease: "back.out(1.7)",
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power2.out"
       },
-      "-=0.2"
+      "-=0.5"
     );
-
-    // 4. Animar el contenido interno
-    if (contentItems && contentItems.length > 0) {
-      tl.fromTo(
-        contentItems,
-        {
-          opacity: 0,
-          y: 10,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.3,
-          stagger: 0.08,
-          ease: "power2.out",
-        },
-        "-=0.3"
-      );
-    }
-
-    // Limpiar will-change después de la animación
-    tl.eventCallback("onComplete", () => {
-      gsap.set([circle, connectingLine, dot], { clearProps: "willChange" });
-    });
-
-    circle.classList.add("active");
   };
 
-  const hideInfoCircle = (eventId: number) => {
-    if (activeTimelineRef.current) {
-      activeTimelineRef.current.kill();
-    }
+  const animateTransition = (direction: 'next' | 'prev') => {
+    if (isAnimating || !cardRef.current) return;
 
-    const point = pointsRef.current.find(
-      (p) => p?.getAttribute("data-event-id") === String(eventId)
-    );
-    if (!point) return;
-
-    const dot = point.querySelector(".point-dot") as HTMLElement;
-    const circle = point.querySelector(".info-circle") as HTMLElement;
-    const connectingLine = point.querySelector(".connecting-line") as HTMLElement;
-    const contentItems = circle?.querySelectorAll(".content-item");
-
-    if (!dot || !circle || !connectingLine) return;
+    setIsAnimating(true);
 
     const timeScale = prefersReducedMotion.current ? 10 : 1;
-    const tl = gsap.timeline({ defaults: { ease: "power2.in" } });
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.inOut" },
+      onComplete: () => {
+        setIsAnimating(false);
+      }
+    });
     tl.timeScale(timeScale);
 
-    // 1. Desvanecer contenido interno
-    if (contentItems && contentItems.length > 0) {
-      tl.to(contentItems, {
-        opacity: 0,
-        y: -10,
-        duration: 0.2,
-        stagger: 0.05,
-        ease: "power2.in",
-      });
-    }
+    const elements = cardRef.current.querySelectorAll('.animate-element');
+    const xOut = direction === 'next' ? -100 : 100;
+    const xIn = direction === 'next' ? 100 : -100;
 
-    // 2. Contraer el círculo
-    tl.to(
-      circle,
-      {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.in",
-      },
-      "-=0.1"
-    );
-
-    // 3. Ocultar línea conectora
-    tl.to(
-      connectingLine,
-      {
-        scaleY: 0,
-        opacity: 0,
-        duration: 0.25,
-        ease: "power2.in",
-      },
-      "-=0.2"
-    );
-
-    // 4. Restaurar el punto pequeño
-    tl.to(
-      dot,
-      {
-        scale: 1,
-        backgroundColor: "#FFFFFF",
-        borderColor: "#6B7280",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        duration: 0.25,
-        ease: "elastic.out(1, 0.4)",
-      },
-      "-=0.15"
-    );
-
-    circle.classList.remove("active");
-  };
-
-  const handlePointHover = (eventId: number) => {
-    if (isMobile) return;
-
-    if (activePoint !== null && activePoint !== eventId) {
-      hideInfoCircle(activePoint);
-    }
-
-    setActivePoint(eventId);
-    showInfoCircle(eventId);
-  };
-
-  const handlePointLeave = (eventId: number) => {
-    if (isMobile) return;
-
-    hideInfoCircle(eventId);
-    setActivePoint(null);
-  };
-
-  const handlePointClick = (eventId: number) => {
-    if (!isMobile) return;
-
-    const point = pointsRef.current.find(
-      (p) => p?.getAttribute("data-event-id") === String(eventId)
-    );
-    if (!point) return;
-
-    const dot = point.querySelector(".point-dot") as HTMLElement;
-
-    // Feedback táctil
-    gsap.to(dot, {
-      scale: 1.3,
-      duration: 0.15,
-      ease: "power2.out",
-      yoyo: true,
-      repeat: 1,
+    // Salida
+    tl.to(elements, {
+      opacity: 0,
+      x: xOut * 0.3,
+      duration: 0.4,
+      stagger: 0.05,
+      ease: "power2.in"
     });
 
-    if (activePoint !== null && activePoint !== eventId) {
-      hideInfoCircle(activePoint);
-    }
+    tl.to(
+      cardRef.current,
+      {
+        opacity: 0,
+        x: xOut,
+        scale: 0.95,
+        rotationY: direction === 'next' ? 10 : -10,
+        duration: 0.5,
+        ease: "power3.in"
+      },
+      "-=0.3"
+    );
 
-    if (activePoint === eventId) {
-      closeMobileInfo();
-    } else {
-      setActivePoint(eventId);
-      setShowOverlay(true);
-      showInfoCircle(eventId);
-      scrollToPoint(point);
-    }
-  };
-
-  const closeMobileInfo = () => {
-    if (activePoint !== null) {
-      hideInfoCircle(activePoint);
-    }
-    setActivePoint(null);
-    setShowOverlay(false);
-  };
-
-  const scrollToPoint = (point: HTMLElement) => {
-    const container = timelineRef.current;
-    if (!container) return;
-
-    const pointPosition = point.offsetLeft;
-    const containerWidth = container.offsetWidth;
-    const scrollPosition = pointPosition - containerWidth / 2;
-
-    gsap.to(container, {
-      scrollLeft: scrollPosition,
-      duration: 0.8,
-      ease: "power2.inOut",
-    });
-  };
-
-  const handleOverlayClick = () => {
-    if (isMobile) {
-      closeMobileInfo();
-    }
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (isMobile && activePoint !== null) {
-        closeMobileInfo();
+    // Cambiar índice
+    tl.call(() => {
+      if (direction === 'next') {
+        setCurrentIndex((prev) => (prev + 1) % timelineEvents.length);
+      } else {
+        setCurrentIndex((prev) => (prev - 1 + timelineEvents.length) % timelineEvents.length);
       }
-    };
+    });
 
-    if (isMobile) {
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, [isMobile, activePoint]);
+    // Entrada
+    tl.fromTo(
+      cardRef.current,
+      {
+        opacity: 0,
+        x: xIn,
+        scale: 0.95,
+        rotationY: direction === 'next' ? -10 : 10
+      },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        rotationY: 0,
+        duration: 0.6,
+        ease: "power3.out"
+      }
+    );
+
+    tl.fromTo(
+      cardRef.current.querySelectorAll('.animate-element'),
+      {
+        opacity: 0,
+        y: 30
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power2.out"
+      },
+      "-=0.4"
+    );
+  };
+
+  const handleNext = () => {
+    animateTransition('next');
+  };
+
+  const handlePrev = () => {
+    animateTransition('prev');
+  };
+
+  const handleDotClick = (index: number) => {
+    if (index === currentIndex || isAnimating) return;
+
+    const direction = index > currentIndex ? 'next' : 'prev';
+    setCurrentIndex(index);
+
+    if (!cardRef.current) return;
+
+    const timeScale = prefersReducedMotion.current ? 10 : 1;
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.inOut" },
+      onComplete: () => setIsAnimating(false)
+    });
+    tl.timeScale(timeScale);
+
+    setIsAnimating(true);
+
+    const elements = cardRef.current.querySelectorAll('.animate-element');
+
+    tl.to(elements, {
+      opacity: 0,
+      scale: 0.9,
+      duration: 0.3,
+      stagger: 0.03
+    });
+
+    tl.to(cardRef.current, {
+      opacity: 0,
+      scale: 0.9,
+      duration: 0.3
+    }, "-=0.2");
+
+    tl.fromTo(
+      cardRef.current,
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.4 }
+    );
+
+    tl.fromTo(
+      cardRef.current.querySelectorAll('.animate-element'),
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 },
+      "-=0.3"
+    );
+  };
+
+  const currentEvent = timelineEvents[currentIndex];
 
   return (
-    <Section id="timeline" title="Laguna Alalay" subtitle="Historia de la Laguna Alalay en Cochabamba">
-      <div
-        ref={timelineRef}
-        className="timeline-container w-full overflow-x-auto overflow-y-visible pb-8 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
-        style={{
-          padding: "100px 40px",
-          scrollBehavior: "smooth",
-        }}
-      >
-        <div
-          className="timeline-wrapper relative flex items-center justify-between"
-          style={{
-            minWidth: "max-content",
-            height: "400px",
-            gap: isMobile ? "100px" : "80px",
-          }}
-        >
-          {/* Línea horizontal principal */}
-          <div
-            ref={timelineLineRef}
-            className="timeline-line absolute top-1/2 left-0 right-0"
-            style={{
-              height: "3px",
-              background: "#9CA3AF",
-              transform: "translateY(-50%)",
-              transformOrigin: "left center",
-            }}
-          />
+    <Section id="timeline" title="Mi Trayectoria" subtitle="Evolución profesional y técnica">
+      <div className="timeline-slider-container relative w-full max-w-5xl mx-auto px-4 py-12">
 
-          {/* Puntos de eventos */}
-          {timelineEvents.map((event, index) => (
+        {/* Tarjeta principal */}
+        <div className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center">
+          <div
+            ref={cardRef}
+            className="timeline-card relative w-full bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl p-8 md:p-12"
+            style={{
+              border: `2px solid ${currentEvent.color}`,
+              boxShadow: `0 20px 60px ${currentEvent.color}40, 0 0 40px ${currentEvent.color}20`
+            }}
+          >
+            {/* Año destacado */}
             <div
-              key={event.id}
-              ref={(el) => {
-                pointsRef.current[index] = el;
-              }}
-              data-event-id={event.id}
-              className="timeline-point relative flex-shrink-0"
-              style={{ zIndex: 2 }}
-              onMouseEnter={() => handlePointHover(event.id)}
-              onMouseLeave={() => handlePointLeave(event.id)}
-              onClick={() => handlePointClick(event.id)}
-              role="listitem"
-              aria-label={`${event.year}: ${event.title}`}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  if (isMobile) {
-                    handlePointClick(event.id);
-                  } else {
-                    handlePointHover(event.id);
-                  }
-                }
+              className="animate-element absolute -top-6 left-8 px-6 py-3 rounded-full font-bold text-xl md:text-2xl text-white"
+              style={{
+                background: `linear-gradient(135deg, ${currentEvent.color}, ${currentEvent.color}dd)`,
+                boxShadow: `0 4px 20px ${currentEvent.color}60`
               }}
             >
-              {/* Punto pequeño */}
+              {currentEvent.year}
+            </div>
+
+            {/* Contenido */}
+            <div className="space-y-6 pt-8">
+              <h3 className="animate-element text-2xl md:text-3xl font-bold text-white leading-tight">
+                {currentEvent.title}
+              </h3>
+
+              {currentEvent.subtitle && (
+                <p
+                  className="animate-element text-sm md:text-base font-medium"
+                  style={{ color: currentEvent.color }}
+                >
+                  {currentEvent.subtitle}
+                </p>
+              )}
+
+              <p className="animate-element text-gray-300 text-base md:text-lg leading-relaxed">
+                {currentEvent.description}
+              </p>
+
+              {currentEvent.details && currentEvent.details.length > 0 && (
+                <div className="animate-element space-y-3 pt-4">
+                  {currentEvent.details.map((detail, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-start gap-3 text-gray-300 text-sm md:text-base"
+                    >
+                      <div
+                        className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
+                        style={{ backgroundColor: currentEvent.color }}
+                      />
+                      <p className="leading-relaxed">{detail}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Flechas de navegación */}
+          <button
+            onClick={handlePrev}
+            disabled={isAnimating}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-800 hover:bg-gray-700 border-2 border-gray-600 hover:border-purple-500 text-white flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 z-10"
+            aria-label="Anterior"
+          >
+            <svg
+              className="w-6 h-6 md:w-7 md:h-7"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <button
+            onClick={handleNext}
+            disabled={isAnimating}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-800 hover:bg-gray-700 border-2 border-gray-600 hover:border-purple-500 text-white flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 z-10"
+            aria-label="Siguiente"
+          >
+            <svg
+              className="w-6 h-6 md:w-7 md:h-7"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Indicadores de posición (dots) */}
+        <div className="flex items-center justify-center gap-3 mt-12">
+          {timelineEvents.map((event, index) => (
+            <button
+              key={event.id}
+              onClick={() => handleDotClick(index)}
+              disabled={isAnimating}
+              className="relative group"
+              aria-label={`Ir a ${event.year}`}
+            >
               <div
-                className="point-dot"
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentIndex ? 'scale-125' : 'scale-100 hover:scale-110'
+                }`}
                 style={{
-                  width: "16px",
-                  height: "16px",
-                  borderRadius: "50%",
-                  background: "white",
-                  border: "3px solid #6B7280",
-                  cursor: "pointer",
-                  position: "relative",
-                  zIndex: 3,
-                  transition: "all 0.3s ease",
+                  backgroundColor: index === currentIndex ? event.color : '#4B5563',
+                  boxShadow: index === currentIndex ? `0 0 12px ${event.color}` : 'none'
                 }}
               />
 
-              {/* Etiqueta de año */}
-              <div
-                className="point-label"
-                style={{
-                  position: "absolute",
-                  top: "calc(100% + 10px)",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  fontSize: "12px",
-                  color: "#4B5563",
-                  whiteSpace: "nowrap",
-                  fontWeight: 500,
-                }}
-              >
+              {/* Tooltip con el año */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 {event.year}
               </div>
-
-              {/* Línea conectora */}
-              <div
-                className="connecting-line"
-                style={{
-                  position: "absolute",
-                  width: "2px",
-                  background: `linear-gradient(to bottom, ${event.color} 0%, ${event.color} 100%)`,
-                  borderLeft: `2px dashed ${event.color}`,
-                  left: "50%",
-                  transform: "translateX(-50%) scaleY(0)",
-                  transformOrigin: event.position === "top" ? "bottom center" : "top center",
-                  opacity: 0,
-                  zIndex: 1,
-                  height: "60px",
-                  [event.position === "top" ? "bottom" : "top"]: "100%",
-                }}
-              />
-
-              {/* Círculo de información */}
-              <div
-                className="info-circle"
-                style={{
-                  position: "absolute",
-                  width: isMobile ? "140px" : "180px",
-                  height: isMobile ? "140px" : "180px",
-                  borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${event.color} 0%, ${event.color === "#374151" ? "#4B5563" : event.color} 100%)`,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: isMobile ? "20px" : "25px",
-                  boxShadow: `0 8px 24px ${event.color === "#374151" ? "rgba(55, 65, 81, 0.3)" : "rgba(139, 92, 246, 0.3)"}`,
-                  left: "50%",
-                  transform: "translateX(-50%) scale(0)",
-                  opacity: 0,
-                  zIndex: 10,
-                  pointerEvents: "none",
-                  [event.position === "top" ? "bottom" : "top"]: "calc(100% + 60px)",
-                }}
-              >
-                <div
-                  className="content-item year"
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: isMobile ? "18px" : "20px",
-                    fontWeight: "bold",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {event.year}
-                </div>
-                <div
-                  className="content-item title"
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: isMobile ? "14px" : "16px",
-                    fontWeight: 600,
-                    marginBottom: "8px",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {event.title}
-                </div>
-                <div
-                  className="content-item description"
-                  style={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: isMobile ? "12px" : "13px",
-                    fontWeight: 400,
-                    lineHeight: 1.5,
-                    opacity: 0.95,
-                  }}
-                >
-                  {event.description}
-                </div>
-              </div>
-            </div>
+            </button>
           ))}
+        </div>
+
+        {/* Contador de slides */}
+        <div className="text-center mt-6 text-gray-400 text-sm">
+          {currentIndex + 1} / {timelineEvents.length}
         </div>
       </div>
 
-      {/* Mobile overlay */}
-      {isMobile && (
-        <div
-          className="mobile-overlay"
-          onClick={handleOverlayClick}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "rgba(0, 0, 0, 0.4)",
-            zIndex: 5,
-            opacity: showOverlay ? 1 : 0,
-            pointerEvents: showOverlay ? "all" : "none",
-            transition: "opacity 0.3s ease",
-          }}
-        />
-      )}
-
       <style jsx>{`
-        .scrollbar-thin::-webkit-scrollbar {
-          height: 8px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: #4b5563;
-          border-radius: 4px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: #6b7280;
-        }
-        .info-circle.active {
-          pointer-events: all;
-        }
-        .timeline-point:focus {
-          outline: 2px solid #8B5CF6;
-          outline-offset: 4px;
-          border-radius: 50%;
+        .timeline-card {
+          perspective: 1000px;
+          transform-style: preserve-3d;
         }
       `}</style>
     </Section>
