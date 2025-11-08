@@ -20,24 +20,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <body className="min-h-screen antialiased overflow-x-hidden">
-        {/* Gradiente de fondo */}
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 -z-10"
-          style={{
-            background: `
-              radial-gradient(clamp(400px, 50vw, 900px) circle at 20% 10%, var(--accent)/12 0, transparent 60%),
-              radial-gradient(clamp(350px, 45vw, 800px) circle at 80% 30%, var(--accent-2)/10 0, transparent 60%)
-            `,
-          }}
-        />
-
         {/* Providers + Navigation */}
         <LanguageProvider>
           <ThemeProvider>
-            {/* Animación Matrix de fondo - debe estar dentro de ThemeProvider */}
+            {/* CAPA 1 (z-index: 0) - Animación Matrix de fondo */}
             <MatrixRain />
 
+            {/* CAPA 2 (z-index: 1) - Color de fondo semi-transparente */}
+            <div
+              aria-hidden
+              className="pointer-events-none fixed inset-0"
+              style={{
+                zIndex: 1,
+                backgroundColor: 'var(--bg-page)',
+                opacity: 0.85,
+              }}
+            />
+
+            {/* CAPA 3 (z-index: 2) - Gradientes decorativos */}
+            <div
+              aria-hidden
+              className="pointer-events-none fixed inset-0"
+              style={{
+                zIndex: 2,
+                background: `
+                  radial-gradient(clamp(400px, 50vw, 900px) circle at 20% 10%, var(--accent)/12 0, transparent 60%),
+                  radial-gradient(clamp(350px, 45vw, 800px) circle at 80% 30%, var(--accent-2)/10 0, transparent 60%)
+                `,
+              }}
+            />
+
+            {/* CAPA 10+ - Contenido y navegación */}
             {/* Header for mobile only */}
             <Header />
 
