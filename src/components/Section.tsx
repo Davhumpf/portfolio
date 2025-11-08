@@ -2,6 +2,7 @@
 import { ReactNode } from "react";
 import { useSectionReveal } from "@/lib/useSectionReveal";
 
+// Section component - Wrapper reutilizable para las secciones del portfolio
 export default function Section({
   id,
   title,
