@@ -55,6 +55,41 @@ const ExternalLink = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const Monitor = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect width="20" height="14" x="2" y="3" rx="2" />
+    <line x1="8" x2="16" y1="21" y2="21" />
+    <line x1="12" x2="12" y1="17" y2="21" />
+  </svg>
+);
+
+const X = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </svg>
+);
+
 interface Project {
   name: string;
   tag: string;
@@ -68,6 +103,7 @@ export default function Projects() {
   const t = useT();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -78,14 +114,8 @@ export default function Projects() {
       name: "Nova Store",
       tag: "E-commerce",
       desc: "Tienda online moderna con diseño minimalista y experiencia de usuario fluida",
-      link: "https://nova-store-page.vercel.app/",
+      link: "https://nova-store-page.vercel.app/inicio",
       image: "https://nova-store-page.vercel.app/og-image.png",
-    },
-    {
-      name: t("proj_motion"),
-      tag: "Motion Design",
-      desc: t("proj_motion_desc"),
-      comingSoon: true,
     },
     {
       name: "ITIA",
@@ -94,7 +124,7 @@ export default function Projects() {
       comingSoon: true,
     },
     {
-      name: "Miza",
+      name: "MIZA",
       tag: "UI Tooling",
       desc: "Tooling para flujos UI — componentes y microinteracciones.",
       comingSoon: true,
@@ -260,6 +290,27 @@ export default function Projects() {
     }
   }, []);
 
+  // Manejo de ESC para cerrar modal y bloqueo de scroll
+  useEffect(() => {
+    if (showPreview) {
+      // Bloquear scroll del body cuando el modal está abierto
+      document.body.style.overflow = "hidden";
+
+      // Listener para cerrar con ESC
+      const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setShowPreview(false);
+        }
+      };
+      window.addEventListener("keydown", handleEsc);
+
+      return () => {
+        document.body.style.overflow = "unset";
+        window.removeEventListener("keydown", handleEsc);
+      };
+    }
+  }, [showPreview]);
+
   // Inicializar primer slide
   useEffect(() => {
     if (slideRefs.current[0]) {
@@ -416,22 +467,20 @@ export default function Projects() {
                       >
                         {project.desc}
                       </p>
-                      <a
-                        href={project.link || "#"}
-                        target={project.link ? "_blank" : undefined}
-                        rel={project.link ? "noopener noreferrer" : undefined}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-shadow"
+                      <button
+                        onClick={() => setShowPreview(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
                         style={{
-                          border: "1px solid var(--border)",
-                          background: "var(--bg-card)",
+                          border: "1px solid var(--accent)",
+                          background: "var(--accent)",
                           fontSize: "clamp(12px, 1.6vw, 14px)",
                           fontWeight: 600,
-                          color: "var(--text-1)",
+                          color: "#ffffff",
                         }}
                       >
-                        Ver repositorio
-                        {project.link && <ExternalLink />}
-                      </a>
+                        <Monitor />
+                        Vista Previa Interactiva
+                      </button>
                     </>
                   )}
                 </div>
@@ -514,6 +563,71 @@ export default function Projects() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Vista Previa Interactiva */}
+      {showPreview && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{
+            background: "rgba(0, 0, 0, 0.85)",
+            backdropFilter: "blur(8px)",
+          }}
+          onClick={() => setShowPreview(false)}
+        >
+          <div
+            className="relative w-full h-full max-w-7xl max-h-[90vh] rounded-2xl overflow-hidden"
+            style={{
+              background: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header del modal */}
+            <div
+              className="flex items-center justify-between px-6 py-4"
+              style={{
+                borderBottom: "1px solid var(--border)",
+                background: "var(--panel)",
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <Monitor width={20} height={20} style={{ color: "var(--accent)" }} />
+                <div>
+                  <h3 className="font-bold text-lg" style={{ color: "var(--text-1)" }}>
+                    Nova Store - Vista Previa Interactiva
+                  </h3>
+                  <p className="text-sm" style={{ color: "var(--text-2)" }}>
+                    Interactúa con el proyecto en tiempo real
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPreview(false)}
+                className="rounded-full p-2 transition-all hover:bg-opacity-80 active:scale-95"
+                style={{
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border)",
+                }}
+                aria-label="Cerrar vista previa"
+              >
+                <X />
+              </button>
+            </div>
+
+            {/* Iframe */}
+            <div className="w-full h-[calc(100%-80px)]">
+              <iframe
+                src="https://nova-store-page.vercel.app/inicio"
+                className="w-full h-full"
+                title="Nova Store Preview"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </Section>
   );
 }
