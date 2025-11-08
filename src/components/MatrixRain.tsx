@@ -110,7 +110,7 @@ export default function MatrixRain() {
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
-  }, []);
+  }, [resolvedTheme]); // Incluir resolvedTheme para que se actualice cuando cambie el tema
 
   return (
     <canvas
