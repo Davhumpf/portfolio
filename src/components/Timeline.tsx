@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { useTheme } from "next-themes";
 import Section from "./Section";
 
 interface TimelineEvent {
@@ -10,7 +11,8 @@ interface TimelineEvent {
   subtitle?: string;
   description: string;
   details?: string[];
-  color: string;
+  colorLight: string; // Color más oscuro para light mode
+  colorDark: string;  // Color más claro para dark mode
 }
 
 const timelineEvents: TimelineEvent[] = [
@@ -20,7 +22,8 @@ const timelineEvents: TimelineEvent[] = [
     title: "Primer contacto con la programación",
     subtitle: "Inicio autodidacta | HTML puro | Curiosidad técnica",
     description: "Año previo a la pandemia. Estaba en noveno de colegio, emocionado por la idea de estudiar Ingeniería de Sistemas. Sin saberlo, ese entusiasmo fue el inicio de todo: comencé a aprender HTML desde cero, creando mis primeras páginas sin CSS, solo por el gusto de ver algo construido por mis propias manos. Fue mi primer acercamiento real al mundo digital, donde descubrí la satisfacción de convertir ideas en código.",
-    color: "#8B5CF6",
+    colorLight: "#6D28D9",  // Púrpura oscuro para light mode
+    colorDark: "#A78BFA",   // Púrpura claro para dark mode
   },
   {
     id: 2,
@@ -28,7 +31,8 @@ const timelineEvents: TimelineEvent[] = [
     title: "Primeros experimentos y el impulso de los videojuegos",
     subtitle: "Java | Lógica de programación | Creatividad aplicada",
     description: "Con más tiempo libre durante la pandemia, me lancé de lleno al aprendizaje con Java, mi primer lenguaje formal. Desarrollé pequeños proyectos y hasta creé un juego propio, que luego borré (pero marcó mi inicio en la programación interactiva). Los videojuegos se convirtieron en mi motivación: quería entender cómo se creaban, y soñaba con construir uno propio algún día.",
-    color: "#A78BFA",
+    colorLight: "#7C3AED",  // Púrpura medio oscuro
+    colorDark: "#C4B5FD",   // Púrpura más claro
   },
   {
     id: 3,
@@ -41,7 +45,8 @@ const timelineEvents: TimelineEvent[] = [
       "Un sistema para administrar cuentas de streaming",
       "Una página de plantas dedicada a una persona especial"
     ],
-    color: "#7C3AED",
+    colorLight: "#5B21B6",
+    colorDark: "#A78BFA",
   },
   {
     id: 4,
@@ -49,7 +54,8 @@ const timelineEvents: TimelineEvent[] = [
     title: "Consolidación técnica y visión de producto",
     subtitle: "Node.js / Python / MySQL / Docker / Cloud",
     description: "Ya con bases más sólidas, comencé a comprender el ecosistema completo del desarrollo. Aprendí sobre servidores, APIs, bases de datos y despliegues, aplicando buenas prácticas con Docker y flujos de CI/CD. Empecé a ver el código no solo como algo funcional, sino como una herramienta para construir productos reales y escalables.",
-    color: "#6D28D9",
+    colorLight: "#4C1D95",
+    colorDark: "#8B5CF6",
   },
   {
     id: 5,
@@ -57,7 +63,8 @@ const timelineEvents: TimelineEvent[] = [
     title: "Transición universitaria y proyectos académicos",
     subtitle: "Matemática aplicada | Cálculo | Java / Python / Frontend avanzado",
     description: "Al ingresar a la universidad, empecé a sentir que el conocimiento se transformaba en poder crear de verdad. Mi proyecto más destacado fue una calculadora de variables e integrales, desarrollada para mi clase de cálculo, que me mostró cómo la programación podía resolver problemas académicos reales. Ese mismo año nació Nova Store, inicialmente como un proyecto frontend personal… sin imaginar que se convertiría en mi plataforma insignia.",
-    color: "#5B21B6",
+    colorLight: "#6D28D9",
+    colorDark: "#A78BFA",
   },
   {
     id: 6,
@@ -69,7 +76,8 @@ const timelineEvents: TimelineEvent[] = [
       "Hoy, Nova Store genera ganancias tanto para mí como para otros usuarios sin necesidad de inversión directa.",
       "Es un reflejo de mi evolución: de crear por curiosidad, a diseñar por propósito."
     ],
-    color: "#4C1D95",
+    colorLight: "#5B21B6",
+    colorDark: "#C4B5FD",
   },
   {
     id: 7,
@@ -81,7 +89,8 @@ const timelineEvents: TimelineEvent[] = [
       "Una buena interfaz no solo se ve bien, se siente bien.",
       "Cada transición, cada microinteracción, cada sombra es parte de una experiencia pensada para el usuario."
     ],
-    color: "#6D28D9",
+    colorLight: "#7C3AED",
+    colorDark: "#A78BFA",
   },
   {
     id: 8,
@@ -89,11 +98,14 @@ const timelineEvents: TimelineEvent[] = [
     title: "Diseño interactivo y experiencias inmersivas",
     subtitle: "Diseño interactivo | Realidad Virtual | Experiencias inmersivas",
     description: "Mi meta a largo plazo es desarrollar páginas web con realidad virtual, donde el usuario pueda literalmente tocar la interfaz. Quiero fusionar diseño, tecnología y emoción para crear experiencias que no solo se vean o usen, sino que se vivan.",
-    color: "#8B5CF6",
+    colorLight: "#6D28D9",
+    colorDark: "#C4B5FD",
   },
 ];
 
 export default function Timeline() {
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -101,6 +113,7 @@ export default function Timeline() {
   const prefersReducedMotion = useRef(false);
 
   useEffect(() => {
+    setMounted(true);
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     prefersReducedMotion.current = mediaQuery.matches;
 
@@ -293,49 +306,62 @@ export default function Timeline() {
     );
   };
 
+  // No renderizar hasta que el tema esté montado
+  if (!mounted) return null;
+
   const currentEvent = timelineEvents[currentIndex];
+  const isDark = resolvedTheme === 'dark';
+  const currentColor = isDark ? currentEvent.colorDark : currentEvent.colorLight;
 
   return (
     <Section id="timeline" title="Mi Trayectoria" subtitle="Evolución profesional y técnica">
-      <div className="timeline-slider-container relative w-full max-w-5xl mx-auto px-4 py-12">
+      <div className="timeline-slider-container relative w-full max-w-4xl mx-auto px-4 py-8">
 
         {/* Tarjeta principal */}
-        <div className="relative min-h-[500px] md:min-h-[600px] flex items-center justify-center">
+        <div className="relative min-h-[400px] md:min-h-[450px] flex items-center justify-center">
           <div
             ref={cardRef}
-            className="timeline-card relative w-full bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl p-8 md:p-12"
+            className={`timeline-card relative w-full rounded-2xl shadow-2xl p-6 md:p-10 ${
+              isDark
+                ? 'bg-gradient-to-br from-gray-900 to-gray-800'
+                : 'bg-gradient-to-br from-white to-gray-50'
+            }`}
             style={{
-              border: `2px solid ${currentEvent.color}`,
-              boxShadow: `0 20px 60px ${currentEvent.color}40, 0 0 40px ${currentEvent.color}20`
+              border: `2px solid ${currentColor}`,
+              boxShadow: `0 20px 60px ${currentColor}40, 0 0 40px ${currentColor}20`
             }}
           >
             {/* Año destacado */}
             <div
-              className="animate-element absolute -top-6 left-8 px-6 py-3 rounded-full font-bold text-xl md:text-2xl text-white"
+              className="animate-element absolute -top-6 left-8 px-5 py-2 md:px-6 md:py-3 rounded-full font-bold text-lg md:text-xl text-white"
               style={{
-                background: `linear-gradient(135deg, ${currentEvent.color}, ${currentEvent.color}dd)`,
-                boxShadow: `0 4px 20px ${currentEvent.color}60`
+                background: `linear-gradient(135deg, ${currentColor}, ${currentColor}dd)`,
+                boxShadow: `0 4px 20px ${currentColor}60`
               }}
             >
               {currentEvent.year}
             </div>
 
             {/* Contenido */}
-            <div className="space-y-6 pt-8">
-              <h3 className="animate-element text-2xl md:text-3xl font-bold text-white leading-tight">
+            <div className="space-y-4 md:space-y-6 pt-8">
+              <h3 className={`animate-element text-xl md:text-2xl font-bold leading-tight ${
+                isDark ? 'text-white' : 'text-gray-900'
+              }`}>
                 {currentEvent.title}
               </h3>
 
               {currentEvent.subtitle && (
                 <p
                   className="animate-element text-sm md:text-base font-medium"
-                  style={{ color: currentEvent.color }}
+                  style={{ color: currentColor }}
                 >
                   {currentEvent.subtitle}
                 </p>
               )}
 
-              <p className="animate-element text-gray-300 text-base md:text-lg leading-relaxed">
+              <p className={`animate-element text-sm md:text-base leading-relaxed ${
+                isDark ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 {currentEvent.description}
               </p>
 
@@ -344,11 +370,13 @@ export default function Timeline() {
                   {currentEvent.details.map((detail, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-3 text-gray-300 text-sm md:text-base"
+                      className={`flex items-start gap-3 text-sm md:text-base ${
+                        isDark ? 'text-gray-300' : 'text-gray-700'
+                      }`}
                     >
                       <div
                         className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                        style={{ backgroundColor: currentEvent.color }}
+                        style={{ backgroundColor: currentColor }}
                       />
                       <p className="leading-relaxed">{detail}</p>
                     </div>
@@ -362,11 +390,18 @@ export default function Timeline() {
           <button
             onClick={handlePrev}
             disabled={isAnimating}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-800 hover:bg-gray-700 border-2 border-gray-600 hover:border-purple-500 text-white flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 z-10"
+            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-10 h-10 md:w-12 md:h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg z-10 ${
+              isDark
+                ? 'bg-gray-800 hover:bg-gray-700 border-gray-600 text-white hover:shadow-purple-400/50'
+                : 'bg-white hover:bg-gray-50 border-gray-300 text-gray-800 hover:shadow-purple-600/50'
+            }`}
+            style={{
+              borderColor: isAnimating ? '' : currentColor,
+            }}
             aria-label="Anterior"
           >
             <svg
-              className="w-6 h-6 md:w-7 md:h-7"
+              className="w-5 h-5 md:w-6 md:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -378,11 +413,18 @@ export default function Timeline() {
           <button
             onClick={handleNext}
             disabled={isAnimating}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-800 hover:bg-gray-700 border-2 border-gray-600 hover:border-purple-500 text-white flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/50 z-10"
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-10 h-10 md:w-12 md:h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg z-10 ${
+              isDark
+                ? 'bg-gray-800 hover:bg-gray-700 border-gray-600 text-white hover:shadow-purple-400/50'
+                : 'bg-white hover:bg-gray-50 border-gray-300 text-gray-800 hover:shadow-purple-600/50'
+            }`}
+            style={{
+              borderColor: isAnimating ? '' : currentColor,
+            }}
             aria-label="Siguiente"
           >
             <svg
-              className="w-6 h-6 md:w-7 md:h-7"
+              className="w-5 h-5 md:w-6 md:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -393,35 +435,42 @@ export default function Timeline() {
         </div>
 
         {/* Indicadores de posición (dots) */}
-        <div className="flex items-center justify-center gap-3 mt-12">
-          {timelineEvents.map((event, index) => (
-            <button
-              key={event.id}
-              onClick={() => handleDotClick(index)}
-              disabled={isAnimating}
-              className="relative group"
-              aria-label={`Ir a ${event.year}`}
-            >
-              <div
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? 'scale-125' : 'scale-100 hover:scale-110'
-                }`}
-                style={{
-                  backgroundColor: index === currentIndex ? event.color : '#4B5563',
-                  boxShadow: index === currentIndex ? `0 0 12px ${event.color}` : 'none'
-                }}
-              />
+        <div className="flex items-center justify-center gap-2 md:gap-3 mt-8 md:mt-10">
+          {timelineEvents.map((event, index) => {
+            const dotColor = isDark ? event.colorDark : event.colorLight;
+            return (
+              <button
+                key={event.id}
+                onClick={() => handleDotClick(index)}
+                disabled={isAnimating}
+                className="relative group"
+                aria-label={`Ir a ${event.year}`}
+              >
+                <div
+                  className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+                    index === currentIndex ? 'scale-125' : 'scale-100 hover:scale-110'
+                  }`}
+                  style={{
+                    backgroundColor: index === currentIndex ? dotColor : (isDark ? '#4B5563' : '#9CA3AF'),
+                    boxShadow: index === currentIndex ? `0 0 12px ${dotColor}` : 'none'
+                  }}
+                />
 
-              {/* Tooltip con el año */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                {event.year}
-              </div>
-            </button>
-          ))}
+                {/* Tooltip con el año */}
+                <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none ${
+                  isDark ? 'bg-gray-800 text-white' : 'bg-gray-700 text-white'
+                }`}>
+                  {event.year}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Contador de slides */}
-        <div className="text-center mt-6 text-gray-400 text-sm">
+        <div className={`text-center mt-4 md:mt-6 text-sm ${
+          isDark ? 'text-gray-400' : 'text-gray-600'
+        }`}>
           {currentIndex + 1} / {timelineEvents.length}
         </div>
       </div>
