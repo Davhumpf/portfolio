@@ -131,27 +131,20 @@ export default function About() {
   return (
     <div ref={scope}>
       <Section id="about" title={t("about_title")} subtitle={t("about_sub")}>
-        {/* Layout flexible que se apila en pantallas pequeñas */}
-        <div className="w-full flex flex-col gap-6 items-stretch" style={{
-          gap: 'clamp(1rem, 3vw, 2rem)',
-        }}>
+        {/* Layout con FENG SHUI: Grid en desktop, stack en móvil */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 lg:gap-12 items-start">
 
-          {/* COLUMNA 1: Imagen + Textos */}
-          <div className="flex flex-col items-center w-full" style={{
-            gap: 'clamp(1rem, 2.5vw, 1.5rem)',
-          }}>
-            {/* Imagen profesional */}
-            <div className="about-image relative flex-shrink-0 w-full max-w-xs">
-              <div className="relative w-full aspect-square" style={{
-                maxWidth: 'clamp(120px, 35vw, 224px)',
-                margin: '0 auto',
-              }}>
+          {/* COLUMNA IZQUIERDA: Imagen + Bio (Punto focal) */}
+          <div className="flex flex-col items-center lg:items-start gap-6 lg:gap-8">
+            {/* Imagen profesional - Punto de entrada visual */}
+            <div className="about-image relative flex-shrink-0 w-full max-w-[280px] lg:max-w-xs mx-auto lg:mx-0">
+              <div className="relative w-full aspect-square">
                 {/* Borde con glow */}
                 <div
                   className="absolute inset-0 rounded-3xl ring-2"
                   style={{
                     borderColor: "var(--accent)",
-                    boxShadow: "0 0 20px var(--accent)/30, inset 0 0 10px var(--accent)/10"
+                    boxShadow: "0 0 30px var(--accent)/30, inset 0 0 15px var(--accent)/10"
                   }}
                 />
 
@@ -174,137 +167,137 @@ export default function About() {
 
                 {/* Glow effect exterior */}
                 <div
-                  className="absolute -inset-3 rounded-3xl opacity-20 blur-xl -z-10"
+                  className="absolute -inset-4 rounded-3xl opacity-20 blur-2xl -z-10"
                   style={{ background: "var(--accent)" }}
                 />
               </div>
             </div>
 
-            {/* Textos */}
-            <div className="w-full flex flex-col" style={{
-              gap: 'clamp(0.75rem, 2vw, 1rem)',
-            }}>
-              <p className="about-text leading-relaxed" style={{
-                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-              }}>{t("about_p1")}</p>
-              <p className="about-text leading-relaxed opacity-70" style={{
-                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-              }}>{t("about_p2")}</p>
+            {/* Textos con espacio para respirar */}
+            <div className="w-full flex flex-col gap-5 max-w-[280px] lg:max-w-none mx-auto lg:mx-0">
+              <p className="about-text text-base lg:text-lg leading-relaxed text-center lg:text-left">
+                {t("about_p1")}
+              </p>
+              <p className="about-text text-sm lg:text-base leading-relaxed opacity-75 text-center lg:text-left">
+                {t("about_p2")}
+              </p>
             </div>
           </div>
 
-          {/* COLUMNA 2: Botones arriba + Skills abajo */}
-          <div className="w-full flex flex-col" style={{
-            gap: 'clamp(1rem, 2.5vw, 1.5rem)',
-          }}>
-            {/* Botones de categorías - VERSIÓN MEJORADA SIN SCROLLBAR */}
-            <div className="relative w-full overflow-hidden" style={{
-              marginLeft: 'clamp(-0.375rem, -1vw, -0.5rem)',
-              marginRight: 'clamp(-0.375rem, -1vw, -0.5rem)',
-            }}>
-              <div
-                className="responsive-flex justify-center snap-x snap-mandatory overflow-x-auto w-full"
-                style={{
-                  scrollbarWidth: 'none',
-                  msOverflowStyle: 'none',
-                  WebkitOverflowScrolling: 'touch',
-                  padding: 'clamp(0.375rem, 1vw, 0.5rem)',
-                }}
-              >
-                <style jsx>{`
-                  div::-webkit-scrollbar {
-                    display: none;
-                  }
-                `}</style>
+          {/* SEPARADOR VERTICAL (solo desktop) - Feng Shui: división de espacios */}
+          <div className="hidden lg:block relative h-full min-h-[400px] w-px">
+            <div
+              className="absolute inset-0 w-px"
+              style={{
+                background: "linear-gradient(to bottom, transparent, var(--accent)/20, var(--accent)/40, var(--accent)/20, transparent)"
+              }}
+            />
+            {/* Ornamento central */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+              style={{
+                background: "var(--accent)",
+                boxShadow: "0 0 10px var(--accent)/50"
+              }}
+            />
+          </div>
 
-                <button
-                  onClick={(e) => handleCategoryClick("frontend", e)}
-                  className={`snap-center flex-shrink-0 rounded-xl font-bold transition-all ${
-                    selectedCategory === "frontend" ? "ring-2 shadow-lg" : "ring-1"
-                  }`}
-                  style={{
-                    background: selectedCategory === "frontend"
-                      ? "var(--accent)"
-                      : "color-mix(in oklab, var(--panel) 70%, transparent)",
-                    borderColor: "var(--accent)",
-                    color: selectedCategory === "frontend" ? "var(--bg)" : "inherit",
-                    padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1.5rem)',
-                    fontSize: 'clamp(10px, 1.3vw, 13px)',
-                  }}
-                >
-                  Frontend
-                </button>
-                <button
-                  onClick={(e) => handleCategoryClick("backend", e)}
-                  className={`snap-center flex-shrink-0 rounded-xl font-bold transition-all ${
-                    selectedCategory === "backend" ? "ring-2 shadow-lg" : "ring-1"
-                  }`}
-                  style={{
-                    background: selectedCategory === "backend"
-                      ? "var(--accent)"
-                      : "color-mix(in oklab, var(--panel) 70%, transparent)",
-                    borderColor: "var(--accent)",
-                    color: selectedCategory === "backend" ? "var(--bg)" : "inherit",
-                    padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1.5rem)',
-                    fontSize: 'clamp(10px, 1.3vw, 13px)',
-                  }}
-                >
-                  Backend
-                </button>
-                <button
-                  onClick={(e) => handleCategoryClick("cloud", e)}
-                  className={`snap-center flex-shrink-0 rounded-xl font-bold transition-all ${
-                    selectedCategory === "cloud" ? "ring-2 shadow-lg" : "ring-1"
-                  }`}
-                  style={{
-                    background: selectedCategory === "cloud"
-                      ? "var(--accent)"
-                      : "color-mix(in oklab, var(--panel) 70%, transparent)",
-                    borderColor: "var(--accent)",
-                    color: selectedCategory === "cloud" ? "var(--bg)" : "inherit",
-                    padding: 'clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1.5rem)',
-                    fontSize: 'clamp(10px, 1.3vw, 13px)',
-                  }}
-                >
-                  Cloud
-                </button>
-              </div>
+          {/* COLUMNA DERECHA: Tech Stack con jerarquía clara */}
+          <div className="w-full flex flex-col gap-6 lg:gap-8">
+            {/* Título de sección (jerarquía visual) */}
+            <div className="flex flex-col gap-2 text-center lg:text-left">
+              <h3 className="text-lg lg:text-xl font-bold" style={{ color: "var(--accent)" }}>
+                Tech Stack
+              </h3>
+              <p className="text-xs lg:text-sm opacity-60">
+                Herramientas y tecnologías que domino
+              </p>
             </div>
 
-            {/* Contenedor de iconos - RESPONSIVE */}
+            {/* Botones de categorías - Mejorados con más espacio */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+              <button
+                onClick={(e) => handleCategoryClick("frontend", e)}
+                className={`rounded-xl font-bold transition-all ${
+                  selectedCategory === "frontend" ? "ring-2 shadow-lg scale-105" : "ring-1 hover:scale-105"
+                }`}
+                style={{
+                  background: selectedCategory === "frontend"
+                    ? "var(--accent)"
+                    : "color-mix(in oklab, var(--panel) 70%, transparent)",
+                  borderColor: "var(--accent)",
+                  color: selectedCategory === "frontend" ? "var(--bg)" : "inherit",
+                  padding: "0.625rem 1.25rem",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Frontend
+              </button>
+              <button
+                onClick={(e) => handleCategoryClick("backend", e)}
+                className={`rounded-xl font-bold transition-all ${
+                  selectedCategory === "backend" ? "ring-2 shadow-lg scale-105" : "ring-1 hover:scale-105"
+                }`}
+                style={{
+                  background: selectedCategory === "backend"
+                    ? "var(--accent)"
+                    : "color-mix(in oklab, var(--panel) 70%, transparent)",
+                  borderColor: "var(--accent)",
+                  color: selectedCategory === "backend" ? "var(--bg)" : "inherit",
+                  padding: "0.625rem 1.25rem",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Backend
+              </button>
+              <button
+                onClick={(e) => handleCategoryClick("cloud", e)}
+                className={`rounded-xl font-bold transition-all ${
+                  selectedCategory === "cloud" ? "ring-2 shadow-lg scale-105" : "ring-1 hover:scale-105"
+                }`}
+                style={{
+                  background: selectedCategory === "cloud"
+                    ? "var(--accent)"
+                    : "color-mix(in oklab, var(--panel) 70%, transparent)",
+                  borderColor: "var(--accent)",
+                  color: selectedCategory === "cloud" ? "var(--bg)" : "inherit",
+                  padding: "0.625rem 1.25rem",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Cloud
+              </button>
+            </div>
+
+            {/* Contenedor de iconos - Con más espacio y mejor organización */}
             <div
-              className="ring-1 backdrop-blur-sm flex items-start overflow-hidden w-full"
+              className="ring-1 backdrop-blur-sm overflow-hidden w-full"
               style={{
                 background: "color-mix(in oklab, var(--panel) 50%, transparent)",
                 borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)",
-                borderRadius: 'clamp(12px, 3vw, 16px)',
-                padding: 'clamp(0.75rem, 2.5vw, 1.5rem)',
-                minHeight: 'clamp(200px, 40vw, 320px)',
+                borderRadius: "1rem",
+                padding: "1.5rem",
+                minHeight: "280px",
               }}
             >
-              <div className="responsive-grid w-full" style={{
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(60px, 100%), 1fr))',
-                gap: 'clamp(0.5rem, 1.5vw, 1rem)',
-              }}>
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {TECH_STACK[selectedCategory].map((tech) => (
                   <div
                     key={tech}
-                    className="tech-item group relative ring-1 backdrop-blur-sm transition-all hover:scale-110 hover:ring-2 cursor-pointer w-full"
+                    className="tech-item group relative ring-1 backdrop-blur-sm transition-all hover:scale-110 hover:ring-2 cursor-pointer aspect-square"
                     style={{
                       background: "color-mix(in oklab, var(--panel) 80%, transparent)",
                       borderColor: "color-mix(in oklab, var(--accent) 40%, transparent)",
-                      borderRadius: 'clamp(8px, 2vw, 12px)',
-                      padding: 'clamp(0.5rem, 1.5vw, 1rem)',
+                      borderRadius: "0.75rem",
+                      padding: "0.75rem",
                     }}
                   >
-                    <div className="flex flex-col items-center justify-center" style={{
-                      gap: 'clamp(0.25rem, 0.8vw, 0.5rem)',
-                    }}>
+                    <div className="flex flex-col items-center justify-center h-full gap-2">
                       {tech === 'github' ? (
                         <div
                           style={{
-                            width: 'clamp(24px, 7vw, 36px)',
-                            height: 'clamp(24px, 7vw, 36px)',
+                            width: "2.5rem",
+                            height: "2.5rem",
                             color: 'var(--text-1)',
                           }}
                         >
@@ -316,17 +309,15 @@ export default function About() {
                           alt={tech}
                           className="object-contain"
                           style={{
-                            width: 'clamp(24px, 7vw, 36px)',
-                            height: 'clamp(24px, 7vw, 36px)',
+                            width: "2.5rem",
+                            height: "2.5rem",
                           }}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}
                         />
                       )}
-                      <span className="font-medium text-center leading-tight" style={{
-                        fontSize: 'clamp(8px, 1.2vw, 11px)',
-                      }}>
+                      <span className="font-medium text-center leading-tight text-xs">
                         {getTechName(tech)}
                       </span>
                     </div>
