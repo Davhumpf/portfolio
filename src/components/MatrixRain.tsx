@@ -127,8 +127,12 @@ export default function MatrixRain() {
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
       style={{
-        zIndex: -5,
-        opacity: 1, // Opacidad completa, la visibilidad se controla con los colores RGBA
+        zIndex: -1,
+        opacity: 1,
+        width: '100vw',
+        height: '100vh',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
       }}
       aria-hidden="true"
     />
