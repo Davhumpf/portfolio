@@ -1,13 +1,16 @@
 "use client";
 import Section from "./Section";
+import { useT } from "@/context/LanguageProvider";
 
 export default function Now() {
+  const t = useT();
+
   return (
-    <Section id="now" title="Now()" subtitle="Qué hago este mes.">
+    <Section id="now" title={t("now_title")} subtitle={t("now_subtitle")}>
       <ul className="text-sm list-disc pl-5 space-y-1">
-        <li>Refactor de componentes a slots.</li>
-        <li>Animaciones de entrada con GSAP y ScrollTrigger.</li>
-        <li>Preparando un artículo sobre accesibilidad de menús.</li>
+        <li>{t("now_item1")}</li>
+        <li>{t("now_item2")}</li>
+        <li>{t("now_item3")}</li>
       </ul>
     </Section>
   );

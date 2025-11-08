@@ -140,7 +140,7 @@ export default function About() {
             {/* NIVEL 1: Título principal */}
             <h3 className="text-base lg:text-lg font-extrabold mb-1 text-center lg:text-left w-full"
                 style={{ color: "var(--accent)" }}>
-              Sobre mi
+              {t("about_section_title")}
             </h3>
 
             {/* NIVEL 2: Subtítulo/Descripción */}
@@ -222,12 +222,12 @@ export default function About() {
             {/* NIVEL 1: Título principal (alineado con "Sobre mi") */}
             <h3 className="text-base lg:text-lg font-extrabold mb-1 text-center lg:text-left w-full"
                 style={{ color: "var(--accent)" }}>
-              Tech Stack
+              {t("about_techstack_title")}
             </h3>
 
             {/* NIVEL 2: Subtítulo/Descripción (alineado con subtítulo izquierdo) */}
             <p className="text-xs lg:text-sm mb-4 lg:mb-5 opacity-75 text-center lg:text-left w-full">
-              Herramientas y tecnologías que domino
+              {t("about_techstack_subtitle")}
             </p>
 
             {/* NIVEL 3: Botones de categorías (alineados con inicio de foto) */}

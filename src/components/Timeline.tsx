@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useTheme } from "next-themes";
 import Section from "./Section";
+import { useT } from "@/context/LanguageProvider";
 
 interface TimelineEvent {
   id: number;
@@ -15,95 +16,8 @@ interface TimelineEvent {
   colorDark: string;  // Color más claro para dark mode
 }
 
-const timelineEvents: TimelineEvent[] = [
-  {
-    id: 1,
-    year: "2019",
-    title: "Primer contacto con la programación",
-    subtitle: "Inicio autodidacta | HTML puro | Curiosidad técnica",
-    description: "Año previo a la pandemia. Estaba en noveno de colegio, emocionado por la idea de estudiar Ingeniería de Sistemas. Sin saberlo, ese entusiasmo fue el inicio de todo: comencé a aprender HTML desde cero, creando mis primeras páginas sin CSS, solo por el gusto de ver algo construido por mis propias manos. Fue mi primer acercamiento real al mundo digital, donde descubrí la satisfacción de convertir ideas en código.",
-    colorLight: "#6D28D9",  // Púrpura oscuro para light mode
-    colorDark: "#A78BFA",   // Púrpura claro para dark mode
-  },
-  {
-    id: 2,
-    year: "2020",
-    title: "Primeros experimentos y el impulso de los videojuegos",
-    subtitle: "Java | Lógica de programación | Creatividad aplicada",
-    description: "Con más tiempo libre durante la pandemia, me lancé de lleno al aprendizaje con Java, mi primer lenguaje formal. Desarrollé pequeños proyectos y hasta creé un juego propio, que luego borré (pero marcó mi inicio en la programación interactiva). Los videojuegos se convirtieron en mi motivación: quería entender cómo se creaban, y soñaba con construir uno propio algún día.",
-    colorLight: "#7C3AED",  // Púrpura medio oscuro
-    colorDark: "#C4B5FD",   // Púrpura más claro
-  },
-  {
-    id: 3,
-    year: "2021",
-    title: "Formación técnica y primeros proyectos personales",
-    subtitle: "Platzi | Autodidacta | Desarrollo full-stack inicial",
-    description: "Ingresé a cursos técnicos en Platzi, donde aprendí desde los fundamentos de la web hasta conceptos avanzados de backend y frontend. Durante este tiempo desarrollé múltiples proyectos personales, pequeños pero significativos.",
-    details: [
-      "Una app de recordatorios simples",
-      "Un sistema para administrar cuentas de streaming",
-      "Una página de plantas dedicada a una persona especial"
-    ],
-    colorLight: "#5B21B6",
-    colorDark: "#A78BFA",
-  },
-  {
-    id: 4,
-    year: "2022",
-    title: "Consolidación técnica y visión de producto",
-    subtitle: "Node.js / Python / MySQL / Docker / Cloud",
-    description: "Ya con bases más sólidas, comencé a comprender el ecosistema completo del desarrollo. Aprendí sobre servidores, APIs, bases de datos y despliegues, aplicando buenas prácticas con Docker y flujos de CI/CD. Empecé a ver el código no solo como algo funcional, sino como una herramienta para construir productos reales y escalables.",
-    colorLight: "#4C1D95",
-    colorDark: "#8B5CF6",
-  },
-  {
-    id: 5,
-    year: "2023",
-    title: "Transición universitaria y proyectos académicos",
-    subtitle: "Matemática aplicada | Cálculo | Java / Python / Frontend avanzado",
-    description: "Al ingresar a la universidad, empecé a sentir que el conocimiento se transformaba en poder crear de verdad. Mi proyecto más destacado fue una calculadora de variables e integrales, desarrollada para mi clase de cálculo, que me mostró cómo la programación podía resolver problemas académicos reales. Ese mismo año nació Nova Store, inicialmente como un proyecto frontend personal… sin imaginar que se convertiría en mi plataforma insignia.",
-    colorLight: "#6D28D9",
-    colorDark: "#A78BFA",
-  },
-  {
-    id: 6,
-    year: "2023 - 2025",
-    title: "Nova Store: de idea a producto funcional",
-    subtitle: "React / Next.js / Tailwind / Node / Flutter / Cloud / GSAP",
-    description: "Nova Store comenzó como un e-commerce sencillo, pero con el tiempo lo expandí hacia un sistema semi-automatizado que combina la venta de productos digitales y físicos. Integré un backend propio, gestión de usuarios avanzada, panel de administración optimizado y sincronización con la nube. Incluso desarrollé una versión complementaria en Flutter, explorando la convergencia entre web y mobile.",
-    details: [
-      "Hoy, Nova Store genera ganancias tanto para mí como para otros usuarios sin necesidad de inversión directa.",
-      "Es un reflejo de mi evolución: de crear por curiosidad, a diseñar por propósito."
-    ],
-    colorLight: "#5B21B6",
-    colorDark: "#C4B5FD",
-  },
-  {
-    id: 7,
-    year: "2025",
-    title: "Actualidad: Frontend Dev y Experiencia Interactiva",
-    subtitle: "React / Next.js / TypeScript / GSAP / Framer Motion / Tailwind / Supabase",
-    description: "Actualmente me dedico al desarrollo de interfaces modernas con un enfoque en animación, interacción y fluidez visual. Uso herramientas como GSAP, Framer Motion y Anime.js para crear experiencias inmersivas, dinámicas y naturales. Me apasiona que cada detalle tenga intención, que la navegación se sienta ligera y que la interfaz respire.",
-    details: [
-      "Una buena interfaz no solo se ve bien, se siente bien.",
-      "Cada transición, cada microinteracción, cada sombra es parte de una experiencia pensada para el usuario."
-    ],
-    colorLight: "#7C3AED",
-    colorDark: "#A78BFA",
-  },
-  {
-    id: 8,
-    year: "Visión a Futuro",
-    title: "Diseño interactivo y experiencias inmersivas",
-    subtitle: "Diseño interactivo | Realidad Virtual | Experiencias inmersivas",
-    description: "Mi meta a largo plazo es desarrollar páginas web con realidad virtual, donde el usuario pueda literalmente tocar la interfaz. Quiero fusionar diseño, tecnología y emoción para crear experiencias que no solo se vean o usen, sino que se vivan.",
-    colorLight: "#6D28D9",
-    colorDark: "#C4B5FD",
-  },
-];
-
 export default function Timeline() {
+  const t = useT();
   const { theme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -111,6 +25,95 @@ export default function Timeline() {
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prefersReducedMotion = useRef(false);
+
+  // Crear eventos usando traducciones
+  const timelineEvents: TimelineEvent[] = [
+    {
+      id: 1,
+      year: t("timeline_event1_year"),
+      title: t("timeline_event1_title"),
+      subtitle: t("timeline_event1_subtitle"),
+      description: t("timeline_event1_description"),
+      colorLight: "#6D28D9",
+      colorDark: "#A78BFA",
+    },
+    {
+      id: 2,
+      year: t("timeline_event2_year"),
+      title: t("timeline_event2_title"),
+      subtitle: t("timeline_event2_subtitle"),
+      description: t("timeline_event2_description"),
+      colorLight: "#7C3AED",
+      colorDark: "#C4B5FD",
+    },
+    {
+      id: 3,
+      year: t("timeline_event3_year"),
+      title: t("timeline_event3_title"),
+      subtitle: t("timeline_event3_subtitle"),
+      description: t("timeline_event3_description"),
+      details: [
+        t("timeline_event3_detail1"),
+        t("timeline_event3_detail2"),
+        t("timeline_event3_detail3")
+      ],
+      colorLight: "#5B21B6",
+      colorDark: "#A78BFA",
+    },
+    {
+      id: 4,
+      year: t("timeline_event4_year"),
+      title: t("timeline_event4_title"),
+      subtitle: t("timeline_event4_subtitle"),
+      description: t("timeline_event4_description"),
+      colorLight: "#4C1D95",
+      colorDark: "#8B5CF6",
+    },
+    {
+      id: 5,
+      year: t("timeline_event5_year"),
+      title: t("timeline_event5_title"),
+      subtitle: t("timeline_event5_subtitle"),
+      description: t("timeline_event5_description"),
+      colorLight: "#6D28D9",
+      colorDark: "#A78BFA",
+    },
+    {
+      id: 6,
+      year: t("timeline_event6_year"),
+      title: t("timeline_event6_title"),
+      subtitle: t("timeline_event6_subtitle"),
+      description: t("timeline_event6_description"),
+      details: [
+        t("timeline_event6_detail1"),
+        t("timeline_event6_detail2")
+      ],
+      colorLight: "#5B21B6",
+      colorDark: "#C4B5FD",
+    },
+    {
+      id: 7,
+      year: t("timeline_event7_year"),
+      title: t("timeline_event7_title"),
+      subtitle: t("timeline_event7_subtitle"),
+      description: t("timeline_event7_description"),
+      details: [
+        t("timeline_event7_detail1"),
+        t("timeline_event7_detail2")
+      ],
+      colorLight: "#7C3AED",
+      colorDark: "#A78BFA",
+    },
+    {
+      id: 8,
+      year: t("timeline_event8_year"),
+      title: t("timeline_event8_title"),
+      subtitle: t("timeline_event8_subtitle"),
+      description: t("timeline_event8_description"),
+      colorLight: "#6D28D9",
+      colorDark: "#C4B5FD",
+    },
+  ];
 
   useEffect(() => {
     setMounted(true);
@@ -314,7 +317,7 @@ export default function Timeline() {
   const currentColor = isDark ? currentEvent.colorDark : currentEvent.colorLight;
 
   return (
-    <Section id="timeline" title="Mi Trayectoria" subtitle="Evolución profesional y técnica">
+    <Section id="timeline" title={t("timeline_title")} subtitle={t("timeline_subtitle")}>
       <div className="timeline-slider-container relative w-full max-w-4xl mx-auto px-4 py-8">
 
         {/* Tarjeta principal */}
