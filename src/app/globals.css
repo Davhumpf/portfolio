@@ -3,16 +3,16 @@
 /* ------------------ THEME TOKENS ------------------ */
 @layer base {
   :root {
-    /* Light Mode - Suave con sombras profesionales */
-    --bg-page: #F8F9FC;         /* Fondo principal más suave (no blanco puro) */
-    --bg-card: #FFFFFF;         /* Cards con blanco puro */
-    --bg: #F8F9FC;              /* Fondo principal (alias) */
-    --panel: #FFFFFF;           /* Fondo secundario (alias) */
+    /* Light Mode - Colores menos brillantes y más suaves */
+    --bg-page: #E5E7EB;         /* Fondo principal gris claro */
+    --bg-card: #F3F4F6;         /* Cards gris muy claro */
+    --bg: #E5E7EB;              /* Fondo principal (alias) */
+    --panel: #F3F4F6;           /* Fondo secundario (alias) */
     --text-1: #0F172A;          /* Texto principal con buen contraste */
     --text-2: #64748B;          /* Texto secundario más legible */
     --text: #0F172A;            /* Texto principal (alias) */
     --muted: #64748B;           /* Texto secundario (alias) */
-    --border: #E2E8F0;          /* Bordes sutiles y profesionales */
+    --border: #000000;          /* Bordes negros sólidos */
 
     --accent: #7C3AED;          /* Acento violeta moderno */
     --accent-2: #A78BFA;        /* Acento secundario */
@@ -135,17 +135,17 @@
 
   .glass {
     background: color-mix(in oklab, var(--panel) 70%, transparent);
-    @apply backdrop-blur-xl ring-1;
+    @apply backdrop-blur-xl;
+    border: 1px solid var(--border);
     border-radius: clamp(20px, 5vw, 40px);
-    --tw-ring-color: var(--ring);
     max-width: 100%;
   }
 
   .glass-sidebar {
     background: color-mix(in oklab, var(--panel) 85%, transparent);
-    @apply backdrop-blur-xl ring-1;
+    @apply backdrop-blur-xl;
+    border: 1px solid var(--border);
     border-radius: clamp(24px, 6vw, 48px);
-    --tw-ring-color: var(--ring);
   }
 
   .btn {

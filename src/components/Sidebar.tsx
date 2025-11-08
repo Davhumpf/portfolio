@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar, Sun, Moon } from 'lucide-react';
+import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar, Sun, Moon, Laptop } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import gsap from 'gsap';
@@ -164,7 +164,7 @@ const Sidebar = () => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         data-state={collapsed ? 'collapsed' : 'expanded'}
-        className="sidebar hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 border-r border-white/10 overflow-hidden"
+        className="sidebar hidden lg:flex fixed left-0 top-0 bottom-0 flex-col justify-between backdrop-blur-xl bg-white/5 overflow-hidden"
         style={{
           width: collapsed ? '84px' : '280px',
           transition: 'width 0.3s ease',
@@ -174,6 +174,7 @@ const Sidebar = () => {
           padding: 'clamp(1rem, 1.5vw, 1.25rem) clamp(0.5rem, 1vw, 0.75rem)',
           willChange: 'width',
           maxWidth: '18rem',
+          borderRight: '1px solid var(--border)',
         }}
       >
         {/* Top spacer for balance */}
@@ -292,8 +293,10 @@ const Sidebar = () => {
               >
                 {theme === 'light' ? (
                   <Sun size={18} className="text-gray-300" />
-                ) : (
+                ) : theme === 'dark' ? (
                   <Moon size={18} className="text-gray-300" />
+                ) : (
+                  <Laptop size={18} className="text-gray-300" />
                 )}
               </button>
             </div>
@@ -349,7 +352,7 @@ const Sidebar = () => {
                   ) : theme === 'dark' ? (
                     <Moon size={16} />
                   ) : (
-                    <Sun size={16} className="opacity-50" />
+                    <Laptop size={16} />
                   )}
                 </span>
               </button>
