@@ -12,8 +12,21 @@ interface DropdownProps {
 
 const Dropdown: React.FC<DropdownProps> = ({ trigger, children, className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Update position when opening dropdown
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.top,
+        left: rect.right + 8, // 8px gap to the right
+      });
+    }
+  }, [isOpen]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -37,6 +50,7 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, children, className = '' }
   return (
     <div ref={dropdownRef} className={`relative ${className}`}>
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200"
         aria-expanded={isOpen}
@@ -61,20 +75,22 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, children, className = '' }
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
               className="fixed inset-0"
-              style={{ zIndex: 19998 }}
+              style={{ zIndex: 99998 }}
               onClick={() => setIsOpen(false)}
             />
-            
-            {/* Dropdown Menu with enhanced styling - positioned to the right */}
+
+            {/* Dropdown Menu with enhanced styling - now using fixed positioning */}
             <motion.div
               ref={menuRef}
               initial={{ opacity: 0, x: -10, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -10, scale: 0.95 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="absolute left-full ml-2 mt-2 py-2 rounded-xl overflow-hidden shadow-2xl whitespace-nowrap"
+              className="fixed py-2 rounded-xl overflow-hidden shadow-2xl whitespace-nowrap"
               style={{
-                zIndex: 19999,
+                top: `${position.top}px`,
+                left: `${position.left}px`,
+                zIndex: 99999,
                 backgroundColor: 'rgba(17, 17, 17, 0.98)', // Dark solid background
                 backdropFilter: 'blur(20px) saturate(180%)',
                 border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -82,7 +98,6 @@ const Dropdown: React.FC<DropdownProps> = ({ trigger, children, className = '' }
                 pointerEvents: 'auto',
                 isolation: 'isolate',
                 minWidth: '160px',
-                top: '0',
               }}
               onClick={handleMenuClick}
             >
