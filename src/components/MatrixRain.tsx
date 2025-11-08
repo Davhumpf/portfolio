@@ -155,7 +155,7 @@ export default function MatrixRain() {
       className="fixed inset-0 pointer-events-none"
       style={{
         zIndex: 0,
-        opacity: 0.4,
+        opacity: 0.7,
         width: '100vw',
         height: '100vh',
         maxWidth: '100vw',
