@@ -29,22 +29,21 @@ export default function MatrixRain() {
     };
     setCanvasSize();
 
-    // Caracteres Matrix: letras, números, binarios y símbolos
+    // Caracteres Matrix
     const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
     const chars = matrixChars.split('');
 
-    // Configuración optimizada para bajo consumo
-    const fontSize = 14;
+    const fontSize = 16;
     const columns = Math.floor(canvas.width / fontSize);
     const drops: number[] = [];
 
-    // Inicializar gotas - algunas empiezan visibles para efecto inmediato
+    // Inicializar gotas - muchas empiezan visibles inmediatamente
     for (let i = 0; i < columns; i++) {
-      drops[i] = Math.random() > 0.5 ? Math.random() * -50 : Math.random() * 20;
+      drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
     }
 
     let lastTime = 0;
-    const fps = 20; // FPS bajo para reducir consumo de recursos
+    const fps = 24;
     const interval = 1000 / fps;
 
     const draw = (currentTime: number) => {
@@ -54,34 +53,30 @@ export default function MatrixRain() {
       }
       lastTime = currentTime;
 
-      // Usar dark mode por defecto si resolvedTheme es undefined
       const isDark = resolvedTheme !== 'light';
 
-      // Fade effect más visible
+      // Fade effect MUY SUAVE para que las líneas sean más largas y visibles
       ctx.fillStyle = isDark
-        ? 'rgba(28, 28, 30, 0.1)' // Fondo oscuro para dark mode
-        : 'rgba(255, 255, 255, 0.1)'; // Fondo claro para light mode
+        ? 'rgba(28, 28, 30, 0.03)' // Borrado muy suave
+        : 'rgba(255, 255, 255, 0.03)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Color del texto - morado con opacidad aumentada para mejor visibilidad
+      // Color brillante y totalmente opaco
       ctx.fillStyle = isDark
-        ? 'rgba(167, 139, 250, 0.9)' // Morado brillante (#A78BFA) para dark mode
-        : 'rgba(124, 58, 237, 0.7)'; // Morado (#7C3AED) para light mode
-      ctx.font = `${fontSize}px monospace`;
+        ? '#A78BFA' // Morado brillante sólido
+        : '#7C3AED'; // Morado sólido
+      ctx.font = `bold ${fontSize}px monospace`;
 
       // Dibujar caracteres
       for (let i = 0; i < drops.length; i++) {
-        // Dibuja más columnas para mayor visibilidad
-        if (Math.random() > 0.2) {
-          const char = chars[Math.floor(Math.random() * chars.length)];
-          const x = i * fontSize;
-          const y = drops[i] * fontSize;
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
 
-          ctx.fillText(char, x, y);
-        }
+        ctx.fillText(char, x, y);
 
         // Reiniciar gota si llega al final
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.95) {
+        if (y > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
 
@@ -95,18 +90,17 @@ export default function MatrixRain() {
     // Iniciar animación
     const animationId = requestAnimationFrame(draw);
 
-    // Manejar resize con debounce para optimización
+    // Manejar resize
     let resizeTimeout: NodeJS.Timeout;
     const handleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         setCanvasSize();
-        // Recalcular columnas
         const newColumns = Math.floor(canvas.width / fontSize);
         drops.length = newColumns;
         for (let i = 0; i < newColumns; i++) {
           if (drops[i] === undefined) {
-            drops[i] = Math.random() * -100;
+            drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
           }
         }
       }, 250);
@@ -120,7 +114,7 @@ export default function MatrixRain() {
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
     };
-  }, [mounted, resolvedTheme]); // Esperar a que monte y reaccionar a cambios de tema
+  }, [mounted, resolvedTheme]);
 
   return (
     <canvas
@@ -128,11 +122,12 @@ export default function MatrixRain() {
       className="fixed inset-0 pointer-events-none"
       style={{
         zIndex: -1,
-        opacity: 1,
+        opacity: 0.6,
         width: '100vw',
         height: '100vh',
         maxWidth: '100vw',
         maxHeight: '100vh',
+        display: 'block',
       }}
       aria-hidden="true"
     />
