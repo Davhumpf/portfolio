@@ -55,41 +55,6 @@ const ExternalLink = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const Monitor = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <rect width="20" height="14" x="2" y="3" rx="2" />
-    <line x1="8" x2="16" y1="21" y2="21" />
-    <line x1="12" x2="12" y1="17" y2="21" />
-  </svg>
-);
-
-const X = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
-    <path d="M18 6 6 18" />
-    <path d="m6 6 12 12" />
-  </svg>
-);
-
 interface Project {
   name: string;
   tag: string;
@@ -103,9 +68,8 @@ export default function Projects() {
   const t = useT();
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -133,95 +97,39 @@ export default function Projects() {
 
   const len = projects.length;
 
-  // Transición GSAP suave con parallax, fade, scale y blur
+  // Transición GSAP con slide horizontal 3D épico pero sutil
   const transitionToSlide = useCallback((fromIndex: number, toIndex: number) => {
     if (timelineRef.current) {
       timelineRef.current.kill();
     }
 
+    const direction = toIndex > fromIndex ? 1 : -1;
     const timeline = gsap.timeline({
-      onComplete: () => {
-        // Limpiar estilos inline después de la animación
-        slideRefs.current.forEach((slide, idx) => {
-          if (slide && idx !== toIndex) {
-            gsap.set(slide, { clearProps: "all" });
-          }
-        });
-      },
+      defaults: { ease: "power3.inOut" },
     });
 
-    const outgoingSlide = slideRefs.current[fromIndex];
-    const incomingSlide = slideRefs.current[toIndex];
-    const outgoingImage = imageRefs.current[fromIndex];
-    const incomingImage = imageRefs.current[toIndex];
+    // Animar todos los slides a su posición correcta
+    slideRefs.current.forEach((slide, idx) => {
+      if (!slide) return;
 
-    if (outgoingSlide) {
-      // Slide saliente: fade out, scale down, blur
+      const offset = idx - toIndex;
+      const xPos = offset * 100; // Porcentaje de desplazamiento horizontal
+      const isActive = idx === toIndex;
+
       timeline.to(
-        outgoingSlide,
+        slide,
         {
-          opacity: 0,
-          scale: 0.96,
-          filter: "blur(6px)",
-          y: 8,
-          duration: 0.5,
-          ease: "power2.out",
+          x: `${xPos}%`,
+          scale: isActive ? 1 : 0.85,
+          rotationY: isActive ? 0 : offset * 15, // Rotación 3D sutil
+          opacity: isActive ? 1 : 0, // Solo el activo es visible
+          zIndex: isActive ? 10 : 1,
+          duration: 0.8,
+          ease: "power3.inOut",
         },
         0
       );
-
-      // Parallax en imagen saliente
-      if (outgoingImage) {
-        timeline.to(
-          outgoingImage,
-          {
-            y: -12,
-            duration: 0.5,
-            ease: "power2.out",
-          },
-          0
-        );
-      }
-    }
-
-    if (incomingSlide) {
-      // Configurar estado inicial del slide entrante
-      gsap.set(incomingSlide, {
-        opacity: 0,
-        scale: 0.98,
-        filter: "blur(6px)",
-        y: 8,
-        zIndex: 10,
-      });
-
-      // Slide entrante: fade in, scale up, deblur
-      timeline.to(
-        incomingSlide,
-        {
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-        },
-        0.2
-      );
-
-      // Parallax en imagen entrante
-      if (incomingImage) {
-        gsap.set(incomingImage, { y: 12 });
-        timeline.to(
-          incomingImage,
-          {
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-          },
-          0.2
-        );
-      }
-    }
+    });
 
     timelineRef.current = timeline;
   }, []);
@@ -290,49 +198,22 @@ export default function Projects() {
     }
   }, []);
 
-  // Manejo de ESC para cerrar modal y bloqueo de scroll
+  // Inicializar slides con posiciones horizontales
   useEffect(() => {
-    if (showPreview) {
-      // Bloquear scroll del body cuando el modal está abierto
-      document.body.style.overflow = "hidden";
-
-      // Listener para cerrar con ESC
-      const handleEsc = (e: KeyboardEvent) => {
-        if (e.key === "Escape") {
-          setShowPreview(false);
-        }
-      };
-      window.addEventListener("keydown", handleEsc);
-
-      return () => {
-        document.body.style.overflow = "unset";
-        window.removeEventListener("keydown", handleEsc);
-      };
-    }
-  }, [showPreview]);
-
-  // Inicializar primer slide
-  useEffect(() => {
-    if (slideRefs.current[0]) {
-      gsap.set(slideRefs.current[0], {
-        opacity: 1,
-        scale: 1,
-        filter: "blur(0px)",
-        y: 0,
-        zIndex: 10,
-      });
-    }
-    // Ocultar todos los demás
     slideRefs.current.forEach((slide, idx) => {
-      if (slide && idx !== 0) {
-        gsap.set(slide, {
-          opacity: 0,
-          scale: 0.98,
-          filter: "blur(6px)",
-          y: 8,
-          zIndex: 1,
-        });
-      }
+      if (!slide) return;
+
+      const offset = idx - 0; // Primer slide (idx 0) es el activo
+      const xPos = offset * 100;
+      const isActive = idx === 0;
+
+      gsap.set(slide, {
+        x: `${xPos}%`,
+        scale: isActive ? 1 : 0.85,
+        rotationY: isActive ? 0 : offset * 15,
+        opacity: isActive ? 1 : 0,
+        zIndex: isActive ? 10 : 1,
+      });
     });
   }, []);
 
@@ -346,15 +227,18 @@ export default function Projects() {
             border: "1px solid var(--border)",
             background: "var(--bg-card)",
             boxShadow: "var(--shadow-sm)",
+            perspective: "1500px", // Para efecto 3D
           }}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
           {/* Contenedor de slides con altura reservada */}
           <div
+            ref={containerRef}
             className="relative w-full"
             style={{
-              minHeight: "clamp(320px, 50vh, 560px)",
+              minHeight: "clamp(480px, 60vh, 720px)",
+              transformStyle: "preserve-3d",
             }}
           >
             {projects.map((project, idx) => (
@@ -363,127 +247,125 @@ export default function Projects() {
                 ref={(el) => {
                   slideRefs.current[idx] = el;
                 }}
-                className="absolute inset-0 grid place-items-center px-4"
+                className="absolute inset-0 px-4 py-6"
                 style={{
-                  minHeight: "clamp(320px, 50vh, 560px)",
                   pointerEvents: current === idx ? "auto" : "none",
+                  willChange: "transform",
                 }}
               >
-                {/* Fondo con gradiente */}
-                <div
-                  className="absolute inset-0 -z-10"
-                  style={{
-                    background: `
-                      radial-gradient(900px circle at 20% 10%, var(--accent-2) 0%, transparent 60%),
-                      radial-gradient(800px circle at 80% 30%, var(--accent-2) 0%, transparent 60%)
-                    `,
-                    opacity: 0.08,
-                  }}
-                />
-
-                {/* Imagen de fondo con parallax */}
-                {project.image && !project.comingSoon && (
-                  <div
-                    ref={(el) => {
-                      imageRefs.current[idx] = el;
-                    }}
-                    className="absolute inset-0 -z-5"
-                    style={{
-                      backgroundImage: `url(${project.image})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      opacity: 0.15,
-                      filter: "blur(8px)",
-                    }}
-                  />
-                )}
-
-                {/* Contenido del slide */}
-                <div className="relative z-10 text-center max-w-4xl mx-auto">
-                  {project.comingSoon ? (
-                    <>
-                      <div className="text-5xl md:text-7xl opacity-20 mb-4">🚧</div>
-                      <h2
-                        className="font-extrabold mb-3"
-                        style={{
-                          fontSize: "clamp(22px, 4.2vw, 34px)",
-                          color: "var(--text-1)",
-                        }}
-                      >
-                        {project.name}
-                      </h2>
-                      <p
-                        className="mx-auto px-4 mb-6"
-                        style={{
-                          color: "var(--text-2)",
-                          maxWidth: "56ch",
-                          fontSize: "clamp(14px, 2vw, 16px)",
-                        }}
-                      >
-                        {project.desc}
-                      </p>
-                      <div
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-sm"
-                        style={{
-                          border: "1px solid var(--border)",
-                          background: "var(--bg-card)",
-                          fontSize: "clamp(12px, 1.6vw, 14px)",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Coming Soon
+                {project.comingSoon ? (
+                  // Coming Soon Projects
+                  <div className="w-full h-full flex flex-col items-center justify-center text-center">
+                    <div className="text-5xl md:text-7xl opacity-20 mb-4">🚧</div>
+                    <h2
+                      className="font-extrabold mb-3"
+                      style={{
+                        fontSize: "clamp(22px, 4.2vw, 34px)",
+                        color: "var(--text-1)",
+                      }}
+                    >
+                      {project.name}
+                    </h2>
+                    <p
+                      className="mx-auto px-4 mb-6"
+                      style={{
+                        color: "var(--text-2)",
+                        maxWidth: "56ch",
+                        fontSize: "clamp(14px, 2vw, 16px)",
+                      }}
+                    >
+                      {project.desc}
+                    </p>
+                    <div
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-sm"
+                      style={{
+                        border: "1px solid var(--border)",
+                        background: "var(--bg-card)",
+                        fontSize: "clamp(12px, 1.6vw, 14px)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Coming Soon
+                    </div>
+                  </div>
+                ) : (
+                  // Nova Store con iframe interactivo
+                  <div className="w-full h-full flex flex-col gap-4">
+                    {/* Header del proyecto */}
+                    <div className="flex items-center justify-between px-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+                          style={{
+                            border: "1px solid var(--accent)",
+                            background: "var(--accent)",
+                            fontSize: "clamp(11px, 1.4vw, 13px)",
+                            fontWeight: 700,
+                            color: "#ffffff",
+                          }}
+                        >
+                          {project.tag}
+                        </div>
+                        <h2
+                          className="font-extrabold"
+                          style={{
+                            fontSize: "clamp(18px, 3vw, 24px)",
+                            color: "var(--text-1)",
+                          }}
+                        >
+                          {project.name}
+                        </h2>
                       </div>
-                    </>
-                  ) : (
-                    <>
-                      <div
-                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:scale-105"
                         style={{
                           border: "1px solid var(--border)",
-                          background: "var(--bg-card)",
+                          background: "var(--panel)",
                           fontSize: "clamp(11px, 1.4vw, 13px)",
-                          fontWeight: 700,
-                          color: "var(--text-2)",
-                        }}
-                      >
-                        {project.tag}
-                      </div>
-                      <h2
-                        className="font-extrabold mb-3"
-                        style={{
-                          fontSize: "clamp(22px, 4.2vw, 34px)",
-                          color: "var(--text-1)",
-                        }}
-                      >
-                        {project.name}
-                      </h2>
-                      <p
-                        className="mx-auto px-4 mb-6"
-                        style={{
-                          color: "var(--text-2)",
-                          maxWidth: "56ch",
-                          fontSize: "clamp(14px, 2vw, 16px)",
-                        }}
-                      >
-                        {project.desc}
-                      </p>
-                      <button
-                        onClick={() => setShowPreview(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
-                        style={{
-                          border: "1px solid var(--accent)",
-                          background: "var(--accent)",
-                          fontSize: "clamp(12px, 1.6vw, 14px)",
                           fontWeight: 600,
-                          color: "#ffffff",
                         }}
                       >
-                        <Monitor />
-                        Vista Previa Interactiva
-                      </button>
-                    </>
-                  )}
-                </div>
+                        <ExternalLink width={14} height={14} />
+                        Abrir
+                      </a>
+                    </div>
+
+                    {/* Iframe interactivo */}
+                    <div
+                      className="flex-1 rounded-2xl overflow-hidden"
+                      style={{
+                        border: "2px solid var(--border)",
+                        background: "var(--panel)",
+                        boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.2)",
+                      }}
+                    >
+                      <iframe
+                        src={project.link}
+                        className="w-full h-full"
+                        title={`${project.name} Preview`}
+                        sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+                        loading="lazy"
+                        style={{
+                          border: "none",
+                        }}
+                      />
+                    </div>
+
+                    {/* Descripción */}
+                    <p
+                      className="px-4 text-center"
+                      style={{
+                        color: "var(--text-2)",
+                        fontSize: "clamp(13px, 1.8vw, 15px)",
+                      }}
+                    >
+                      {project.desc}
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -563,71 +445,6 @@ export default function Projects() {
           </div>
         </div>
       </div>
-
-      {/* Modal de Vista Previa Interactiva */}
-      {showPreview && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-          style={{
-            background: "rgba(0, 0, 0, 0.85)",
-            backdropFilter: "blur(8px)",
-          }}
-          onClick={() => setShowPreview(false)}
-        >
-          <div
-            className="relative w-full h-full max-w-7xl max-h-[90vh] rounded-2xl overflow-hidden"
-            style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header del modal */}
-            <div
-              className="flex items-center justify-between px-6 py-4"
-              style={{
-                borderBottom: "1px solid var(--border)",
-                background: "var(--panel)",
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <Monitor width={20} height={20} style={{ color: "var(--accent)" }} />
-                <div>
-                  <h3 className="font-bold text-lg" style={{ color: "var(--text-1)" }}>
-                    Nova Store - Vista Previa Interactiva
-                  </h3>
-                  <p className="text-sm" style={{ color: "var(--text-2)" }}>
-                    Interactúa con el proyecto en tiempo real
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowPreview(false)}
-                className="rounded-full p-2 transition-all hover:bg-opacity-80 active:scale-95"
-                style={{
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                }}
-                aria-label="Cerrar vista previa"
-              >
-                <X />
-              </button>
-            </div>
-
-            {/* Iframe */}
-            <div className="w-full h-[calc(100%-80px)]">
-              <iframe
-                src="https://nova-store-page.vercel.app/inicio"
-                className="w-full h-full"
-                title="Nova Store Preview"
-                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </div>
-      )}
     </Section>
   );
 }
