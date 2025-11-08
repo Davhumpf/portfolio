@@ -308,8 +308,7 @@ export default function Timeline() {
                   <div className="relative flex items-center justify-center" style={{ width: '150px' }}>
                     <div className={`h-[2px] w-full bg-gradient-to-r from-gray-600/50 to-gray-600/50`} />
                     {monthsBetween > 0 && (
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-                                      bg-gray-800/90 px-3 py-1 rounded-full text-xs font-semibold border border-gray-600/50">
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-800/90 px-3 py-1 rounded-full text-xs font-semibold border border-gray-600/50">
                         {monthsBetween} {monthsBetween === 1 ? 'mes' : 'meses'}
                       </div>
                     )}
