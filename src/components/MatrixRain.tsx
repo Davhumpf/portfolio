@@ -53,10 +53,10 @@ export default function MatrixRain() {
         : 'rgba(229, 231, 235, 0.05)'; // Fondo claro para light mode
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Color del texto - verde Matrix más visible
+      // Color del texto - morado adaptado al tema
       ctx.fillStyle = isDark
-        ? 'rgba(0, 255, 70, 0.6)' // Verde brillante más visible en dark mode
-        : 'rgba(0, 150, 0, 0.35)'; // Verde oscuro más visible en light mode
+        ? 'rgba(167, 139, 250, 0.7)' // Morado brillante (#A78BFA) para dark mode
+        : 'rgba(124, 58, 237, 0.4)'; // Morado (#7C3AED) para light mode
       ctx.font = `${fontSize}px monospace`;
 
       // Dibujar caracteres
@@ -117,7 +117,7 @@ export default function MatrixRain() {
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
       style={{
-        zIndex: 0,
+        zIndex: -5,
         opacity: 1, // Opacidad completa, la visibilidad se controla con los colores RGBA
       }}
       aria-hidden="true"

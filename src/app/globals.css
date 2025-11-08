@@ -134,7 +134,7 @@
   }
 
   .glass {
-    background: color-mix(in oklab, var(--panel) 70%, transparent);
+    background: color-mix(in oklab, var(--panel) 92%, transparent);
     @apply backdrop-blur-xl;
     border: 1px solid var(--border);
     border-radius: clamp(20px, 5vw, 40px);
@@ -142,7 +142,7 @@
   }
 
   .glass-sidebar {
-    background: color-mix(in oklab, var(--panel) 85%, transparent);
+    background: color-mix(in oklab, var(--panel) 95%, transparent);
     @apply backdrop-blur-xl;
     border: 1px solid var(--border);
     border-radius: clamp(24px, 6vw, 48px);
