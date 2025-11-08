@@ -7,6 +7,7 @@ import BrandPopout from "@/components/BrandPopout";
 import ThemeProvider from "@/components/ThemeProvider";
 import LanguageProvider from "@/context/LanguageProvider";
 import MainContent from "@/components/MainContent";
+import MatrixRain from "@/components/MatrixRain";
 
 export const metadata: Metadata = {
   title: "David — UI/Frontend",
@@ -19,6 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <body className="min-h-screen antialiased overflow-x-hidden">
+        {/* Animación Matrix de fondo */}
+        <MatrixRain />
+
         {/* Gradiente de fondo */}
         <div
           aria-hidden

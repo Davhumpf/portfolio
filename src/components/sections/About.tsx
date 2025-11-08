@@ -52,7 +52,6 @@ type CategoryType = "frontend" | "backend" | "cloud";
 export default function About() {
   const t = useT();
   const scope = useRef<HTMLDivElement>(null);
-  const githubIconRef = useRef<HTMLAnchorElement>(null);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>("frontend");
 
   useEffect(() => {
@@ -87,52 +86,6 @@ export default function About() {
         stagger: 0.2,
         ease: "power3.out"
       });
-
-      // Animación del icono de GitHub - mismo estilo que Contacts
-      gsap.from(".github-icon", {
-        scrollTrigger: {
-          trigger: ".github-icon",
-          start: "top 80%",
-          once: true,
-          toggleActions: "play none none none",
-        },
-        scale: 0,
-        opacity: 0,
-        duration: 0.6,
-        ease: "back.out(1.7)",
-        clearProps: "all",
-      });
-
-      // Efecto magnético en hover para GitHub icon
-      const githubIcon = githubIconRef.current;
-      if (githubIcon) {
-        const handleMouseMove = (e: MouseEvent) => {
-          const rect = githubIcon.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-
-          gsap.to(githubIcon, {
-            x: x * 0.15,
-            y: y * 0.15,
-            scale: 1.08,
-            duration: 0.4,
-            ease: "power2.out",
-          });
-        };
-
-        const handleMouseLeave = () => {
-          gsap.to(githubIcon, {
-            x: 0,
-            y: 0,
-            scale: 1,
-            duration: 0.5,
-            ease: "elastic.out(1, 0.5)",
-          });
-        };
-
-        githubIcon.addEventListener("mousemove", handleMouseMove);
-        githubIcon.addEventListener("mouseleave", handleMouseLeave);
-      }
 
       // Refrescar ScrollTrigger después de cargar
       setTimeout(() => {
@@ -226,65 +179,6 @@ export default function About() {
                 />
               </div>
             </div>
-
-            {/* GitHub Icon - mismo estilo que Contactos */}
-            <a
-              ref={githubIconRef}
-              href="https://github.com/Davhumpf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="github-icon group relative flex items-center justify-center cursor-pointer"
-              style={{
-                aspectRatio: "1 / 1",
-                background: "var(--bg-card)",
-                border: "1px solid var(--border)",
-                borderRadius: "clamp(16px, 3vw, 24px)",
-                boxShadow: "var(--shadow-sm)",
-                transition: "box-shadow 0.3s ease",
-                minHeight: "clamp(80px, 20vw, 140px)",
-                maxWidth: "clamp(80px, 20vw, 140px)",
-                margin: "0 auto",
-                willChange: "transform",
-              }}
-              aria-label="GitHub"
-              title="Ver perfil en GitHub"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-lg)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-sm)";
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-lg)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.boxShadow = "var(--shadow-sm)";
-              }}
-            >
-              {/* Ícono */}
-              <div
-                className="relative z-10 transition-colors"
-                style={{
-                  width: "clamp(40px, 12vw, 64px)",
-                  height: "clamp(40px, 12vw, 64px)",
-                  color: "var(--text-1)",
-                }}
-              >
-                <GitHubIcon />
-              </div>
-
-              {/* Glow effect en hover - color GitHub */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl"
-                style={{
-                  background: "radial-gradient(circle at center, #18171720, transparent 70%)",
-                  borderRadius: "clamp(16px, 3vw, 24px)",
-                }}
-              />
-
-              {/* Nombre en tooltip accesible */}
-              <span className="sr-only">GitHub</span>
-            </a>
 
             {/* Textos */}
             <div className="w-full flex flex-col" style={{
@@ -406,18 +300,30 @@ export default function About() {
                     <div className="flex flex-col items-center justify-center" style={{
                       gap: 'clamp(0.25rem, 0.8vw, 0.5rem)',
                     }}>
-                      <img
-                        src={`/${tech}.png`}
-                        alt={tech}
-                        className="object-contain"
-                        style={{
-                          width: 'clamp(24px, 7vw, 36px)',
-                          height: 'clamp(24px, 7vw, 36px)',
-                        }}
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
+                      {tech === 'github' ? (
+                        <div
+                          style={{
+                            width: 'clamp(24px, 7vw, 36px)',
+                            height: 'clamp(24px, 7vw, 36px)',
+                            color: 'var(--text-1)',
+                          }}
+                        >
+                          <GitHubIcon />
+                        </div>
+                      ) : (
+                        <img
+                          src={`/${tech}.png`}
+                          alt={tech}
+                          className="object-contain"
+                          style={{
+                            width: 'clamp(24px, 7vw, 36px)',
+                            height: 'clamp(24px, 7vw, 36px)',
+                          }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      )}
                       <span className="font-medium text-center leading-tight" style={{
                         fontSize: 'clamp(8px, 1.2vw, 11px)',
                       }}>
