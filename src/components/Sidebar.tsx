@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import gsap from 'gsap';
 import { useLang, type Lang } from '@/context/LanguageProvider';
-import LangMenu from './LangMenu';
-import ThemeMenu from './ThemeMenu';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -60,6 +58,25 @@ const Sidebar = () => {
   };
 
   const content = sidebarContent[lang];
+
+  // Helper functions for labels
+  const getLangLabel = () => {
+    switch (lang) {
+      case 'en': return 'English';
+      case 'es': return 'Español';
+      case 'de': return 'Deutsch';
+      default: return 'Español';
+    }
+  };
+
+  const getThemeLabel = () => {
+    switch (theme) {
+      case 'light': return 'Light';
+      case 'dark': return 'Dark';
+      case 'system': return 'System';
+      default: return 'System';
+    }
+  };
 
   // Auto-expand on hover with smooth transition
   const handleMouseEnter = () => {
@@ -281,19 +298,61 @@ const Sidebar = () => {
               </button>
             </div>
 
-            {/* Expanded: Dropdown menus */}
+            {/* Expanded: Toggle buttons with labels */}
             <div
-              className="space-y-3 transition-opacity duration-300 ease-in-out"
+              className="space-y-2 transition-opacity duration-300 ease-in-out"
               style={{
                 opacity: collapsed ? 0 : 1,
                 pointerEvents: collapsed ? 'none' : 'auto',
                 position: collapsed ? 'absolute' : 'relative',
                 inset: 0,
-                zIndex: 10002,
               }}
             >
-              <LangMenu />
-              <ThemeMenu />
+              {/* Language Toggle Button - Expanded */}
+              <button
+                onClick={() => {
+                  const langs: Lang[] = ['es', 'en', 'de'];
+                  const currentIndex = langs.indexOf(lang);
+                  const nextIndex = (currentIndex + 1) % langs.length;
+                  setLang(langs[nextIndex]);
+                }}
+                className="flex items-center justify-between w-full py-2.5 px-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200 group"
+                aria-label={`Current language: ${getLangLabel()}`}
+                title="Click to switch language"
+              >
+                <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                  {getLangLabel()}
+                </span>
+                <span className="text-xs font-bold text-gray-400 group-hover:text-gray-300">
+                  {lang.toUpperCase()}
+                </span>
+              </button>
+
+              {/* Theme Toggle Button - Expanded */}
+              <button
+                onClick={() => {
+                  const themes = ['light', 'dark', 'system'];
+                  const currentIndex = themes.indexOf(theme || 'system');
+                  const nextIndex = (currentIndex + 1) % themes.length;
+                  setTheme(themes[nextIndex]);
+                }}
+                className="flex items-center justify-between w-full py-2.5 px-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200 group"
+                aria-label={`Current theme: ${getThemeLabel()}`}
+                title="Click to switch theme"
+              >
+                <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                  {getThemeLabel()}
+                </span>
+                <span className="text-gray-400 group-hover:text-gray-300">
+                  {theme === 'light' ? (
+                    <Sun size={16} />
+                  ) : theme === 'dark' ? (
+                    <Moon size={16} />
+                  ) : (
+                    <Sun size={16} className="opacity-50" />
+                  )}
+                </span>
+              </button>
             </div>
           </div>
 
