@@ -46,23 +46,23 @@ export default function MatrixRain() {
       }
       lastTime = currentTime;
 
-      // Fade effect con opacidad muy baja - se adapta al tema
+      // Fade effect - se adapta al tema
       const isDark = resolvedTheme === 'dark';
       ctx.fillStyle = isDark
-        ? 'rgba(28, 28, 30, 0.08)' // Fondo oscuro para dark mode
-        : 'rgba(229, 231, 235, 0.08)'; // Fondo claro para light mode
+        ? 'rgba(28, 28, 30, 0.05)' // Fondo oscuro para dark mode
+        : 'rgba(229, 231, 235, 0.05)'; // Fondo claro para light mode
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Color del texto - verde Matrix muy tenue
+      // Color del texto - verde Matrix más visible
       ctx.fillStyle = isDark
-        ? 'rgba(0, 255, 0, 0.15)' // Verde brillante en dark mode
-        : 'rgba(0, 180, 0, 0.12)'; // Verde más oscuro en light mode
+        ? 'rgba(0, 255, 70, 0.6)' // Verde brillante más visible en dark mode
+        : 'rgba(0, 150, 0, 0.35)'; // Verde oscuro más visible en light mode
       ctx.font = `${fontSize}px monospace`;
 
       // Dibujar caracteres
       for (let i = 0; i < drops.length; i++) {
-        // Solo dibuja algunas columnas aleatoriamente para reducir carga
-        if (Math.random() > 0.5) {
+        // Dibuja más columnas para mayor visibilidad
+        if (Math.random() > 0.2) {
           const char = chars[Math.floor(Math.random() * chars.length)];
           const x = i * fontSize;
           const y = drops[i] * fontSize;
@@ -118,8 +118,7 @@ export default function MatrixRain() {
       className="fixed inset-0 pointer-events-none"
       style={{
         zIndex: 0,
-        opacity: 0.3, // Opacidad general muy baja
-        mixBlendMode: 'multiply', // Mezcla mejor con el fondo
+        opacity: 1, // Opacidad completa, la visibilidad se controla con los colores RGBA
       }}
       aria-hidden="true"
     />
