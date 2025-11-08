@@ -224,21 +224,25 @@ const Sidebar = () => {
                 <span className={`
                   flex items-center justify-center flex-shrink-0 w-5 h-5
                   transition-colors duration-200
-                  ${isActive ? 'text-blue-400' : 'text-gray-400 group-hover:text-gray-300'}
-                `}>
+                  ${isActive ? 'text-blue-400' : ''}
+                `}
+                style={{
+                  color: isActive ? undefined : 'var(--text-1)'
+                }}>
                   {item.icon}
                 </span>
 
                 <span
                   className={`
                     label font-medium whitespace-nowrap overflow-hidden text-ellipsis
-                    ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}
+                    ${isActive ? 'text-white' : ''}
                   `}
                   style={{
                     opacity: collapsed ? 0 : 1,
                     maxWidth: collapsed ? '0px' : '150px',
                     fontSize: 'clamp(11px, 0.8vw, 12px)',
                     transition: 'opacity 0.2s ease, max-width 0.3s ease',
+                    color: isActive ? undefined : 'var(--text-1)'
                   }}
                 >
                   {item.text}
@@ -274,7 +278,7 @@ const Sidebar = () => {
                 aria-label={`Current language: ${lang.toUpperCase()}`}
                 title={`Switch language (${lang.toUpperCase()})`}
               >
-                <span className="text-xs font-bold text-gray-300">
+                <span className="text-xs font-bold" style={{ color: 'var(--text-1)' }}>
                   {lang.toUpperCase()}
                 </span>
               </button>
@@ -290,13 +294,14 @@ const Sidebar = () => {
                 className="flex items-center justify-center w-full py-2.5 px-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200"
                 aria-label={`Current theme: ${theme || 'system'}`}
                 title={`Switch theme (${theme || 'system'})`}
+                style={{ color: 'var(--text-1)' }}
               >
                 {theme === 'light' ? (
-                  <Sun size={18} className="text-gray-300" />
+                  <Sun size={18} />
                 ) : theme === 'dark' ? (
-                  <Moon size={18} className="text-gray-300" />
+                  <Moon size={18} />
                 ) : (
-                  <Laptop size={18} className="text-gray-300" />
+                  <Laptop size={18} />
                 )}
               </button>
             </div>
@@ -323,10 +328,10 @@ const Sidebar = () => {
                 aria-label={`Current language: ${getLangLabel()}`}
                 title="Click to switch language"
               >
-                <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                <span className="text-sm font-medium" style={{ color: 'var(--text-1)' }}>
                   {getLangLabel()}
                 </span>
-                <span className="text-xs font-bold text-gray-400 group-hover:text-gray-300">
+                <span className="text-xs font-bold" style={{ color: 'var(--text-1)' }}>
                   {lang.toUpperCase()}
                 </span>
               </button>
@@ -342,11 +347,12 @@ const Sidebar = () => {
                 className="flex items-center justify-between w-full py-2.5 px-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200 group"
                 aria-label={`Current theme: ${getThemeLabel()}`}
                 title="Click to switch theme"
+                style={{ color: 'var(--text-1)' }}
               >
-                <span className="text-sm font-medium text-gray-300 group-hover:text-white">
+                <span className="text-sm font-medium">
                   {getThemeLabel()}
                 </span>
-                <span className="text-gray-400 group-hover:text-gray-300">
+                <span>
                   {theme === 'light' ? (
                     <Sun size={16} />
                   ) : theme === 'dark' ? (
@@ -379,8 +385,9 @@ const Sidebar = () => {
               <div className="w-full rounded-xl bg-white/5 backdrop-blur-sm border border-white/10" style={{
                 padding: 'clamp(0.5rem, 1vw, 0.75rem)',
               }}>
-                <p className="text-center text-gray-400 leading-relaxed" style={{
+                <p className="text-center leading-relaxed" style={{
                   fontSize: 'clamp(9px, 0.7vw, 11px)',
+                  color: 'var(--text-1)'
                 }}>
                   {content.footer}
                 </p>

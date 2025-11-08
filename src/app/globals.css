@@ -8,10 +8,10 @@
     --bg-card: #F3F4F6;         /* Cards gris muy claro */
     --bg: #E5E7EB;              /* Fondo principal (alias) */
     --panel: #F3F4F6;           /* Fondo secundario (alias) */
-    --text-1: #0F172A;          /* Texto principal con buen contraste */
-    --text-2: #64748B;          /* Texto secundario más legible */
-    --text: #0F172A;            /* Texto principal (alias) */
-    --muted: #64748B;           /* Texto secundario (alias) */
+    --text-1: #000000;          /* Texto principal negro puro */
+    --text-2: #000000;          /* Texto secundario negro puro */
+    --text: #000000;            /* Texto principal negro puro (alias) */
+    --muted: #000000;           /* Texto secundario negro puro (alias) */
     --border: #000000;          /* Bordes negros sólidos */
 
     --accent: #7C3AED;          /* Acento violeta moderno */
