@@ -131,13 +131,13 @@ export default function About() {
   return (
     <div ref={scope}>
       <Section id="about" title={t("about_title")} subtitle={t("about_sub")}>
-        {/* Layout con FENG SHUI: Grid en desktop, stack en móvil */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 lg:gap-12 items-start">
+        {/* Layout con FENG SHUI: Grid en desktop, stack en móvil - Versión compacta */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 lg:gap-8 items-start">
 
           {/* COLUMNA IZQUIERDA: Imagen + Bio (Punto focal) */}
-          <div className="flex flex-col items-center lg:items-start gap-6 lg:gap-8">
+          <div className="flex flex-col items-center lg:items-start gap-4 lg:gap-5">
             {/* Imagen profesional - Punto de entrada visual */}
-            <div className="about-image relative flex-shrink-0 w-full max-w-[280px] lg:max-w-xs mx-auto lg:mx-0">
+            <div className="about-image relative flex-shrink-0 w-full max-w-[240px] lg:max-w-[260px] mx-auto lg:mx-0">
               <div className="relative w-full aspect-square">
                 {/* Borde con glow */}
                 <div
@@ -174,18 +174,18 @@ export default function About() {
             </div>
 
             {/* Textos con espacio para respirar */}
-            <div className="w-full flex flex-col gap-5 max-w-[280px] lg:max-w-none mx-auto lg:mx-0">
-              <p className="about-text text-base lg:text-lg leading-relaxed text-center lg:text-left">
+            <div className="w-full flex flex-col gap-3 max-w-[240px] lg:max-w-none mx-auto lg:mx-0">
+              <p className="about-text text-sm lg:text-base leading-relaxed text-center lg:text-left">
                 {t("about_p1")}
               </p>
-              <p className="about-text text-sm lg:text-base leading-relaxed opacity-75 text-center lg:text-left">
+              <p className="about-text text-xs lg:text-sm leading-relaxed opacity-75 text-center lg:text-left">
                 {t("about_p2")}
               </p>
             </div>
           </div>
 
           {/* SEPARADOR VERTICAL (solo desktop) - Feng Shui: división de espacios */}
-          <div className="hidden lg:block relative h-full min-h-[400px] w-px">
+          <div className="hidden lg:block relative h-full min-h-[320px] w-px">
             <div
               className="absolute inset-0 w-px"
               style={{
@@ -203,19 +203,19 @@ export default function About() {
           </div>
 
           {/* COLUMNA DERECHA: Tech Stack con jerarquía clara */}
-          <div className="w-full flex flex-col gap-6 lg:gap-8">
+          <div className="w-full flex flex-col gap-4 lg:gap-5">
             {/* Título de sección (jerarquía visual) */}
-            <div className="flex flex-col gap-2 text-center lg:text-left">
-              <h3 className="text-lg lg:text-xl font-bold" style={{ color: "var(--accent)" }}>
+            <div className="flex flex-col gap-1 text-center lg:text-left">
+              <h3 className="text-base lg:text-lg font-bold" style={{ color: "var(--accent)" }}>
                 Tech Stack
               </h3>
-              <p className="text-xs lg:text-sm opacity-60">
+              <p className="text-xs opacity-60">
                 Herramientas y tecnologías que domino
               </p>
             </div>
 
             {/* Botones de categorías - Mejorados con más espacio */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-2">
               <button
                 onClick={(e) => handleCategoryClick("frontend", e)}
                 className={`rounded-xl font-bold transition-all ${
@@ -227,8 +227,8 @@ export default function About() {
                     : "color-mix(in oklab, var(--panel) 70%, transparent)",
                   borderColor: "var(--accent)",
                   color: selectedCategory === "frontend" ? "var(--bg)" : "inherit",
-                  padding: "0.625rem 1.25rem",
-                  fontSize: "0.875rem",
+                  padding: "0.5rem 1rem",
+                  fontSize: "0.8125rem",
                 }}
               >
                 Frontend
@@ -244,8 +244,8 @@ export default function About() {
                     : "color-mix(in oklab, var(--panel) 70%, transparent)",
                   borderColor: "var(--accent)",
                   color: selectedCategory === "backend" ? "var(--bg)" : "inherit",
-                  padding: "0.625rem 1.25rem",
-                  fontSize: "0.875rem",
+                  padding: "0.5rem 1rem",
+                  fontSize: "0.8125rem",
                 }}
               >
                 Backend
@@ -261,26 +261,26 @@ export default function About() {
                     : "color-mix(in oklab, var(--panel) 70%, transparent)",
                   borderColor: "var(--accent)",
                   color: selectedCategory === "cloud" ? "var(--bg)" : "inherit",
-                  padding: "0.625rem 1.25rem",
-                  fontSize: "0.875rem",
+                  padding: "0.5rem 1rem",
+                  fontSize: "0.8125rem",
                 }}
               >
                 Cloud
               </button>
             </div>
 
-            {/* Contenedor de iconos - Con más espacio y mejor organización */}
+            {/* Contenedor de iconos - Compacto con margen derecho */}
             <div
-              className="ring-1 backdrop-blur-sm overflow-hidden w-full"
+              className="ring-1 backdrop-blur-sm overflow-hidden w-full lg:mr-2"
               style={{
                 background: "color-mix(in oklab, var(--panel) 50%, transparent)",
                 borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)",
-                borderRadius: "1rem",
-                padding: "1.5rem",
-                minHeight: "280px",
+                borderRadius: "0.875rem",
+                padding: "1rem",
+                minHeight: "240px",
               }}
             >
-              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {TECH_STACK[selectedCategory].map((tech) => (
                   <div
                     key={tech}
@@ -288,16 +288,16 @@ export default function About() {
                     style={{
                       background: "color-mix(in oklab, var(--panel) 80%, transparent)",
                       borderColor: "color-mix(in oklab, var(--accent) 40%, transparent)",
-                      borderRadius: "0.75rem",
-                      padding: "0.75rem",
+                      borderRadius: "0.625rem",
+                      padding: "0.625rem",
                     }}
                   >
-                    <div className="flex flex-col items-center justify-center h-full gap-2">
+                    <div className="flex flex-col items-center justify-center h-full gap-1.5">
                       {tech === 'github' ? (
                         <div
                           style={{
-                            width: "2.5rem",
-                            height: "2.5rem",
+                            width: "2rem",
+                            height: "2rem",
                             color: 'var(--text-1)',
                           }}
                         >
@@ -309,15 +309,15 @@ export default function About() {
                           alt={tech}
                           className="object-contain"
                           style={{
-                            width: "2.5rem",
-                            height: "2.5rem",
+                            width: "2rem",
+                            height: "2rem",
                           }}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}
                         />
                       )}
-                      <span className="font-medium text-center leading-tight text-xs">
+                      <span className="font-medium text-center leading-tight" style={{ fontSize: "0.625rem" }}>
                         {getTechName(tech)}
                       </span>
                     </div>
