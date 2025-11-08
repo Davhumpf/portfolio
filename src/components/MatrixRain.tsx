@@ -73,15 +73,15 @@ export default function MatrixRain() {
       let glowColor: string;
 
       if (isDark) {
-        mainColor = '#A855F7'; // Morado eléctrico fuerte (purple-500)
-        glowColor = '#C084FC'; // Glow morado brillante (purple-400)
+        mainColor = '#FFFFFF'; // Blanco brillante para dark mode
+        glowColor = '#E0E0E0'; // Glow plateado/blanco
       } else if (isLight) {
         mainColor = '#000000'; // Negro para light mode
         glowColor = '#333333'; // Glow más visible para mejor contraste
       } else {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        mainColor = prefersDark ? '#A855F7' : '#000000';
-        glowColor = prefersDark ? '#C084FC' : '#333333';
+        mainColor = prefersDark ? '#FFFFFF' : '#000000';
+        glowColor = prefersDark ? '#E0E0E0' : '#333333';
       }
 
       ctx.font = `${fontSize}px monospace`;
