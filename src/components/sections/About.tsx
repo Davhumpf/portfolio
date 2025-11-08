@@ -130,14 +130,26 @@ export default function About() {
 
   return (
     <div ref={scope}>
-      <Section id="about" title={t("about_title")} subtitle={t("about_sub")}>
-        {/* Layout con FENG SHUI: Grid en desktop, stack en móvil - Versión compacta */}
+      <Section id="about" title={t("about_title")}>
+        {/* Layout con dos columnas perfectamente alineadas */}
         <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 lg:gap-8 items-start">
 
-          {/* COLUMNA IZQUIERDA: Imagen + Bio (Punto focal) */}
-          <div className="flex flex-col items-center lg:items-start gap-4 lg:gap-5">
-            {/* Imagen profesional - Punto de entrada visual */}
-            <div className="about-image relative flex-shrink-0 w-full max-w-[240px] lg:max-w-[260px] mx-auto lg:mx-0">
+          {/* ========== COLUMNA IZQUIERDA: SOBRE MI ========== */}
+          <div className="flex flex-col items-center lg:items-start">
+
+            {/* NIVEL 1: Título principal */}
+            <h3 className="text-base lg:text-lg font-extrabold mb-1 text-center lg:text-left w-full"
+                style={{ color: "var(--accent)" }}>
+              Sobre mi
+            </h3>
+
+            {/* NIVEL 2: Subtítulo/Descripción */}
+            <p className="text-xs lg:text-sm mb-4 lg:mb-5 opacity-75 text-center lg:text-left w-full">
+              {t("about_sub")}
+            </p>
+
+            {/* NIVEL 3: Foto de perfil */}
+            <div className="about-image relative flex-shrink-0 w-full max-w-[240px] lg:max-w-[260px] mx-auto lg:mx-0 mb-4">
               <div className="relative w-full aspect-square">
                 {/* Borde con glow */}
                 <div
@@ -173,18 +185,20 @@ export default function About() {
               </div>
             </div>
 
-            {/* Textos con espacio para respirar */}
+            {/* NIVEL 4: Texto descriptivo principal */}
             <div className="w-full flex flex-col gap-3 max-w-[240px] lg:max-w-none mx-auto lg:mx-0">
               <p className="about-text text-sm lg:text-base leading-relaxed text-center lg:text-left">
                 {t("about_p1")}
               </p>
+
+              {/* NIVEL 5: Texto adicional (límite inferior) */}
               <p className="about-text text-xs lg:text-sm leading-relaxed opacity-75 text-center lg:text-left">
                 {t("about_p2")}
               </p>
             </div>
           </div>
 
-          {/* SEPARADOR VERTICAL (solo desktop) - Feng Shui: división de espacios */}
+          {/* SEPARADOR VERTICAL (solo desktop) */}
           <div className="hidden lg:block relative h-full min-h-[320px] w-px">
             <div
               className="absolute inset-0 w-px"
@@ -202,23 +216,22 @@ export default function About() {
             />
           </div>
 
-          {/* COLUMNA DERECHA: Tech Stack con jerarquía clara - Alineado */}
-          <div className="w-full flex flex-col">
-            {/* Título de sección (jerarquía visual) - Sin gap superior para alinear con título principal */}
-            <div className="flex flex-col gap-1 text-center lg:text-left mb-3 lg:mb-4">
-              <h3 className="text-base lg:text-lg font-bold" style={{ color: "var(--accent)" }}>
-                Tech Stack
-              </h3>
-              <p className="text-xs opacity-60">
-                Herramientas y tecnologías que domino
-              </p>
-            </div>
+          {/* ========== COLUMNA DERECHA: TECH STACK ========== */}
+          <div className="flex flex-col items-center lg:items-start">
 
-            {/* Espaciador para alinear botones con primer párrafo */}
-            <div className="hidden lg:block" style={{ height: "clamp(220px, 20vw, 260px)" }} />
+            {/* NIVEL 1: Título principal (alineado con "Sobre mi") */}
+            <h3 className="text-base lg:text-lg font-extrabold mb-1 text-center lg:text-left w-full"
+                style={{ color: "var(--accent)" }}>
+              Tech Stack
+            </h3>
 
-            {/* Botones de categorías - Alineados con about_p1 */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-3 lg:mb-4">
+            {/* NIVEL 2: Subtítulo/Descripción (alineado con subtítulo izquierdo) */}
+            <p className="text-xs lg:text-sm mb-4 lg:mb-5 opacity-75 text-center lg:text-left w-full">
+              Herramientas y tecnologías que domino
+            </p>
+
+            {/* NIVEL 3: Botones de categorías (alineados con inicio de foto) */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4 w-full">
               <button
                 onClick={(e) => handleCategoryClick("frontend", e)}
                 className={`rounded-xl font-bold transition-all ${
@@ -272,16 +285,17 @@ export default function About() {
               </button>
             </div>
 
-            {/* Contenedor de iconos - Alineado con foto e imagen */}
+            {/* NIVEL 4: Grid de tecnologías (alineada con texto descriptivo) */}
+            {/* NIVEL 5: Límite inferior (la grid termina a la altura del texto final) */}
             <div
-              className="ring-1 backdrop-blur-sm overflow-y-auto w-full lg:mr-2"
+              className="ring-1 backdrop-blur-sm overflow-y-auto w-full"
               style={{
                 background: "color-mix(in oklab, var(--panel) 50%, transparent)",
                 borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)",
                 borderRadius: "0.875rem",
                 padding: "1rem",
                 minHeight: "200px",
-                maxHeight: "clamp(280px, 35vw, 380px)",
+                maxHeight: "clamp(240px, 28vw, 300px)",
               }}
             >
               <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3">
