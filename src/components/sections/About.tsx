@@ -202,10 +202,10 @@ export default function About() {
             />
           </div>
 
-          {/* COLUMNA DERECHA: Tech Stack con jerarquía clara */}
-          <div className="w-full flex flex-col gap-4 lg:gap-5">
-            {/* Título de sección (jerarquía visual) */}
-            <div className="flex flex-col gap-1 text-center lg:text-left">
+          {/* COLUMNA DERECHA: Tech Stack con jerarquía clara - Alineado */}
+          <div className="w-full flex flex-col">
+            {/* Título de sección (jerarquía visual) - Sin gap superior para alinear con título principal */}
+            <div className="flex flex-col gap-1 text-center lg:text-left mb-3 lg:mb-4">
               <h3 className="text-base lg:text-lg font-bold" style={{ color: "var(--accent)" }}>
                 Tech Stack
               </h3>
@@ -214,8 +214,11 @@ export default function About() {
               </p>
             </div>
 
-            {/* Botones de categorías - Mejorados con más espacio */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-2">
+            {/* Espaciador para alinear botones con primer párrafo */}
+            <div className="hidden lg:block" style={{ height: "clamp(220px, 20vw, 260px)" }} />
+
+            {/* Botones de categorías - Alineados con about_p1 */}
+            <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-3 lg:mb-4">
               <button
                 onClick={(e) => handleCategoryClick("frontend", e)}
                 className={`rounded-xl font-bold transition-all ${
@@ -269,15 +272,16 @@ export default function About() {
               </button>
             </div>
 
-            {/* Contenedor de iconos - Compacto con margen derecho */}
+            {/* Contenedor de iconos - Alineado con foto e imagen */}
             <div
-              className="ring-1 backdrop-blur-sm overflow-hidden w-full lg:mr-2"
+              className="ring-1 backdrop-blur-sm overflow-y-auto w-full lg:mr-2"
               style={{
                 background: "color-mix(in oklab, var(--panel) 50%, transparent)",
                 borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)",
                 borderRadius: "0.875rem",
                 padding: "1rem",
-                minHeight: "240px",
+                minHeight: "200px",
+                maxHeight: "clamp(280px, 35vw, 380px)",
               }}
             >
               <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3">
