@@ -99,9 +99,10 @@ export default function Hero() {
       paddingLeft: 'clamp(0.75rem, 2vw, 1rem)',
       paddingRight: 'clamp(0.75rem, 2vw, 1rem)',
     }}>
-      <div className="w-full relative overflow-hidden ring-1 ring-white/5"
+      <div className="w-full relative overflow-hidden"
            style={{
              background: "color-mix(in oklab, var(--panel) 90%, transparent)",
+             border: "1px solid var(--border)",
              borderRadius: 'clamp(16px, 4vw, 24px)',
              padding: 'clamp(1rem, 3vw, 2rem)',
            }}>
