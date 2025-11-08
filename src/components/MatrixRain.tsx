@@ -76,12 +76,12 @@ export default function MatrixRain() {
         mainColor = '#A78BFA'; // accent-2 dark - morado claro
         glowColor = '#7C3AED';
       } else if (isLight) {
-        mainColor = '#7C3AED'; // accent light - violeta
-        glowColor = '#A78BFA';
+        mainColor = '#000000'; // Negro para light mode
+        glowColor = '#1a1a1a'; // Gris muy oscuro
       } else {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        mainColor = prefersDark ? '#A78BFA' : '#7C3AED';
-        glowColor = prefersDark ? '#7C3AED' : '#A78BFA';
+        mainColor = prefersDark ? '#A78BFA' : '#000000';
+        glowColor = prefersDark ? '#7C3AED' : '#1a1a1a';
       }
 
       ctx.font = `${fontSize}px monospace`;
@@ -155,7 +155,7 @@ export default function MatrixRain() {
       className="fixed inset-0 pointer-events-none"
       style={{
         zIndex: 0,
-        opacity: 0.9,
+        opacity: 0.5,
         width: '100vw',
         height: '100vh',
         maxWidth: '100vw',
