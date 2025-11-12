@@ -237,7 +237,7 @@ export default function Projects() {
             ref={containerRef}
             className="relative w-full"
             style={{
-              minHeight: "clamp(480px, 60vh, 720px)",
+              minHeight: "clamp(300px, 60vh, 720px)",
               transformStyle: "preserve-3d",
             }}
           >
@@ -340,6 +340,8 @@ export default function Projects() {
                         border: "2px solid var(--border)",
                         background: "var(--panel)",
                         boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.2)",
+                        aspectRatio: "16/9",
+                        minHeight: "200px",
                       }}
                     >
                       <iframe
@@ -377,8 +379,10 @@ export default function Projects() {
             style={{
               background: "color-mix(in oklab, var(--panel) 80%, transparent)",
               border: "1px solid var(--border)",
-              padding: "clamp(8px, 2vw, 12px)",
+              padding: "clamp(12px, 2vw, 16px)",
               boxShadow: "var(--shadow-md)",
+              minWidth: "48px",
+              minHeight: "48px",
             }}
             aria-label="Proyecto anterior"
             title="Proyecto anterior (←)"
@@ -392,8 +396,10 @@ export default function Projects() {
             style={{
               background: "color-mix(in oklab, var(--panel) 80%, transparent)",
               border: "1px solid var(--border)",
-              padding: "clamp(8px, 2vw, 12px)",
+              padding: "clamp(12px, 2vw, 16px)",
               boxShadow: "var(--shadow-md)",
+              minWidth: "48px",
+              minHeight: "48px",
             }}
             aria-label="Siguiente proyecto"
             title="Siguiente proyecto (→)"

@@ -132,7 +132,7 @@ export default function BrandPopout() {
       ref={popoutRef}
       href="#top"
       onClick={scrollToTop}
-      className="hidden lg:flex fixed bottom-6 right-6 z-[999] items-center gap-2 rounded-2xl px-6 py-4 shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group"
+      className="hidden lg:flex fixed bottom-6 right-6 z-[50] items-center gap-2 rounded-2xl px-6 py-4 shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group"
       style={{
         background: "var(--panel)",
         border: "2px solid var(--ring)",

@@ -16,6 +16,10 @@ export default function MatrixRain() {
   useEffect(() => {
     if (!mounted) return;
 
+    // Respetar preferencia de movimiento reducido
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 

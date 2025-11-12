@@ -12,7 +12,7 @@ import MatrixRain from "@/components/MatrixRain";
 export const metadata: Metadata = {
   title: "David — UI/Frontend",
   description: "Micro-portafolio con Next.js, TypeScript, Tailwind y GSAP.",
-  viewport: { width: "device-width", initialScale: 1, maximumScale: 1 },
+  viewport: { width: "device-width", initialScale: 1 },
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
