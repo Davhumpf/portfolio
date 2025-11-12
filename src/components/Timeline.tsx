@@ -321,7 +321,7 @@ export default function Timeline() {
       <div className="timeline-slider-container relative w-full max-w-4xl mx-auto px-4 py-8">
 
         {/* Tarjeta principal */}
-        <div className="relative min-h-[400px] md:min-h-[450px] flex items-center justify-center">
+        <div className="relative min-h-[300px] sm:min-h-[400px] md:min-h-[450px] flex items-center justify-center">
           <div
             ref={cardRef}
             className={`timeline-card relative w-full rounded-2xl shadow-2xl p-6 md:p-10 ${
@@ -393,7 +393,7 @@ export default function Timeline() {
           <button
             onClick={handlePrev}
             disabled={isAnimating}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-10 h-10 md:w-12 md:h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg z-10 ${
+            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-4 md:-translate-x-12 w-12 h-12 md:w-14 md:h-14 rounded-full border-2 flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg z-10 ${
               isDark
                 ? 'bg-gray-800 hover:bg-gray-700 border-gray-600 text-white hover:shadow-purple-400/50'
                 : 'bg-white hover:bg-gray-50 border-gray-300 text-gray-800 hover:shadow-purple-600/50'
@@ -416,7 +416,7 @@ export default function Timeline() {
           <button
             onClick={handleNext}
             disabled={isAnimating}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-10 h-10 md:w-12 md:h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg z-10 ${
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-4 md:translate-x-12 w-12 h-12 md:w-14 md:h-14 rounded-full border-2 flex items-center justify-center transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg z-10 ${
               isDark
                 ? 'bg-gray-800 hover:bg-gray-700 border-gray-600 text-white hover:shadow-purple-400/50'
                 : 'bg-white hover:bg-gray-50 border-gray-300 text-gray-800 hover:shadow-purple-600/50'

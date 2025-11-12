@@ -240,7 +240,7 @@ export default function Header() {
   return (
     <header
       ref={root}
-      className="lg:hidden fixed z-[999] w-full max-w-full overflow-x-hidden"
+      className="lg:hidden fixed z-[9999] w-full max-w-full overflow-x-hidden"
       style={{
         willChange: "transform",
         top: 'clamp(0.5rem, 1vw, 0.75rem)',

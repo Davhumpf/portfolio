@@ -3,23 +3,23 @@
 /* ------------------ THEME TOKENS ------------------ */
 @layer base {
   :root {
-    /* Light Mode - Colores menos brillantes y más suaves */
+    /* Light Mode - Colores optimizados para mejor contraste y legibilidad */
     --bg-page: #E5E7EB;         /* Fondo principal gris claro */
     --bg-card: #F3F4F6;         /* Cards gris muy claro */
     --bg: #E5E7EB;              /* Fondo principal (alias) */
     --panel: #F3F4F6;           /* Fondo secundario (alias) */
-    --text-1: #000000;          /* Texto principal negro puro */
-    --text-2: #000000;          /* Texto secundario negro puro */
-    --text: #000000;            /* Texto principal negro puro (alias) */
-    --muted: #000000;           /* Texto secundario negro puro (alias) */
-    --border: #000000;          /* Bordes negros sólidos */
+    --text-1: #111827;          /* Texto principal gris muy oscuro (mejor contraste) */
+    --text-2: #374151;          /* Texto secundario gris oscuro */
+    --text: #111827;            /* Texto principal (alias) */
+    --muted: #6B7280;           /* Texto secundario con contraste WCAG AA */
+    --border: #1F2937;          /* Bordes oscuros visibles */
 
     --accent: #7C3AED;          /* Acento violeta moderno */
     --accent-2: #A78BFA;        /* Acento secundario */
 
-    --success: #10B981;
-    --warning: #F59E0B;
-    --error:   #EF4444;
+    --success: #059669;         /* Verde más oscuro para mejor contraste */
+    --warning: #D97706;         /* Naranja más oscuro */
+    --error:   #DC2626;         /* Rojo más oscuro */
 
     --ring: #7C3AED40;          /* Focus ring accesible */
     --panel-alpha: color-mix(in oklab, var(--text) 5%, transparent);
@@ -272,6 +272,60 @@
     .container {
       padding-left: 0.5rem;
       padding-right: 0.5rem;
+    }
+  }
+
+  /* Orientación landscape en móviles - reducir padding vertical */
+  @media (orientation: landscape) and (max-width: 1024px) {
+    .hero, section {
+      padding-top: clamp(1rem, 2vh, 1.5rem) !important;
+      padding-bottom: clamp(1rem, 2vh, 1.5rem) !important;
+    }
+
+    body {
+      font-size: clamp(12px, 1.4vw, 14px);
+    }
+  }
+
+  /* Pantallas muy grandes (TV, monitores 4K, >1920px) */
+  @media (min-width: 1920px) {
+    :root {
+      --max-content-width: 1600px;
+    }
+
+    body {
+      font-size: 18px;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 4vw, 4rem);
+    }
+
+    h2 {
+      font-size: clamp(2.25rem, 3vw, 3rem);
+    }
+
+    h3 {
+      font-size: clamp(1.875rem, 2.5vw, 2.5rem);
+    }
+
+    /* Limitar ancho del contenido para mejor legibilidad */
+    .container, section, main {
+      max-width: var(--max-content-width);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Aumentar espaciado */
+    .responsive-padding {
+      padding: clamp(2rem, 3vw, 3rem);
+    }
+
+    /* Aumentar tamaño de botones para interacción */
+    .btn {
+      min-height: 56px;
+      font-size: 18px;
+      padding: 1rem 2rem;
     }
   }
 
