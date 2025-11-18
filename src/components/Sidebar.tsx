@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar, Sun, Moon, Laptop } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { User, FolderOpen, Mail, Clock, FileText, GitBranch, BookOpen, Mic, Wrench, Calendar, Sun, Moon, Laptop, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import gsap from 'gsap';
 import { useLang, type Lang } from '@/context/LanguageProvider';
@@ -10,10 +10,18 @@ import { useLang, type Lang } from '@/context/LanguageProvider';
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [activeSection, setActiveSection] = useState('about');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { lang, setLang } = useLang();
   const { theme, setTheme } = useTheme();
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  // Fix hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sidebarContent = {
     en: {
@@ -70,6 +78,7 @@ const Sidebar = () => {
   };
 
   const getThemeLabel = () => {
+    if (!mounted) return 'System';
     switch (theme) {
       case 'light': return 'Light';
       case 'dark': return 'Dark';
@@ -78,7 +87,7 @@ const Sidebar = () => {
     }
   };
 
-  // Auto-expand on hover with smooth transition
+  // Auto-expand on hover (desktop only)
   const handleMouseEnter = () => {
     setCollapsed(false);
   };
@@ -107,6 +116,7 @@ const Sidebar = () => {
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveSection(item.id);
+      setMobileMenuOpen(false); // Close mobile menu on navigation
     }
   };
 
@@ -133,10 +143,39 @@ const Sidebar = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Close mobile menu on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileMenuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [mobileMenuOpen]);
+
   // GSAP animations - isolated to nav items only
   useEffect(() => {
+    if (!mounted) return;
+
     const ctx = gsap.context(() => {
-      // Only animate nav items, not the entire sidebar
       gsap.fromTo(
         navItemsRef.current.filter(Boolean),
         {
@@ -149,16 +188,231 @@ const Sidebar = () => {
           duration: 0.8,
           stagger: 0.1,
           ease: 'power3.out',
-          clearProps: 'all', // Clear all inline styles after animation
+          clearProps: 'all',
         }
       );
     }, sidebarRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [mounted]);
+
+  // Theme icon component (fixes hydration)
+  const ThemeIcon = ({ size = 18 }: { size?: number }) => {
+    if (!mounted) {
+      return <Laptop size={size} />;
+    }
+    
+    if (theme === 'light') return <Sun size={size} />;
+    if (theme === 'dark') return <Moon size={size} />;
+    return <Laptop size={size} />;
+  };
 
   return (
     <>
+      {/* Mobile Header - Clean & Simple */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50">
+        <div 
+          className="mx-3 mt-3 backdrop-blur-xl bg-gradient-to-r from-white/[0.07] to-white/[0.04] border border-white/10 shadow-2xl"
+          style={{
+            borderRadius: '18px',
+          }}
+        >
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            {/* Left: Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="flex items-center gap-2 px-3 h-10 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 hover:from-blue-500/20 hover:to-purple-500/20 active:scale-95 transition-all border border-white/10"
+              aria-label="Toggle navigation menu"
+              style={{ color: 'var(--text-1)' }}
+            >
+              <motion.div
+                initial={false}
+                animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+              >
+                {mobileMenuOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}
+              </motion.div>
+              <span className="text-sm font-medium">Menu</span>
+            </button>
+
+            {/* Right: Theme Toggles (Direct buttons, no dropdowns) */}
+            <div className="flex items-center gap-2">
+              {/* Language Cycle Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const langs: Lang[] = ['es', 'en', 'de'];
+                  const currentIndex = langs.indexOf(lang);
+                  const nextIndex = (currentIndex + 1) % langs.length;
+                  setLang(langs[nextIndex]);
+                }}
+                className="flex items-center justify-center min-w-[48px] h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/10"
+                aria-label={`Language: ${getLangLabel()}`}
+                title="Click to cycle language"
+              >
+                <span className="text-xs font-bold tracking-wider" style={{ color: 'var(--text-1)' }}>
+                  {lang.toUpperCase()}
+                </span>
+              </button>
+
+              {/* Light/Dark Direct Toggle */}
+              <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
+                {/* Light Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!mounted) return;
+                    setTheme('light');
+                  }}
+                  className={`p-2 rounded-lg transition-all ${
+                    mounted && theme === 'light'
+                      ? 'bg-gradient-to-br from-amber-500/20 to-yellow-500/20 text-amber-400'
+                      : 'hover:bg-white/5 opacity-60 hover:opacity-100'
+                  }`}
+                  aria-label="Light theme"
+                  style={{ color: mounted && theme === 'light' ? undefined : 'var(--text-1)' }}
+                >
+                  <Sun size={16} />
+                </button>
+
+                {/* Dark Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!mounted) return;
+                    setTheme('dark');
+                  }}
+                  className={`p-2 rounded-lg transition-all ${
+                    mounted && theme === 'dark'
+                      ? 'bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-400'
+                      : 'hover:bg-white/5 opacity-60 hover:opacity-100'
+                  }`}
+                  aria-label="Dark theme"
+                  style={{ color: mounted && theme === 'dark' ? undefined : 'var(--text-1)' }}
+                >
+                  <Moon size={16} />
+                </button>
+
+                {/* System Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!mounted) return;
+                    setTheme('system');
+                  }}
+                  className={`p-2 rounded-lg transition-all ${
+                    mounted && (theme === 'system' || !theme)
+                      ? 'bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400'
+                      : 'hover:bg-white/5 opacity-60 hover:opacity-100'
+                  }`}
+                  aria-label="System theme"
+                  style={{ color: mounted && (theme === 'system' || !theme) ? undefined : 'var(--text-1)' }}
+                >
+                  <Laptop size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              style={{ top: '88px' }}
+            />
+
+            {/* Mobile Menu */}
+            <motion.div
+              ref={mobileMenuRef}
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+              className="lg:hidden fixed left-0 bottom-0 w-[min(320px,85vw)] backdrop-blur-2xl bg-gradient-to-b from-white/[0.08] to-white/[0.04] z-50 overflow-y-auto border-r border-white/10 shadow-2xl"
+              style={{
+                top: '88px',
+                borderRadius: '0 24px 0 0',
+              }}
+            >
+              <nav className="px-4 py-6 space-y-1.5">
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.id;
+                  return (
+                    <a
+                      key={item.id}
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item)}
+                      className={`
+                        relative flex items-center gap-3 rounded-xl px-4 py-3
+                        transition-all duration-200 ease-out
+                        ${isActive
+                          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 shadow-lg'
+                          : 'hover:bg-white/5 active:bg-white/10'
+                        }
+                      `}
+                      style={{
+                        border: isActive ? '1px solid rgba(99, 102, 241, 0.3)' : '1px solid transparent',
+                      }}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeMobileIndicator"
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r-full"
+                          style={{
+                            height: 'calc(100% - 12px)',
+                            background: 'linear-gradient(180deg, #60a5fa 0%, #a78bfa 100%)',
+                          }}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 400,
+                            damping: 30,
+                          }}
+                        />
+                      )}
+
+                      <span
+                        className={`flex-shrink-0 ${isActive ? 'text-blue-400' : ''}`}
+                        style={{ color: isActive ? undefined : 'var(--text-1)' }}
+                      >
+                        {item.icon}
+                      </span>
+
+                      <span
+                        className={`font-medium text-[15px] ${isActive ? 'text-white' : ''}`}
+                        style={{
+                          color: isActive ? undefined : 'var(--text-1)',
+                          letterSpacing: '-0.01em'
+                        }}
+                      >
+                        {item.text}
+                      </span>
+                    </a>
+                  );
+                })}
+              </nav>
+
+              {/* Footer in mobile menu */}
+              <div className="px-4 pb-6 mt-6 border-t border-white/10 pt-4">
+                <div className="rounded-xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 p-3.5">
+                  <p className="text-center text-[10px] leading-relaxed" style={{ color: 'var(--text-2)', opacity: 0.7 }}>
+                    {content.footer}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Desktop Sidebar */}
       <aside
         ref={sidebarRef}
         onMouseEnter={handleMouseEnter}
@@ -256,7 +510,7 @@ const Sidebar = () => {
         <div className="space-y-4">
           {/* Controls Section */}
           <div className="relative">
-            {/* Icon-only buttons - Always visible */}
+            {/* Icon-only buttons - Always visible when collapsed */}
             <div
               className="flex flex-col gap-2 transition-opacity duration-300 ease-in-out"
               style={{
@@ -286,23 +540,19 @@ const Sidebar = () => {
               {/* Theme Toggle Button */}
               <button
                 onClick={() => {
+                  if (!mounted) return;
                   const themes = ['light', 'dark', 'system'];
                   const currentIndex = themes.indexOf(theme || 'system');
                   const nextIndex = (currentIndex + 1) % themes.length;
                   setTheme(themes[nextIndex]);
                 }}
                 className="flex items-center justify-center w-full py-2.5 px-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200"
-                aria-label={`Current theme: ${theme || 'system'}`}
-                title={`Switch theme (${theme || 'system'})`}
+                aria-label={mounted ? `Current theme: ${theme || 'system'}` : 'Theme toggle'}
+                title={mounted ? `Switch theme (${theme || 'system'})` : 'Switch theme'}
                 style={{ color: 'var(--text-1)' }}
+                disabled={!mounted}
               >
-                {theme === 'light' ? (
-                  <Sun size={18} />
-                ) : theme === 'dark' ? (
-                  <Moon size={18} />
-                ) : (
-                  <Laptop size={18} />
-                )}
+                <ThemeIcon />
               </button>
             </div>
 
@@ -339,27 +589,23 @@ const Sidebar = () => {
               {/* Theme Toggle Button - Expanded */}
               <button
                 onClick={() => {
+                  if (!mounted) return;
                   const themes = ['light', 'dark', 'system'];
                   const currentIndex = themes.indexOf(theme || 'system');
                   const nextIndex = (currentIndex + 1) % themes.length;
                   setTheme(themes[nextIndex]);
                 }}
                 className="flex items-center justify-between w-full py-2.5 px-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-200 group"
-                aria-label={`Current theme: ${getThemeLabel()}`}
+                aria-label={mounted ? `Current theme: ${getThemeLabel()}` : 'Theme toggle'}
                 title="Click to switch theme"
                 style={{ color: 'var(--text-1)' }}
+                disabled={!mounted}
               >
                 <span className="text-sm font-medium">
                   {getThemeLabel()}
                 </span>
                 <span>
-                  {theme === 'light' ? (
-                    <Sun size={16} />
-                  ) : theme === 'dark' ? (
-                    <Moon size={16} />
-                  ) : (
-                    <Laptop size={16} />
-                  )}
+                  <ThemeIcon size={16} />
                 </span>
               </button>
             </div>

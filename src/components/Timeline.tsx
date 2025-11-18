@@ -310,14 +310,29 @@ export default function Timeline() {
   };
 
   // No renderizar hasta que el tema esté montado
-  if (!mounted) return null;
 
+  // Preparar datos - siempre renderizar el Section con ID
   const currentEvent = timelineEvents[currentIndex];
-  const isDark = resolvedTheme === 'dark';
+  const isDark = mounted ? resolvedTheme === 'dark' : false;
   const currentColor = isDark ? currentEvent.colorDark : currentEvent.colorLight;
 
   return (
     <Section id="timeline" title={t("timeline_title")} subtitle={t("timeline_subtitle")}>
+      {!mounted ? (
+        // Skeleton loader mientras monta - mantiene el ID presente
+        <div className="w-full max-w-4xl mx-auto px-4 py-8">
+          <div className="relative min-h-[300px] sm:min-h-[400px] md:min-h-[450px] flex items-center justify-center">
+            <div className="w-full rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 p-6 md:p-10">
+              <div className="space-y-4 animate-pulse">
+                <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-32" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-5/6" />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className="timeline-slider-container relative w-full max-w-4xl mx-auto px-4 py-8">
 
         {/* Tarjeta principal */}
@@ -477,6 +492,7 @@ export default function Timeline() {
           {currentIndex + 1} / {timelineEvents.length}
         </div>
       </div>
+      )}
 
       <style jsx>{`
         .timeline-card {
