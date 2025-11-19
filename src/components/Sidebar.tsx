@@ -402,9 +402,19 @@ const Sidebar = () => {
               {/* Footer in mobile menu */}
               <div className="px-4 pb-6 mt-6 border-t border-white/10 pt-4">
                 <div className="rounded-xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm border border-white/10 p-3.5">
-                  <p className="text-center text-[10px] leading-relaxed" style={{ color: 'var(--text-2)', opacity: 0.7 }}>
-                    {content.footer}
-                  </p>
+                  <div className="flex items-center gap-3">
+                    <p className="flex-1 text-[10px] leading-relaxed text-center md:text-left" style={{ color: 'var(--text-2)', opacity: 0.7 }}>
+                      {content.footer}
+                    </p>
+                    <a
+                      href="/MyCv.pdf"
+                      download
+                      aria-label="Descargar CV"
+                      className="shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-white/80 hover:bg-white/10 hover:text-white transition"
+                    >
+                      <FileText size={14} />
+                    </a>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -631,12 +641,22 @@ const Sidebar = () => {
               <div className="w-full rounded-xl bg-white/5 backdrop-blur-sm border border-white/10" style={{
                 padding: 'clamp(0.5rem, 1vw, 0.75rem)',
               }}>
-                <p className="text-center leading-relaxed" style={{
-                  fontSize: 'clamp(9px, 0.7vw, 11px)',
-                  color: 'var(--text-1)'
-                }}>
-                  {content.footer}
-                </p>
+                <div className="flex items-center gap-3">
+                  <p className="flex-1 text-center leading-relaxed" style={{
+                    fontSize: 'clamp(9px, 0.7vw, 11px)',
+                    color: 'var(--text-1)'
+                  }}>
+                    {content.footer}
+                  </p>
+                  <a
+                    href="/MyCv.pdf"
+                    download
+                    aria-label="Descargar CV"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white/80 hover:bg-white/10 hover:text-white transition"
+                  >
+                    <FileText size={16} />
+                  </a>
+                </div>
               </div>
             </div>
           </div>

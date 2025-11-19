@@ -11,6 +11,7 @@ type NavItem = {
   href: string;
   external?: boolean;
   badge?: string;
+  download?: boolean;
 };
 
 export default function Header() {
@@ -49,7 +50,7 @@ export default function Header() {
       { id: "talks", label: t("talks") ?? "Talks", href: "#talks" },
       { id: "uses", label: "Uses", href: "#uses" },
       { id: "now", label: "Now()", href: "#now" },
-      { id: "cv", label: "CV", href: "/cv.pdf", external: true },
+      { id: "cv", label: "Mi CV", href: "/MyCv.pdf", external: true, download: true },
     ],
     [t]
   );
@@ -230,6 +231,7 @@ export default function Header() {
                     key={n.id}
                     href={n.href}
                     onClick={(e) => onNavClick(e, n)}
+                    download={n.download ? true : undefined}
                     className={`
                       flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all
                       ${active === n.id 
@@ -260,6 +262,7 @@ export default function Header() {
                       key={n.id}
                       href={n.href}
                       onClick={(e) => onNavClick(e, n)}
+                      download={n.download ? true : undefined}
                       target={n.external ? "_blank" : undefined}
                       rel={n.external ? "noopener noreferrer" : undefined}
                       className="flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all hover:bg-white/5"
