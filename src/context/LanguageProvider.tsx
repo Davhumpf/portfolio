@@ -142,6 +142,9 @@ type NowMessages = {
   now_item1: string;
   now_item2: string;
   now_item3: string;
+  now_item4: string;
+  now_item5: string;
+
 };
 
 /** Case Studies */
@@ -315,9 +318,12 @@ const messages: Record<Lang, Messages> = {
     // Now
     now_title: "Now()",
     now_subtitle: "Qué hago este mes.",
-    now_item1: "Refactor de componentes a slots.",
-    now_item2: "Animaciones de entrada con GSAP y ScrollTrigger.",
-    now_item3: "Preparando un artículo sobre accesibilidad de menús.",
+    now_item1: "Refactorizando mi sistema de componentes hacia una arquitectura más limpia, escalable y basada en slots.",
+    now_item2: "Mejorando animaciones de entrada, interacción y scroll con GSAP, equilibrando fluidez, rendimiento y accesibilidad.",
+    now_item3: "Estudiando patrones avanzados de UI, motion design y prácticas WAI-ARIA para navegación con teclado.",
+    now_item4: "Construyendo un UI kit modular personal como espacio de experimentación visual y técnica.",
+    now_item5: "Escribiendo un artículo sobre accesibilidad en menús, navegación y gestión del foco.",
+
 
     // Case Studies
     cases_title: "Casos de Estudio",
@@ -480,10 +486,13 @@ const messages: Record<Lang, Messages> = {
 
     // Now
     now_title: "Now()",
-    now_subtitle: "What I'm doing this month.",
-    now_item1: "Refactoring components to slots.",
-    now_item2: "Entry animations with GSAP and ScrollTrigger.",
-    now_item3: "Preparing an article about menu accessibility.",
+    now_subtitle: "What I'm working on this month.",
+    now_item1: "Refactoring my component system into a cleaner, more scalable slot-based architecture.",
+    now_item2: "Improving entry, interaction, and scroll animations with GSAP, balancing fluidity, performance, and accessibility.",
+    now_item3: "Studying advanced UI patterns, motion design, and WAI-ARIA best practices for keyboard navigation.",
+    now_item4: "Building a modular personal UI kit as a space for visual and technical experimentation.",
+    now_item5: "Writing an article about accessibility in menus, navigation, and focus management.",
+
 
     // Case Studies
     cases_title: "Case Studies",
@@ -646,10 +655,13 @@ const messages: Record<Lang, Messages> = {
 
     // Now
     now_title: "Now()",
-    now_subtitle: "Was ich diesen Monat mache.",
-    now_item1: "Refactoring von Komponenten zu Slots.",
-    now_item2: "Eingangsanimationen mit GSAP und ScrollTrigger.",
-    now_item3: "Vorbereitung eines Artikels über Menü-Barrierefreiheit.",
+    now_subtitle: "Woran ich diesen Monat arbeite.",
+    now_item1: "Refactoring meines Komponenten-Systems zu einer saubereren, skalierbareren Slot-basierten Architektur.",
+    now_item2: "Verbesserung von Entry-, Interaktions- und Scroll-Animationen mit GSAP, mit Fokus auf Fluidität, Leistung und Barrierefreiheit.",
+    now_item3: "Studium fortgeschrittener UI-Patterns, Motion-Design und WAI-ARIA Best Practices für Tastaturnavigation.",
+    now_item4: "Aufbau eines modularen persönlichen UI-Kits als Raum für visuelle und technische Experimente.",
+    now_item5: "Verfassen eines Artikels über Barrierefreiheit in Menüs, Navigation und Fokus-Management.",
+
 
     // Case Studies
     cases_title: "Fallstudien",
