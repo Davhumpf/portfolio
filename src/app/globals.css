@@ -134,6 +134,68 @@
     overflow-wrap: break-word;
   }
 
+  .window-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(0.5rem, 2vw, 1rem);
+  }
+
+  .window-panel {
+    background: color-mix(in oklab, var(--panel) 92%, transparent);
+    border: 1px solid var(--border);
+    border-radius: clamp(16px, 3vw, 22px);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .window-bar {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2vw, 1rem);
+    padding: clamp(0.5rem, 1.5vw, 0.85rem) clamp(0.75rem, 2vw, 1.25rem);
+    border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+    background: color-mix(in oklab, var(--panel) 86%, transparent);
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .window-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+  }
+
+  .window-dots .dot-red { background: #f87171; }
+  .window-dots .dot-yellow { background: #facc15; }
+  .window-dots .dot-green { background: #4ade80; }
+
+  .window-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .window-content {
+    padding: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  .window-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+    width: 100%;
+  }
+
+  .window-stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
   .glass {
     background: color-mix(in oklab, var(--panel) 92%, transparent);
     @apply backdrop-blur-xl;

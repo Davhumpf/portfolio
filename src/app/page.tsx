@@ -1,39 +1,72 @@
 // src/app/page.tsx
+import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
-import About from "@/components/sections/About";
-import Projects from "@/components/sections/Projects";
-import Contacts from "@/components/sections/Contacts";
+import SectionPlaceholder from "@/components/SectionPlaceholder";
 
-// nuevas en src/components/
-import Timeline from "@/components/Timeline";
-import CaseStudies from "@/components/CaseStudies";
-import OpenSource from "@/components/OpenSource";
-import Blog from "@/components/Blog";
-import Talks from "@/components/Talks";
-import Uses from "@/components/Uses";
-import Now from "@/components/Now";
+const About = dynamic(() => import("@/components/sections/About"), {
+  loading: () => <SectionPlaceholder title="Sobre mí" />,
+});
+const Projects = dynamic(() => import("@/components/sections/Projects"), {
+  loading: () => <SectionPlaceholder title="Proyectos" />,
+});
+const Contacts = dynamic(() => import("@/components/sections/Contacts"), {
+  loading: () => <SectionPlaceholder title="Contacto" />,
+});
+const Timeline = dynamic(() => import("@/components/Timeline"), {
+  loading: () => <SectionPlaceholder title="Experiencia" />,
+});
+const CaseStudies = dynamic(() => import("@/components/CaseStudies"), {
+  loading: () => <SectionPlaceholder title="Casos de estudio" />,
+});
+const OpenSource = dynamic(() => import("@/components/OpenSource"), {
+  loading: () => <SectionPlaceholder title="Open Source" />,
+});
+const Blog = dynamic(() => import("@/components/Blog"), {
+  loading: () => <SectionPlaceholder title="Blog" />,
+});
+const Talks = dynamic(() => import("@/components/Talks"), {
+  loading: () => <SectionPlaceholder title="Charlas" />,
+});
+const Uses = dynamic(() => import("@/components/Uses"), {
+  loading: () => <SectionPlaceholder title="Uses" />,
+});
+const Now = dynamic(() => import("@/components/Now"), {
+  loading: () => <SectionPlaceholder title="Now" />,
+});
 
 export default function Home() {
   return (
-    <>
-      <Hero />         {/* <- el Hero va aquí, arriba del resto */}
+    <div className="window-stack">
+      <Hero />
 
-      <About />
-      <Projects />
+      <div className="window-grid">
+        <About />
+        <Projects />
+      </div>
 
-      <Timeline />
-      <CaseStudies />
-      <OpenSource />
-      <Blog />
-      <Talks />
-      <Uses />
-      <Now />
+      <div className="window-grid">
+        <Timeline />
+        <CaseStudies />
+      </div>
 
-      <Contacts />
+      <div className="window-grid">
+        <OpenSource />
+        <Blog />
+      </div>
+
+      <div className="window-grid">
+        <Talks />
+        <Uses />
+      </div>
+
+      <div className="window-grid">
+        <Now />
+        <Contacts />
+      </div>
 
       <footer className="mx-auto my-20 max-w-6xl px-4 text-sm muted">
         © {new Date().getFullYear()} David — UI/Frontend
       </footer>
-    </>
+    </div>
   );
 }

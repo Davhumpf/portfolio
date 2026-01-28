@@ -2,41 +2,40 @@
 import { ReactNode } from "react";
 import { useSectionReveal } from "@/lib/useSectionReveal";
 
-// Section component - Wrapper reutilizable para las secciones del portfolio
 export default function Section({
   id,
   title,
   subtitle,
   children,
+  className = "",
 }: {
   id: string;
   title: string;
   subtitle?: string;
   children?: ReactNode;
+  className?: string;
 }) {
   const ref = useSectionReveal();
 
   return (
-    <section id={id} ref={ref} className="w-full max-w-6xl mx-auto overflow-hidden" style={{
-      marginTop: 'clamp(3rem, 8vw, 7rem)',
-      paddingLeft: 'clamp(0.75rem, 2vw, 1rem)',
-      paddingRight: 'clamp(0.75rem, 2vw, 1rem)',
-    }}>
-      <div className="card w-full" style={{
-        padding: 'clamp(1rem, 3vw, 2.5rem)',
-      }}>
-        <header style={{
-          marginBottom: 'clamp(1rem, 2.5vw, 1.5rem)',
-        }}>
-          <h2 className="sr-item font-extrabold" style={{
-            fontSize: 'clamp(1.25rem, 4vw, 1.875rem)',
-          }}>{title}</h2>
-          {subtitle && <p className="sr-item muted" style={{
-            marginTop: 'clamp(0.375rem, 1vw, 0.5rem)',
-            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-          }}>{subtitle}</p>}
+    <section
+      id={id}
+      ref={ref}
+      className={`window-section ${className}`}
+    >
+      <div className="window-panel">
+        <header className="window-bar">
+          <div className="window-dots" aria-hidden>
+            <span className="dot dot-red" />
+            <span className="dot dot-yellow" />
+            <span className="dot dot-green" />
+          </div>
+          <div className="window-title">
+            <h2 className="sr-item font-semibold">{title}</h2>
+            {subtitle && <p className="sr-item muted text-sm">{subtitle}</p>}
+          </div>
         </header>
-        <div className="sr-fade w-full max-w-full overflow-hidden">{children}</div>
+        <div className="window-content sr-fade">{children}</div>
       </div>
     </section>
   );
