@@ -5,7 +5,7 @@ import React from "react";
 export default function MainContent({ children }: { children: React.ReactNode }) {
   return (
     <main id="top" className="w-full max-w-full overflow-x-hidden relative" style={{
-      paddingTop: 'clamp(4rem, 12vw, 6rem)',
+      paddingTop: 'clamp(4.5rem, 12vw, 6.5rem)',
       paddingLeft: '0',
       paddingRight: '0',
       zIndex: 1,
@@ -13,14 +13,7 @@ export default function MainContent({ children }: { children: React.ReactNode })
       <style jsx>{`
         @media (max-width: 360px) {
           main {
-            padding-top: clamp(3rem, 10vw, 4rem) !important;
-          }
-        }
-
-        @media (min-width: 1024px) {
-          main {
-            padding-top: 0 !important;
-            padding-left: clamp(16rem, 20vw, 18rem) !important;
+            padding-top: clamp(3.5rem, 10vw, 4.5rem) !important;
           }
         }
       `}</style>
