@@ -2,12 +2,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import BrandPopout from "@/components/BrandPopout";
 import ThemeProvider from "@/components/ThemeProvider";
 import LanguageProvider from "@/context/LanguageProvider";
 import MainContent from "@/components/MainContent";
-import MatrixRain from "@/components/MatrixRain";
 
 export const metadata: Metadata = {
   title: "David — UI/Frontend",
@@ -23,10 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Providers + Navigation */}
         <LanguageProvider>
           <ThemeProvider>
-            {/* CAPA 1 (z-index: 0) - Animación Matrix de fondo */}
-            <MatrixRain />
-
-            {/* CAPA 2 (z-index: 1) - Color de fondo semi-transparente */}
+            {/* CAPA 1 (z-index: 1) - Color de fondo semi-transparente */}
             <div
               aria-hidden
               className="pointer-events-none fixed inset-0"
@@ -37,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               }}
             />
 
-            {/* CAPA 3 (z-index: 2) - Gradientes decorativos */}
+            {/* CAPA 2 (z-index: 2) - Gradientes decorativos */}
             <div
               aria-hidden
               className="pointer-events-none fixed inset-0"
@@ -51,16 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
 
             {/* CAPA 10+ - Contenido y navegación */}
-            {/* Header for mobile only */}
             <Header />
 
-            {/* Sidebar for desktop only */}
-            <Sidebar />
-
-            {/* Brand popout with typewriter animations */}
-            <BrandPopout />
-
-            {/* Main content - margin for mobile header top, padding for desktop sidebar left */}
+            {/* Main content - spacing for header */}
             <MainContent>
               {children}
             </MainContent>
