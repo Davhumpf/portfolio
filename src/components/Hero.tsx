@@ -3,6 +3,8 @@ import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
 import { useLang, useT } from "@/context/LanguageProvider";
 
+let hasPlayedIntro = false;
+
 const CODE_SNIPPETS = [
   "const notas = [4.2, 3.8, 4.5, 5.0];\nconst promedio = notas.reduce((a, b) => a + b) / notas.length;\nconsole.log(`Promedio: ${promedio.toFixed(2)}`);",
   "interface Product {\n  id: number;\n  name: string;\n  price: number;\n}\nconst cart: Product[] = [];",
@@ -31,19 +33,16 @@ export default function Hero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const introCancelRef = useRef<(() => void) | null>(null);
 
-  const introTagline = "Bienvenido a mi portafolio";
+  const introTagline = t("hero_intro_welcome");
   const finalLine1 = t("hero_tagline_1");
   const finalLine2Prefix = `${t("hero_tagline_2")} `;
   const finalLine2Accent = `${t("hero_tagline_3")}.`;
-  const introNameLine = "Mi alias como desarrollador es Davhumpf";
-  const introNameLineAlt = "pero puedes llamarme David";
+  const introNameLine = t("hero_intro_alias_line1");
+  const introNameLineAlt = t("hero_intro_alias_line2");
   const introNameFull = `${introNameLine} ${introNameLineAlt}`;
   const finalNameLine = t("hero_name");
-  const guideSnippet =
-    "Guía rápida:\n" +
-    "Header: Sobre mí, Proyectos, Experiencia, Casos y Contactos.\n" +
-    "En “Más” tienes Open Source, Blog, Charlas, Uses y Now().\n" +
-    "También puedes cambiar idioma y apariencia.";
+  const guideSnippet = t("hero_intro_guide");
+  const skipLabel = t("hero_intro_skip");
 
   const setFinalDisplay = () => {
     setHeroLine1(finalLine1);
@@ -167,11 +166,11 @@ export default function Hero() {
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setPrefersReducedMotion(prefersReduced);
-    const introSeen = window.sessionStorage.getItem("hero_intro_seen") === "true";
-    const playIntro = !(prefersReduced || introSeen);
+    const playIntro = !(prefersReduced || hasPlayedIntro);
     setShouldPlayIntro(playIntro);
 
     if (!playIntro) {
+      hasPlayedIntro = true;
       setFinalDisplay();
       setIntroComplete(true);
       setConsoleMode("code");
@@ -212,20 +211,20 @@ export default function Hero() {
       setDisplayedCode("");
       setIsTyping(true);
       setConsoleMode("idle");
-      await typeText(introTagline, setHeroLine1, 32, isCancelled, timers);
-      await pause(350);
-      await deleteText(introTagline, setHeroLine1, 22, isCancelled, timers);
-      await typeText(finalLine1, setHeroLine1, 28, isCancelled, timers);
-      await typeText(finalLine2Prefix, setHeroLine2Prefix, 28, isCancelled, timers);
-      await typeText(finalLine2Accent, setHeroLine2Accent, 28, isCancelled, timers);
-      await pause(200);
-      await typeText(introNameLine, setHeroNameLine, 28, isCancelled, timers);
-      await pause(200);
-      await typeTextAppend(introNameLine, introNameLineAlt, setHeroNameLine, 28, isCancelled, timers);
+      await typeText(introTagline, setHeroLine1, 40, isCancelled, timers);
+      await pause(450);
+      await deleteText(introTagline, setHeroLine1, 30, isCancelled, timers);
+      await typeText(finalLine1, setHeroLine1, 36, isCancelled, timers);
+      await typeText(finalLine2Prefix, setHeroLine2Prefix, 36, isCancelled, timers);
+      await typeText(finalLine2Accent, setHeroLine2Accent, 36, isCancelled, timers);
       await pause(250);
-      await deleteText(introNameFull, setHeroNameLine, 20, isCancelled, timers);
-      await typeText(finalNameLine, setHeroNameLine, 28, isCancelled, timers);
-      window.sessionStorage.setItem("hero_intro_seen", "true");
+      await typeText(introNameLine, setHeroNameLine, 38, isCancelled, timers);
+      await pause(250);
+      await typeTextAppend(introNameLine, introNameLineAlt, setHeroNameLine, 38, isCancelled, timers);
+      await pause(300);
+      await deleteText(introNameFull, setHeroNameLine, 30, isCancelled, timers);
+      await typeText(finalNameLine, setHeroNameLine, 36, isCancelled, timers);
+      hasPlayedIntro = true;
       setIntroComplete(true);
     };
 
@@ -283,7 +282,7 @@ export default function Hero() {
   const handleSkipIntro = () => {
     introCancelRef.current?.();
     introCancelRef.current = null;
-    window.sessionStorage.setItem("hero_intro_seen", "true");
+    hasPlayedIntro = true;
     setShouldPlayIntro(false);
     setIntroComplete(true);
     setFinalDisplay();
@@ -333,9 +332,20 @@ export default function Hero() {
     return () => ctx.revert();
   }, [lang]);
 
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, []);
+
   return (
-    <section ref={scope} className="window-section">
-      <div className="window-panel relative overflow-hidden">
+    <section ref={scope} className="window-section hero-section">
+      <div className="window-panel hero-panel relative overflow-hidden">
         <header className="window-bar">
           <div className="window-dots" aria-hidden>
             <span className="dot dot-red" />
@@ -354,13 +364,13 @@ export default function Hero() {
                 className="text-[11px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-white/20 hover:border-white/40 hover:bg-white/5 transition"
                 style={{ color: "var(--text-2)" }}
               >
-                Skip intro (ESC)
+                {skipLabel}
               </button>
             </div>
           )}
         </header>
 
-        <div className="window-content">
+        <div className="window-content hero-content">
           <div className="pointer-events-none absolute inset-0 -z-10 opacity-30 blur-3xl"
             style={{
               background:
@@ -370,7 +380,7 @@ export default function Hero() {
 
           <div className="w-full flex flex-col gap-6 items-stretch">
             <div className="w-full">
-              <h1 className="font-bold leading-tight" style={{ fontSize: "clamp(1.25rem, 5vw, 3rem)" }}>
+              <h1 className="font-bold leading-tight" style={{ fontSize: "var(--hero-title-size, clamp(1.25rem, 5vw, 3rem))" }}>
                 <span className="hero-text block muted" style={{ marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)" }}>
                   {heroLine1}
                 </span>
@@ -390,12 +400,12 @@ export default function Hero() {
                 }}
               />
 
-              <p className="hero-name font-medium" style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.25rem)" }}>
+              <p className="hero-name font-medium" style={{ fontSize: "var(--hero-name-size, clamp(0.875rem, 2.5vw, 1.25rem))" }}>
                 — <span className="accent">{heroNameLine}</span>
               </p>
             </div>
 
-            <div className="code-container relative w-full">
+            <div className="code-container hero-terminal relative w-full">
               <div
                 className="ring-[2px] w-full"
                 style={{
@@ -429,7 +439,10 @@ export default function Hero() {
 
                 <div
                   className="font-mono leading-relaxed relative w-full overflow-hidden"
-                  style={{ fontSize: "clamp(9px, 1.3vw, 12px)", minHeight: "clamp(80px, 15vw, 120px)" }}
+                  style={{
+                    fontSize: "var(--hero-code-size, clamp(9px, 1.3vw, 12px))",
+                    minHeight: "var(--hero-terminal-height, clamp(80px, 15vw, 120px))",
+                  }}
                 >
                   <pre className="whitespace-pre-wrap break-words w-full" style={{ color: "var(--text)" }}>
                     {displayedCode}
