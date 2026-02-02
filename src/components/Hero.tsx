@@ -1,7 +1,7 @@
 "use client";
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
-import { useT } from "@/context/LanguageProvider";
+import { useLang, useT } from "@/context/LanguageProvider";
 
 const CODE_SNIPPETS = [
   "const notas = [4.2, 3.8, 4.5, 5.0];\nconst promedio = notas.reduce((a, b) => a + b) / notas.length;\nconsole.log(`Promedio: ${promedio.toFixed(2)}`);",
@@ -16,33 +16,279 @@ const CODE_SNIPPETS = [
 
 export default function Hero() {
   const t = useT();
+  const { lang } = useLang();
   const scope = useRef<HTMLDivElement | null>(null);
   const [displayedCode, setDisplayedCode] = useState("");
   const [currentSnippet, setCurrentSnippet] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
+  const [heroLine1, setHeroLine1] = useState("");
+  const [heroLine2Prefix, setHeroLine2Prefix] = useState("");
+  const [heroLine2Accent, setHeroLine2Accent] = useState("");
+  const [heroNameLine, setHeroNameLine] = useState("");
+  const [introComplete, setIntroComplete] = useState(false);
+  const [consoleMode, setConsoleMode] = useState<"idle" | "guide" | "code">("idle");
+  const [shouldPlayIntro, setShouldPlayIntro] = useState(true);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const introCancelRef = useRef<(() => void) | null>(null);
+
+  const introTagline = "Bienvenido a mi portafolio";
+  const finalLine1 = t("hero_tagline_1");
+  const finalLine2Prefix = `${t("hero_tagline_2")} `;
+  const finalLine2Accent = `${t("hero_tagline_3")}.`;
+  const introNameLine = "Mi alias como desarrollador es Davhumpf";
+  const introNameLineAlt = "pero puedes llamarme David";
+  const introNameFull = `${introNameLine} ${introNameLineAlt}`;
+  const finalNameLine = t("hero_name");
+  const guideSnippet =
+    "Guía rápida:\n" +
+    "Header: Sobre mí, Proyectos, Experiencia, Casos y Contactos.\n" +
+    "En “Más” tienes Open Source, Blog, Charlas, Uses y Now().\n" +
+    "También puedes cambiar idioma y apariencia.";
+
+  const setFinalDisplay = () => {
+    setHeroLine1(finalLine1);
+    setHeroLine2Prefix(finalLine2Prefix);
+    setHeroLine2Accent(finalLine2Accent);
+    setHeroNameLine(finalNameLine);
+  };
+
+  const typeText = (
+    text: string,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    speed: number,
+    isCancelled: () => boolean,
+    timers: number[]
+  ) =>
+    new Promise<void>((resolve) => {
+      let index = 0;
+      setter("");
+      const id = window.setInterval(() => {
+        if (isCancelled()) {
+          window.clearInterval(id);
+          resolve();
+          return;
+        }
+        setter(text.slice(0, index + 1));
+        index += 1;
+        if (index >= text.length) {
+          window.clearInterval(id);
+          resolve();
+        }
+      }, speed);
+      timers.push(id);
+    });
+
+  const deleteText = (
+    text: string,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    speed: number,
+    isCancelled: () => boolean,
+    timers: number[]
+  ) =>
+    new Promise<void>((resolve) => {
+      let index = text.length;
+      const id = window.setInterval(() => {
+        if (isCancelled()) {
+          window.clearInterval(id);
+          resolve();
+          return;
+        }
+        setter(text.slice(0, index - 1));
+        index -= 1;
+        if (index <= 0) {
+          window.clearInterval(id);
+          setter("");
+          resolve();
+        }
+      }, speed);
+      timers.push(id);
+    });
+
+  const typeTextAppend = (
+    base: string,
+    text: string,
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    speed: number,
+    isCancelled: () => boolean,
+    timers: number[]
+  ) =>
+    new Promise<void>((resolve) => {
+      let index = 0;
+      const id = window.setInterval(() => {
+        if (isCancelled()) {
+          window.clearInterval(id);
+          resolve();
+          return;
+        }
+        setter(`${base} ${text.slice(0, index + 1)}`);
+        index += 1;
+        if (index >= text.length) {
+          window.clearInterval(id);
+          resolve();
+        }
+      }, speed);
+      timers.push(id);
+    });
 
   useEffect(() => {
+    if (consoleMode !== "code") return;
+    if (prefersReducedMotion) {
+      setDisplayedCode(CODE_SNIPPETS[0]);
+      setIsTyping(false);
+      return;
+    }
     const snippet = CODE_SNIPPETS[currentSnippet];
     let currentIndex = 0;
     setDisplayedCode("");
     setIsTyping(true);
+    let timeoutId: number | undefined;
 
-    const typingInterval = setInterval(() => {
+    const typingInterval = window.setInterval(() => {
       if (currentIndex < snippet.length) {
         setDisplayedCode(snippet.slice(0, currentIndex + 1));
-        currentIndex++;
+        currentIndex += 1;
       } else {
-        clearInterval(typingInterval);
+        window.clearInterval(typingInterval);
         setIsTyping(false);
-
-        setTimeout(() => {
+        timeoutId = window.setTimeout(() => {
           setCurrentSnippet((prev) => (prev + 1) % CODE_SNIPPETS.length);
         }, 3000);
       }
     }, 50);
 
-    return () => clearInterval(typingInterval);
-  }, [currentSnippet]);
+    return () => {
+      window.clearInterval(typingInterval);
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [currentSnippet, consoleMode, prefersReducedMotion]);
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setPrefersReducedMotion(prefersReduced);
+    const introSeen = window.sessionStorage.getItem("hero_intro_seen") === "true";
+    const playIntro = !(prefersReduced || introSeen);
+    setShouldPlayIntro(playIntro);
+
+    if (!playIntro) {
+      setFinalDisplay();
+      setIntroComplete(true);
+      setConsoleMode("code");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!shouldPlayIntro || introComplete) {
+      setFinalDisplay();
+    }
+  }, [finalLine1, finalLine2Accent, finalLine2Prefix, finalNameLine, introComplete, shouldPlayIntro]);
+
+  useEffect(() => {
+    if (!shouldPlayIntro || prefersReducedMotion) return;
+    let cancelled = false;
+    const timers: number[] = [];
+    const isCancelled = () => cancelled;
+    const pause = (ms: number) =>
+      new Promise<void>((resolve) => {
+        const id = window.setTimeout(() => resolve(), ms);
+        timers.push(id);
+      });
+
+    introCancelRef.current = () => {
+      cancelled = true;
+      timers.forEach((id) => {
+        window.clearTimeout(id);
+        window.clearInterval(id);
+      });
+    };
+
+    const runIntro = async () => {
+      setIntroComplete(false);
+      setHeroLine1("");
+      setHeroLine2Prefix("");
+      setHeroLine2Accent("");
+      setHeroNameLine("");
+      setDisplayedCode("");
+      setIsTyping(true);
+      setConsoleMode("idle");
+      await typeText(introTagline, setHeroLine1, 32, isCancelled, timers);
+      await pause(350);
+      await deleteText(introTagline, setHeroLine1, 22, isCancelled, timers);
+      await typeText(finalLine1, setHeroLine1, 28, isCancelled, timers);
+      await typeText(finalLine2Prefix, setHeroLine2Prefix, 28, isCancelled, timers);
+      await typeText(finalLine2Accent, setHeroLine2Accent, 28, isCancelled, timers);
+      await pause(200);
+      await typeText(introNameLine, setHeroNameLine, 28, isCancelled, timers);
+      await pause(200);
+      await typeTextAppend(introNameLine, introNameLineAlt, setHeroNameLine, 28, isCancelled, timers);
+      await pause(250);
+      await deleteText(introNameFull, setHeroNameLine, 20, isCancelled, timers);
+      await typeText(finalNameLine, setHeroNameLine, 28, isCancelled, timers);
+      window.sessionStorage.setItem("hero_intro_seen", "true");
+      setIntroComplete(true);
+    };
+
+    runIntro();
+
+    return () => {
+      introCancelRef.current?.();
+      introCancelRef.current = null;
+    };
+  }, [finalLine1, finalLine2Accent, finalLine2Prefix, finalNameLine, introNameLineAlt, introNameLine, prefersReducedMotion, shouldPlayIntro]);
+
+  useEffect(() => {
+    if (!introComplete || !shouldPlayIntro) return;
+    setConsoleMode("guide");
+  }, [introComplete, shouldPlayIntro]);
+
+  useEffect(() => {
+    if (consoleMode !== "guide") return;
+    let cancelled = false;
+    const timers: number[] = [];
+    const isCancelled = () => cancelled;
+
+    setDisplayedCode("");
+    setIsTyping(true);
+
+    const runGuide = async () => {
+      await typeText(guideSnippet, setDisplayedCode, 28, isCancelled, timers);
+      setIsTyping(false);
+      const id = window.setTimeout(() => {
+        setConsoleMode("code");
+        setCurrentSnippet(0);
+      }, 1200);
+      timers.push(id);
+    };
+
+    runGuide();
+
+    return () => {
+      cancelled = true;
+      timers.forEach((id) => window.clearTimeout(id));
+    };
+  }, [consoleMode, guideSnippet]);
+
+  useEffect(() => {
+    if (!shouldPlayIntro || introComplete) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleSkipIntro();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [introComplete, shouldPlayIntro]);
+
+  const handleSkipIntro = () => {
+    introCancelRef.current?.();
+    introCancelRef.current = null;
+    window.sessionStorage.setItem("hero_intro_seen", "true");
+    setShouldPlayIntro(false);
+    setIntroComplete(true);
+    setFinalDisplay();
+    setConsoleMode("code");
+  };
 
   useEffect(() => {
     if (!scope.current) return;
@@ -85,7 +331,7 @@ export default function Hero() {
     }, scope);
 
     return () => ctx.revert();
-  }, [t]);
+  }, [lang]);
 
   return (
     <section ref={scope} className="window-section">
@@ -100,6 +346,18 @@ export default function Hero() {
             <span className="text-xs uppercase tracking-[0.2em] muted">{t("hero_hello")}</span>
             <span className="text-sm font-semibold">{t("hero_role")}</span>
           </div>
+          {shouldPlayIntro && !introComplete && (
+            <div className="ml-auto">
+              <button
+                type="button"
+                onClick={handleSkipIntro}
+                className="text-[11px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-white/20 hover:border-white/40 hover:bg-white/5 transition"
+                style={{ color: "var(--text-2)" }}
+              >
+                Skip intro (ESC)
+              </button>
+            </div>
+          )}
         </header>
 
         <div className="window-content">
@@ -114,10 +372,11 @@ export default function Hero() {
             <div className="w-full">
               <h1 className="font-bold leading-tight" style={{ fontSize: "clamp(1.25rem, 5vw, 3rem)" }}>
                 <span className="hero-text block muted" style={{ marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)" }}>
-                  {t("hero_tagline_1")}
+                  {heroLine1}
                 </span>
                 <span className="hero-text block" style={{ marginBottom: "clamp(0.5rem, 1vw, 0.75rem)" }}>
-                  {t("hero_tagline_2")} <span className="accent font-extrabold">{t("hero_tagline_3")}</span>.
+                  {heroLine2Prefix}
+                  {heroLine2Accent && <span className="accent font-extrabold">{heroLine2Accent}</span>}
                 </span>
               </h1>
 
@@ -132,7 +391,7 @@ export default function Hero() {
               />
 
               <p className="hero-name font-medium" style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.25rem)" }}>
-                — <span className="accent">{t("hero_name")}</span>
+                — <span className="accent">{heroNameLine}</span>
               </p>
             </div>
 
