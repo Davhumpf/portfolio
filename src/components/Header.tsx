@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLang, useT } from "@/context/LanguageProvider";
 import { Sun, Moon, Laptop, Menu, X, Download } from "lucide-react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const LANGS = ["es", "en", "de"] as const;
 
@@ -18,8 +20,8 @@ export default function Header() {
   const t = useT();
   const { lang, setLang } = useLang();
   const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
 
-  const [active, setActive] = useState<NavItem["id"]>("about");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -31,51 +33,27 @@ export default function Header() {
 
   const primaryNav = useMemo<NavItem[]>(
     () => [
-      { id: "about", label: t("about"), href: "#about" },
-      { id: "projects", label: t("projects"), href: "#projects" },
-      { id: "timeline", label: t("experience") ?? "Experiencia", href: "#timeline" },
-      { id: "cases", label: t("caseStudies") ?? "Casos", href: "#cases" },
-      { id: "contacts", label: t("contacts"), href: "#contacts" },
+      { id: "home", label: "Inicio", href: "/" },
+      { id: "about", label: t("about"), href: "/about" },
+      { id: "projects", label: t("projects"), href: "/projects" },
+      { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience" },
+      { id: "cases", label: t("caseStudies") ?? "Casos", href: "/case-studies" },
+      { id: "contacts", label: t("contacts"), href: "/contacts" },
     ],
     [t]
   );
 
   const secondaryNav = useMemo<NavItem[]>(
     () => [
-      { id: "opensource", label: "Open Source", href: "#opensource" },
-      { id: "blog", label: "Blog", href: "#blog" },
-      { id: "talks", label: t("talks") ?? "Talks", href: "#talks" },
-      { id: "uses", label: "Uses", href: "#uses" },
-      { id: "now", label: "Now()", href: "#now" },
+      { id: "opensource", label: "Open Source", href: "/open-source" },
+      { id: "blog", label: "Blog", href: "/blog" },
+      { id: "talks", label: t("talks") ?? "Talks", href: "/talks" },
+      { id: "uses", label: "Uses", href: "/uses" },
+      { id: "now", label: "Now()", href: "/now" },
       { id: "cv", label: "Mi CV", href: "/MyCv.pdf", external: true, download: true },
     ],
     [t]
   );
-
-  const allNavItems = [...primaryNav, ...secondaryNav];
-
-  useEffect(() => {
-    const sections = allNavItems
-      .filter((n) => n.href.startsWith("#"))
-      .map((n) => document.getElementById(n.id))
-      .filter(Boolean) as HTMLElement[];
-
-    if (!sections.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id as NavItem["id"]);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.2, 0.6] }
-    );
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [allNavItems]);
 
   useEffect(() => {
     const closeMenu = () => setMobileMenuOpen(false);
@@ -95,13 +73,15 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const onNavClick = (e: React.MouseEvent<HTMLAnchorElement>, n: NavItem) => {
-    if (n.external) return;
-    e.preventDefault();
-    document.querySelector(n.href)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActive(n.id);
+  const onNavClick = () => {
     setMobileMenuOpen(false);
     setMoreOpen(false);
+  };
+
+  const isActive = (href: string, external?: boolean) => {
+    if (external) return false;
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
   };
 
   const cycleLang = () => {
@@ -141,19 +121,19 @@ export default function Header() {
 
             <nav className="hidden lg:flex items-center gap-2 flex-wrap">
               {primaryNav.map((n) => (
-                <a
+                <Link
                   key={n.id}
                   href={n.href}
-                  onClick={(e) => onNavClick(e, n)}
+                  onClick={onNavClick}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
-                    active === n.id
+                    isActive(n.href, n.external)
                       ? "bg-white/10 border-white/30"
                       : "border-transparent hover:border-white/20 hover:bg-white/5"
                   }`}
                   style={{ color: "var(--text-1)" }}
                 >
                   {n.label}
-                </a>
+                </Link>
               ))}
 
               <div className="relative" ref={moreRef}>
@@ -179,19 +159,33 @@ export default function Header() {
                     }}
                   >
                     {secondaryNav.map((n) => (
-                      <a
-                        key={n.id}
-                        href={n.href}
-                        onClick={(e) => onNavClick(e, n)}
-                        download={n.download ? true : undefined}
-                        target={n.external ? "_blank" : undefined}
-                        rel={n.external ? "noopener noreferrer" : undefined}
-                        className="flex items-center justify-between gap-3 px-4 py-3 text-sm transition-all hover:bg-white/10"
-                        style={{ color: "var(--text-1)" }}
-                      >
-                        <span>{n.label}</span>
-                        {n.external && <Download size={14} />}
-                      </a>
+                      n.external ? (
+                        <a
+                          key={n.id}
+                          href={n.href}
+                          onClick={onNavClick}
+                          download={n.download ? true : undefined}
+                          target={n.external ? "_blank" : undefined}
+                          rel={n.external ? "noopener noreferrer" : undefined}
+                          className="flex items-center justify-between gap-3 px-4 py-3 text-sm transition-all hover:bg-white/10"
+                          style={{ color: "var(--text-1)" }}
+                        >
+                          <span>{n.label}</span>
+                          <Download size={14} />
+                        </a>
+                      ) : (
+                        <Link
+                          key={n.id}
+                          href={n.href}
+                          onClick={onNavClick}
+                          className={`flex items-center justify-between gap-3 px-4 py-3 text-sm transition-all ${
+                            isActive(n.href, n.external) ? "bg-white/10" : "hover:bg-white/10"
+                          }`}
+                          style={{ color: "var(--text-1)" }}
+                        >
+                          <span>{n.label}</span>
+                        </Link>
+                      )
                     ))}
                   </div>
                 )}
@@ -262,38 +256,52 @@ export default function Header() {
             <div className="px-4 py-4 space-y-4">
               <div className="space-y-1.5">
                 {primaryNav.map((n) => (
-                  <a
+                  <Link
                     key={n.id}
                     href={n.href}
-                    onClick={(e) => onNavClick(e, n)}
+                    onClick={onNavClick}
                     className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all border ${
-                      active === n.id
+                      isActive(n.href, n.external)
                         ? "bg-white/10 border-white/30"
                         : "border-transparent hover:bg-white/5"
                     }`}
                     style={{ color: "var(--text-1)", fontSize: "15px" }}
                   >
                     <span>{n.label}</span>
-                  </a>
+                  </Link>
                 ))}
               </div>
 
               <div className="pt-3 border-t border-white/10">
                 <div className="space-y-1">
                   {secondaryNav.map((n) => (
-                    <a
-                      key={n.id}
-                      href={n.href}
-                      onClick={(e) => onNavClick(e, n)}
-                      download={n.download ? true : undefined}
-                      target={n.external ? "_blank" : undefined}
-                      rel={n.external ? "noopener noreferrer" : undefined}
-                      className="flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all hover:bg-white/5"
-                      style={{ color: "var(--text-2)", fontSize: "14px", opacity: 0.9 }}
-                    >
-                      <span>{n.label}</span>
-                      {n.external && <Download size={14} className="opacity-70" />}
-                    </a>
+                    n.external ? (
+                      <a
+                        key={n.id}
+                        href={n.href}
+                        onClick={onNavClick}
+                        download={n.download ? true : undefined}
+                        target={n.external ? "_blank" : undefined}
+                        rel={n.external ? "noopener noreferrer" : undefined}
+                        className="flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all hover:bg-white/5"
+                        style={{ color: "var(--text-2)", fontSize: "14px", opacity: 0.9 }}
+                      >
+                        <span>{n.label}</span>
+                        <Download size={14} className="opacity-70" />
+                      </a>
+                    ) : (
+                      <Link
+                        key={n.id}
+                        href={n.href}
+                        onClick={onNavClick}
+                        className={`flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all ${
+                          isActive(n.href, n.external) ? "bg-white/10" : "hover:bg-white/5"
+                        }`}
+                        style={{ color: "var(--text-2)", fontSize: "14px", opacity: 0.9 }}
+                      >
+                        <span>{n.label}</span>
+                      </Link>
+                    )
                   ))}
                 </div>
               </div>
