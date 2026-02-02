@@ -19,6 +19,11 @@ type BaseMessages = {
   hero_tagline_1: string;
   hero_tagline_2: string;
   hero_tagline_3: string;
+  hero_intro_welcome: string;
+  hero_intro_alias_line1: string;
+  hero_intro_alias_line2: string;
+  hero_intro_guide: string;
+  hero_intro_skip: string;
   // About
   about_title: string;
   about_sub: string;
@@ -207,6 +212,14 @@ const messages: Record<Lang, Messages> = {
     hero_tagline_1: "Diseñando el futuro",
     hero_tagline_2: "del",
     hero_tagline_3: "software",
+    hero_intro_welcome: "Bienvenido a mi portafolio",
+    hero_intro_alias_line1: "Mi alias como desarrollador es Davhumpf,",
+    hero_intro_alias_line2: "pero puedes llamarme David.",
+    hero_intro_guide:
+      "Guía rápida: En el header encontrarás Sobre mí, Proyectos, Experiencia, Casos y Contactos.\n" +
+      "En “Más” tienes Open Source, Blog, Charlas, Uses y Now().\n" +
+      "También puedes cambiar idioma y apariencia.",
+    hero_intro_skip: "Saltar intro (ESC)",
 
     about_title: "Sobre mi",
     about_sub: "UI & Frontend — enfoque en detalle y armonía diseño/función.",
@@ -376,6 +389,14 @@ const messages: Record<Lang, Messages> = {
     hero_tagline_1: "Designing the future",
     hero_tagline_2: "of",
     hero_tagline_3: "software",
+    hero_intro_welcome: "Welcome to my portfolio",
+    hero_intro_alias_line1: "My developer alias is Davhumpf,",
+    hero_intro_alias_line2: "but you can call me David.",
+    hero_intro_guide:
+      "Quick guide: In the header you’ll find About, Projects, Experience, Case Studies and Contact.\n" +
+      "Under ‘More’ you’ll find Open Source, Blog, Talks, Uses and Now().\n" +
+      "You can also change the language and theme.",
+    hero_intro_skip: "Skip intro (ESC)",
 
     about_title: "About me",
     about_sub: "UI & Frontend — detail-oriented, harmony between design & function.",
@@ -545,6 +566,14 @@ const messages: Record<Lang, Messages> = {
     hero_tagline_1: "Die Zukunft der Software",
     hero_tagline_2: "wird",
     hero_tagline_3: "gestaltet",
+    hero_intro_welcome: "Willkommen in meinem Portfolio",
+    hero_intro_alias_line1: "Mein Entwickler-Alias ist Davhumpf,",
+    hero_intro_alias_line2: "aber du kannst mich David nennen.",
+    hero_intro_guide:
+      "Kurze Einführung: Im oberen Menü findest du Über mich, Projekte, Erfahrung, Fallstudien und Kontakt.\n" +
+      "Unter ‚Mehr‘ gibt es Open Source, Blog, Vorträge, Uses und Now().\n" +
+      "Du kannst außerdem die Sprache und das Design ändern.",
+    hero_intro_skip: "Intro überspringen (ESC)",
 
     about_title: "Über mich",
     about_sub: "UI & Frontend — Fokus auf Details und Balance zwischen Design & Funktion.",
