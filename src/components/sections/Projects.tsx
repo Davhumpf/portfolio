@@ -224,7 +224,7 @@ export default function Projects() {
         <div
           className="relative rounded-3xl overflow-hidden"
           style={{
-            border: "1px solid var(--border)",
+            border: "1px solid color-mix(in oklab, var(--border) 50%, transparent)",
             background: "var(--bg-card)",
             boxShadow: "var(--shadow-sm)",
             perspective: "1500px", // Para efecto 3D
@@ -237,7 +237,7 @@ export default function Projects() {
             ref={containerRef}
             className="relative w-full"
             style={{
-              minHeight: "clamp(300px, 60vh, 720px)",
+              minHeight: "clamp(320px, 55vh, 680px)",
               transformStyle: "preserve-3d",
             }}
           >
@@ -277,9 +277,9 @@ export default function Projects() {
                       {project.desc}
                     </p>
                     <div
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-sm"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
                       style={{
-                        border: "1px solid var(--border)",
+                        border: "1px solid color-mix(in oklab, var(--border) 40%, transparent)",
                         background: "var(--bg-card)",
                         fontSize: "clamp(12px, 1.6vw, 14px)",
                         fontWeight: 600,
@@ -322,7 +322,7 @@ export default function Projects() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full transition-all hover:scale-105"
                         style={{
-                          border: "1px solid var(--border)",
+                          border: "1px solid color-mix(in oklab, var(--border) 45%, transparent)",
                           background: "var(--panel)",
                           fontSize: "clamp(11px, 1.4vw, 13px)",
                           fontWeight: 600,
@@ -337,9 +337,9 @@ export default function Projects() {
                     <div
                       className="flex-1 rounded-2xl overflow-hidden"
                       style={{
-                        border: "2px solid var(--border)",
+                        border: "1px solid color-mix(in oklab, var(--border) 50%, transparent)",
                         background: "var(--panel)",
-                        boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.2)",
+                        boxShadow: "var(--shadow-md)",
                         aspectRatio: "16/9",
                         minHeight: "200px",
                       }}
@@ -375,10 +375,10 @@ export default function Projects() {
           {/* Flechas de navegación */}
           <button
             onClick={prev}
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 rounded-full backdrop-blur-xl transition-all hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 rounded-full backdrop-blur-xl transition-all hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{
               background: "color-mix(in oklab, var(--panel) 80%, transparent)",
-              border: "1px solid var(--border)",
+              border: "1px solid color-mix(in oklab, var(--border) 50%, transparent)",
               padding: "clamp(12px, 2vw, 16px)",
               boxShadow: "var(--shadow-md)",
               minWidth: "48px",
@@ -392,10 +392,10 @@ export default function Projects() {
 
           <button
             onClick={next}
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 rounded-full backdrop-blur-xl transition-all hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 rounded-full backdrop-blur-xl transition-all hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2"
             style={{
               background: "color-mix(in oklab, var(--panel) 80%, transparent)",
-              border: "1px solid var(--border)",
+              border: "1px solid color-mix(in oklab, var(--border) 50%, transparent)",
               padding: "clamp(12px, 2vw, 16px)",
               boxShadow: "var(--shadow-md)",
               minWidth: "48px",
@@ -412,7 +412,7 @@ export default function Projects() {
             className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20 backdrop-blur-sm rounded-full px-3 py-2"
             style={{
               background: "color-mix(in oklab, var(--panel) 60%, transparent)",
-              border: "1px solid var(--border)",
+              border: "1px solid color-mix(in oklab, var(--border) 45%, transparent)",
             }}
           >
             {projects.map((_, idx) => (
@@ -441,7 +441,7 @@ export default function Projects() {
             className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold"
             style={{
               background: "var(--panel-alpha)",
-              border: "1px solid var(--border)",
+              border: "1px solid color-mix(in oklab, var(--border) 45%, transparent)",
             }}
           >
             {projects[current].tag}

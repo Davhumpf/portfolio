@@ -332,17 +332,6 @@ export default function Hero() {
     return () => ctx.revert();
   }, [lang]);
 
-  useEffect(() => {
-    const originalBodyOverflow = document.body.style.overflow;
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = originalBodyOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
-    };
-  }, []);
-
   return (
     <section ref={scope} className="window-section hero-section">
       <div className="window-panel hero-panel relative overflow-hidden">
@@ -361,8 +350,8 @@ export default function Hero() {
               <button
                 type="button"
                 onClick={handleSkipIntro}
-                className="text-[11px] uppercase tracking-[0.2em] px-3 py-1 rounded-full border border-white/20 hover:border-white/40 hover:bg-white/5 transition"
-                style={{ color: "var(--text-2)" }}
+                className="text-[11px] uppercase tracking-[0.2em] px-3 py-1 rounded-full hover:bg-white/5 transition"
+                style={{ color: "var(--text-2)", border: "1px solid color-mix(in oklab, var(--border) 45%, transparent)" }}
               >
                 {skipLabel}
               </button>
@@ -378,7 +367,7 @@ export default function Hero() {
             }}
           />
 
-          <div className="w-full flex flex-col gap-6 items-stretch">
+          <div className="w-full grid gap-5 md:gap-6 items-stretch">
             <div className="w-full">
               <h1 className="font-bold leading-tight" style={{ fontSize: "var(--hero-title-size, clamp(1.25rem, 5vw, 3rem))" }}>
                 <span className="hero-text block muted" style={{ marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)" }}>
@@ -407,19 +396,19 @@ export default function Hero() {
 
             <div className="code-container hero-terminal relative w-full">
               <div
-                className="ring-[2px] w-full"
+                className="w-full"
                 style={{
                   background: "color-mix(in oklab, var(--panel) 70%, transparent)",
-                  borderColor: "var(--accent)",
-                  boxShadow: "0 0 0 1px var(--accent), 0 0 22px var(--accent)/20",
+                  border: "1px solid color-mix(in oklab, var(--accent) 45%, transparent)",
+                  boxShadow: "var(--shadow-sm)",
                   borderRadius: "clamp(12px, 3vw, 16px)",
                   padding: "clamp(0.5rem, 1.5vw, 0.75rem)",
                 }}
               >
                 <div
-                  className="flex items-center gap-2 border-b"
+                  className="flex items-center gap-2"
                   style={{
-                    borderColor: "var(--accent)/30",
+                    borderBottom: "1px solid color-mix(in oklab, var(--border) 40%, transparent)",
                     marginBottom: "clamp(0.5rem, 1.5vw, 0.75rem)",
                     paddingBottom: "clamp(0.375rem, 1vw, 0.5rem)",
                   }}

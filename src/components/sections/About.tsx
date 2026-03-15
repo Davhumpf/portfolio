@@ -131,8 +131,7 @@ export default function About() {
   return (
     <div ref={scope}>
       <Section id="about" title={t("about_title")}>
-        {/* Layout con dos columnas perfectamente alineadas */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 lg:gap-8 items-start">
+        <div className="w-full content-grid lg:grid-cols-[1fr_auto_1fr] gap-5 lg:gap-7 items-start">
 
           {/* ========== COLUMNA IZQUIERDA: SOBRE MI ========== */}
           <div className="flex flex-col items-center lg:items-start">
@@ -235,7 +234,7 @@ export default function About() {
               <button
                 onClick={(e) => handleCategoryClick("frontend", e)}
                 className={`rounded-xl font-bold transition-all ${
-                  selectedCategory === "frontend" ? "ring-2 shadow-lg scale-105" : "ring-1 hover:scale-105"
+                  selectedCategory === "frontend" ? "ring-2 scale-105" : "ring-1 hover:scale-105"
                 }`}
                 style={{
                   background: selectedCategory === "frontend"
@@ -252,7 +251,7 @@ export default function About() {
               <button
                 onClick={(e) => handleCategoryClick("backend", e)}
                 className={`rounded-xl font-bold transition-all ${
-                  selectedCategory === "backend" ? "ring-2 shadow-lg scale-105" : "ring-1 hover:scale-105"
+                  selectedCategory === "backend" ? "ring-2 scale-105" : "ring-1 hover:scale-105"
                 }`}
                 style={{
                   background: selectedCategory === "backend"
@@ -269,7 +268,7 @@ export default function About() {
               <button
                 onClick={(e) => handleCategoryClick("cloud", e)}
                 className={`rounded-xl font-bold transition-all ${
-                  selectedCategory === "cloud" ? "ring-2 shadow-lg scale-105" : "ring-1 hover:scale-105"
+                  selectedCategory === "cloud" ? "ring-2 scale-105" : "ring-1 hover:scale-105"
                 }`}
                 style={{
                   background: selectedCategory === "cloud"
@@ -288,21 +287,19 @@ export default function About() {
             {/* NIVEL 4: Grid de tecnologías (alineada con texto descriptivo) */}
             {/* NIVEL 5: Límite inferior (la grid termina a la altura del texto final) */}
             <div
-              className="ring-1 backdrop-blur-sm overflow-y-auto w-full"
+              className="ring-1 backdrop-blur-sm w-full"
               style={{
                 background: "color-mix(in oklab, var(--panel) 50%, transparent)",
                 borderColor: "color-mix(in oklab, var(--accent) 30%, transparent)",
                 borderRadius: "0.875rem",
                 padding: "1rem",
-                minHeight: "200px",
-                maxHeight: "clamp(240px, 28vw, 300px)",
               }}
             >
-              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                 {TECH_STACK[selectedCategory].map((tech) => (
                   <div
                     key={tech}
-                    className="tech-item group relative ring-1 backdrop-blur-sm transition-all hover:scale-110 hover:ring-2 cursor-pointer aspect-square"
+                    className="tech-item group relative ring-1 backdrop-blur-sm transition-all hover:scale-105 hover:ring-2 cursor-pointer aspect-square"
                     style={{
                       background: "color-mix(in oklab, var(--panel) 80%, transparent)",
                       borderColor: "color-mix(in oklab, var(--accent) 40%, transparent)",

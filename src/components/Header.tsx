@@ -103,8 +103,8 @@ export default function Header() {
       }}
     >
       <div
-        className="w-full backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl"
-        style={{ borderRadius: "18px" }}
+        className="w-full backdrop-blur-xl bg-white/5 shadow-2xl"
+        style={{ borderRadius: "18px", border: "1px solid color-mix(in oklab, var(--border) 35%, transparent)" }}
       >
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-2">
@@ -112,23 +112,23 @@ export default function Header() {
               onClick={() => setMobileMenuOpen((v) => !v)}
               aria-expanded={mobileMenuOpen}
               aria-label="Toggle navigation menu"
-              className="lg:hidden flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/10"
+              className="lg:hidden flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all"
               style={{ color: "var(--text-1)" }}
             >
               {mobileMenuOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}
               <span className="text-sm font-medium">Menu</span>
             </button>
 
-            <nav className="hidden lg:flex items-center gap-2 flex-wrap">
+            <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-wrap">
               {primaryNav.map((n) => (
                 <Link
                   key={n.id}
                   href={n.href}
                   onClick={onNavClick}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive(n.href, n.external)
-                      ? "bg-white/10 border-white/30"
-                      : "border-transparent hover:border-white/20 hover:bg-white/5"
+                      ? "bg-white/10"
+                      : "hover:bg-white/5"
                   }`}
                   style={{ color: "var(--text-1)" }}
                 >
@@ -139,10 +139,10 @@ export default function Header() {
               <div className="relative" ref={moreRef}>
                 <button
                   onClick={() => setMoreOpen((open) => !open)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     moreOpen
-                      ? "bg-white/10 border-white/30"
-                      : "border-transparent hover:border-white/20 hover:bg-white/5"
+                      ? "bg-white/10"
+                      : "hover:bg-white/5"
                   }`}
                   style={{ color: "var(--text-1)" }}
                   aria-expanded={moreOpen}
@@ -152,10 +152,11 @@ export default function Header() {
                 </button>
                 {moreOpen && (
                   <div
-                    className="absolute left-0 mt-2 min-w-[200px] rounded-xl border border-white/10 backdrop-blur-xl shadow-xl overflow-hidden"
+                    className="absolute left-0 mt-2 min-w-[200px] rounded-xl backdrop-blur-xl shadow-xl overflow-hidden"
                     style={{
                       zIndex: 50,
                       background: "color-mix(in oklab, var(--panel) 85%, transparent)",
+                      border: "1px solid color-mix(in oklab, var(--border) 40%, transparent)",
                     }}
                   >
                     {secondaryNav.map((n) => (
@@ -196,7 +197,7 @@ export default function Header() {
           <div className="flex items-center gap-2">
             <button
               onClick={cycleLang}
-              className="flex items-center justify-center min-w-[48px] h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all border border-white/10"
+              className="flex items-center justify-center min-w-[48px] h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all"
               aria-label={`Language: ${lang.toUpperCase()}`}
               title="Click to cycle language"
             >
@@ -205,7 +206,7 @@ export default function Header() {
               </span>
             </button>
 
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5">
               <button
                 onClick={() => mounted && setTheme("light")}
                 disabled={!mounted}
@@ -252,7 +253,7 @@ export default function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/10">
+          <div className="lg:hidden" style={{ borderTop: "1px solid color-mix(in oklab, var(--border) 40%, transparent)" }}>
             <div className="px-4 py-4 space-y-4">
               <div className="space-y-1.5">
                 {primaryNav.map((n) => (
@@ -260,10 +261,10 @@ export default function Header() {
                     key={n.id}
                     href={n.href}
                     onClick={onNavClick}
-                    className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all border ${
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all ${
                       isActive(n.href, n.external)
-                        ? "bg-white/10 border-white/30"
-                        : "border-transparent hover:bg-white/5"
+                        ? "bg-white/10"
+                        : "hover:bg-white/5"
                     }`}
                     style={{ color: "var(--text-1)", fontSize: "15px" }}
                   >
@@ -272,7 +273,7 @@ export default function Header() {
                 ))}
               </div>
 
-              <div className="pt-3 border-t border-white/10">
+              <div className="pt-3" style={{ borderTop: "1px solid color-mix(in oklab, var(--border) 40%, transparent)" }}>
                 <div className="space-y-1">
                   {secondaryNav.map((n) => (
                     n.external ? (
