@@ -2,7 +2,14 @@
 import Hero from "@/components/Hero";
 import About from "@/components/sections/About";
 import Projects from "@/components/sections/Projects";
+import Timeline from "@/components/Timeline";
+import CaseStudies from "@/components/CaseStudies";
 import Contacts from "@/components/sections/Contacts";
+import OpenSource from "@/components/OpenSource";
+import Blog from "@/components/Blog";
+import Talks from "@/components/Talks";
+import Uses from "@/components/Uses";
+import Now from "@/components/Now";
 
 export default function Home() {
   return (
@@ -10,7 +17,14 @@ export default function Home() {
       <Hero />
       <About />
       <Projects />
+      <Timeline />
+      <CaseStudies />
       <Contacts />
+      <OpenSource />
+      <Blog />
+      <Talks />
+      <Uses />
+      <Now />
 
       <footer className="mx-auto mt-10 mb-8 max-w-6xl px-4 text-sm muted">
         © {new Date().getFullYear()} David — UI/Frontend

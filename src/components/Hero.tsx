@@ -338,7 +338,7 @@ export default function Hero() {
   }, [lang]);
 
   return (
-    <section ref={scope} className="window-section hero-section">
+    <section id="home" ref={scope} className="window-section hero-section">
       <div className="window-panel hero-panel relative overflow-hidden">
         <header className="window-bar">
           <div className="window-dots" aria-hidden>
