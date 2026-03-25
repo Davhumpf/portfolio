@@ -372,7 +372,7 @@ export default function Hero() {
             }}
           />
 
-          <div className="w-full grid gap-5 md:gap-6 items-stretch">
+          <div className="w-full grid gap-5 md:gap-6 items-start md:grid-cols-[1.1fr_0.9fr]">
             <div className="w-full">
               <h1 className="font-bold leading-tight" style={{ fontSize: "var(--hero-title-size, clamp(1.25rem, 5vw, 3rem))" }}>
                 <span className="hero-text block muted" style={{ marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)" }}>

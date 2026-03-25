@@ -30,7 +30,6 @@ export default function Header() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("home");
-  const [activePrimaryProxy, setActivePrimaryProxy] = useState<(typeof PRIMARY_SECTION_ORDER)[number]>("home");
   const moreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -82,40 +81,56 @@ export default function Header() {
   useEffect(() => {
     if (pathname !== "/") return;
 
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("section[id]"));
-    if (!sections.length) return;
+    const ids = [
+      ...PRIMARY_SECTION_ORDER,
+      "opensource",
+      "blog",
+      "talks",
+      "uses",
+      "now",
+    ] as SectionId[];
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    const getSections = () =>
+      ids
+        .map((id) => ({ id, el: document.getElementById(id) }))
+        .filter((item): item is { id: SectionId; el: HTMLElement } => Boolean(item.el))
+        .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
 
-        if (!visible) return;
-        const nextId = visible.target.id as SectionId;
-        setActiveSection(nextId);
+    let sections = getSections();
+    let ticking = false;
 
-        if (PRIMARY_SECTION_ORDER.includes(nextId as (typeof PRIMARY_SECTION_ORDER)[number])) {
-          setActivePrimaryProxy(nextId as (typeof PRIMARY_SECTION_ORDER)[number]);
-        }
-      },
-      {
-        rootMargin: "-20% 0px -55% 0px",
-        threshold: [0.2, 0.35, 0.55],
+    const updateActiveSection = () => {
+      if (!sections.length) sections = getSections();
+      const marker = window.scrollY + 180;
+      let current: SectionId = "home";
+
+      for (const section of sections) {
+        if (section.el.offsetTop <= marker) current = section.id;
       }
-    );
 
-    sections.forEach((section) => observer.observe(section));
+      setActiveSection(current);
+      ticking = false;
+    };
 
-    const hash = window.location.hash.replace("#", "") as SectionId;
-    if (hash) {
-      setActiveSection(hash);
-      if (PRIMARY_SECTION_ORDER.includes(hash as (typeof PRIMARY_SECTION_ORDER)[number])) {
-        setActivePrimaryProxy(hash as (typeof PRIMARY_SECTION_ORDER)[number]);
-      }
-    }
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(updateActiveSection);
+    };
 
-    return () => observer.disconnect();
+    const onResize = () => {
+      sections = getSections();
+      onScroll();
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
   }, [pathname]);
 
   const onNavClick = () => {
@@ -136,9 +151,6 @@ export default function Header() {
     if (item.external) return false;
 
     if (isHome && item.sectionId) {
-      if (PRIMARY_SECTION_ORDER.includes(item.sectionId as (typeof PRIMARY_SECTION_ORDER)[number])) {
-        return item.sectionId === activePrimaryProxy;
-      }
       return item.sectionId === activeSection;
     }
 

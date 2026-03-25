@@ -209,7 +209,7 @@
   }
 
   .hero-section {
-    min-height: clamp(520px, 78dvh, 860px);
+    min-height: clamp(420px, 62dvh, 680px);
     display: flex;
     align-items: flex-start;
   }
@@ -223,7 +223,7 @@
   }
 
   .hero-terminal {
-    --hero-terminal-height: clamp(80px, 16vw, 120px);
+    --hero-terminal-height: clamp(120px, 18vw, 180px);
     --hero-code-size: clamp(9px, 1.3vw, 12px);
   }
 
