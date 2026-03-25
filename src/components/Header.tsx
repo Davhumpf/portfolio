@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 
 const LANGS = ["es", "en", "de"] as const;
 const PRIMARY_SECTION_ORDER = ["home", "about", "projects", "timeline", "cases"] as const;
+const SCROLL_OFFSET = 180;
 
 type SectionId = (typeof PRIMARY_SECTION_ORDER)[number] | "contacts" | "opensource" | "blog" | "talks" | "uses" | "now";
 
@@ -101,7 +102,7 @@ export default function Header() {
 
     const updateActiveSection = () => {
       if (!sections.length) sections = getSections();
-      const marker = window.scrollY + 180;
+      const marker = window.scrollY + SCROLL_OFFSET;
       let current: SectionId = "home";
       for (const section of sections) if (section.el.offsetTop <= marker) current = section.id;
       setActiveSection(current);
@@ -154,25 +155,6 @@ export default function Header() {
   const cycleLang = () => {
     const currentIndex = LANGS.indexOf(lang);
     setLang(LANGS[(currentIndex + 1) % LANGS.length]);
-  };
-
-  const isHome = pathname === "/";
-  const isSecondaryActive = secondaryNav.some((item) => item.sectionId === activeSection);
-
-  const isActive = (item: NavItem) => {
-    if (item.external) return false;
-
-    if (isHome && item.sectionId) {
-      return item.sectionId === activeSection;
-    }
-
-    if (item.href === "/") return pathname === "/";
-    return pathname.startsWith(item.href);
-  };
-
-  const resolveHref = (item: NavItem) => {
-    if (!isHome || !item.sectionId) return item.href;
-    return item.sectionId === "home" ? "#top" : `#${item.sectionId}`;
   };
 
   return (
