@@ -156,6 +156,25 @@ export default function Header() {
     setLang(LANGS[(currentIndex + 1) % LANGS.length]);
   };
 
+  const isHome = pathname === "/";
+  const isSecondaryActive = secondaryNav.some((item) => item.sectionId === activeSection);
+
+  const isActive = (item: NavItem) => {
+    if (item.external) return false;
+
+    if (isHome && item.sectionId) {
+      return item.sectionId === activeSection;
+    }
+
+    if (item.href === "/") return pathname === "/";
+    return pathname.startsWith(item.href);
+  };
+
+  const resolveHref = (item: NavItem) => {
+    if (!isHome || !item.sectionId) return item.href;
+    return item.sectionId === "home" ? "#top" : `#${item.sectionId}`;
+  };
+
   return (
     <header className="fixed z-[9999] w-full" style={{ top: "12px", left: "50%", transform: "translateX(-50%)", paddingLeft: "12px", paddingRight: "12px", maxWidth: "calc(100vw - 24px)" }}>
       <div className="w-full backdrop-blur-xl bg-white/5 shadow-2xl" style={{ borderRadius: "18px", border: "1px solid color-mix(in oklab, var(--border) 35%, transparent)" }}>
