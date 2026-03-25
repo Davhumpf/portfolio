@@ -7,11 +7,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LANGS = ["es", "en", "de"] as const;
+const PRIMARY_SECTION_ORDER = ["home", "about", "projects", "timeline", "cases", "contacts"] as const;
+
+type SectionId = (typeof PRIMARY_SECTION_ORDER)[number] | "opensource" | "blog" | "talks" | "uses" | "now";
 
 type NavItem = {
   id: string;
   label: string;
   href: string;
+  sectionId?: SectionId;
   external?: boolean;
   download?: boolean;
 };
@@ -25,6 +29,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>("home");
   const moreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -33,23 +38,23 @@ export default function Header() {
 
   const primaryNav = useMemo<NavItem[]>(
     () => [
-      { id: "home", label: "Inicio", href: "/" },
-      { id: "about", label: t("about"), href: "/about" },
-      { id: "projects", label: t("projects"), href: "/projects" },
-      { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience" },
-      { id: "cases", label: t("caseStudies") ?? "Casos", href: "/case-studies" },
-      { id: "contacts", label: t("contacts"), href: "/contacts" },
+      { id: "home", label: "Inicio", href: "/", sectionId: "home" },
+      { id: "about", label: t("about"), href: "/about", sectionId: "about" },
+      { id: "projects", label: t("projects"), href: "/projects", sectionId: "projects" },
+      { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience", sectionId: "timeline" },
+      { id: "cases", label: t("caseStudies") ?? "Casos", href: "/case-studies", sectionId: "cases" },
+      { id: "contacts", label: t("contacts"), href: "/contacts", sectionId: "contacts" },
     ],
     [t]
   );
 
   const secondaryNav = useMemo<NavItem[]>(
     () => [
-      { id: "opensource", label: "Open Source", href: "/open-source" },
-      { id: "blog", label: "Blog", href: "/blog" },
-      { id: "talks", label: t("talks") ?? "Talks", href: "/talks" },
-      { id: "uses", label: "Uses", href: "/uses" },
-      { id: "now", label: "Now()", href: "/now" },
+      { id: "opensource", label: "Open Source", href: "/open-source", sectionId: "opensource" },
+      { id: "blog", label: "Blog", href: "/blog", sectionId: "blog" },
+      { id: "talks", label: t("talks") ?? "Talks", href: "/talks", sectionId: "talks" },
+      { id: "uses", label: "Uses", href: "/uses", sectionId: "uses" },
+      { id: "now", label: "Now()", href: "/now", sectionId: "now" },
       { id: "cv", label: "Mi CV", href: "/MyCv.pdf", external: true, download: true },
     ],
     [t]
@@ -73,21 +78,89 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const ids = [
+      ...PRIMARY_SECTION_ORDER,
+      "opensource",
+      "blog",
+      "talks",
+      "uses",
+      "now",
+    ] as SectionId[];
+
+    const getSections = () =>
+      ids
+        .map((id) => ({ id, el: document.getElementById(id) }))
+        .filter((item): item is { id: SectionId; el: HTMLElement } => Boolean(item.el))
+        .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
+
+    let sections = getSections();
+    let ticking = false;
+
+    const updateActiveSection = () => {
+      if (!sections.length) sections = getSections();
+      const marker = window.scrollY + 180;
+      let current: SectionId = "home";
+
+      for (const section of sections) {
+        if (section.el.offsetTop <= marker) current = section.id;
+      }
+
+      setActiveSection(current);
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(updateActiveSection);
+    };
+
+    const onResize = () => {
+      sections = getSections();
+      onScroll();
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [pathname]);
+
   const onNavClick = () => {
     setMobileMenuOpen(false);
     setMoreOpen(false);
-  };
-
-  const isActive = (href: string, external?: boolean) => {
-    if (external) return false;
-    if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
   };
 
   const cycleLang = () => {
     const currentIndex = LANGS.indexOf(lang);
     const nextIndex = (currentIndex + 1) % LANGS.length;
     setLang(LANGS[nextIndex]);
+  };
+
+  const isHome = pathname === "/";
+  const isSecondaryActive = secondaryNav.some((item) => item.sectionId === activeSection);
+
+  const isActive = (item: NavItem) => {
+    if (item.external) return false;
+
+    if (isHome && item.sectionId) {
+      return item.sectionId === activeSection;
+    }
+
+    if (item.href === "/") return pathname === "/";
+    return pathname.startsWith(item.href);
+  };
+
+  const resolveHref = (item: NavItem) => {
+    if (!isHome || !item.sectionId) return item.href;
+    return item.sectionId === "home" ? "#top" : `#${item.sectionId}`;
   };
 
   return (
@@ -123,11 +196,11 @@ export default function Header() {
               {primaryNav.map((n) => (
                 <Link
                   key={n.id}
-                  href={n.href}
+                  href={resolveHref(n)}
                   onClick={onNavClick}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive(n.href, n.external)
-                      ? "bg-white/10"
+                    isActive(n)
+                      ? "bg-black/20 shadow-inner"
                       : "hover:bg-white/5"
                   }`}
                   style={{ color: "var(--text-1)" }}
@@ -140,8 +213,8 @@ export default function Header() {
                 <button
                   onClick={() => setMoreOpen((open) => !open)}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    moreOpen
-                      ? "bg-white/10"
+                    moreOpen || isSecondaryActive
+                      ? "bg-black/20 shadow-inner"
                       : "hover:bg-white/5"
                   }`}
                   style={{ color: "var(--text-1)" }}
@@ -177,10 +250,10 @@ export default function Header() {
                       ) : (
                         <Link
                           key={n.id}
-                          href={n.href}
+                          href={resolveHref(n)}
                           onClick={onNavClick}
                           className={`flex items-center justify-between gap-3 px-4 py-3 text-sm transition-all ${
-                            isActive(n.href, n.external) ? "bg-white/10" : "hover:bg-white/10"
+                            isActive(n) ? "bg-black/20" : "hover:bg-white/10"
                           }`}
                           style={{ color: "var(--text-1)" }}
                         >
@@ -259,11 +332,11 @@ export default function Header() {
                 {primaryNav.map((n) => (
                   <Link
                     key={n.id}
-                    href={n.href}
+                    href={resolveHref(n)}
                     onClick={onNavClick}
                     className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all ${
-                      isActive(n.href, n.external)
-                        ? "bg-white/10"
+                      isActive(n)
+                        ? "bg-black/20"
                         : "hover:bg-white/5"
                     }`}
                     style={{ color: "var(--text-1)", fontSize: "15px" }}
@@ -293,10 +366,10 @@ export default function Header() {
                     ) : (
                       <Link
                         key={n.id}
-                        href={n.href}
+                        href={resolveHref(n)}
                         onClick={onNavClick}
                         className={`flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all ${
-                          isActive(n.href, n.external) ? "bg-white/10" : "hover:bg-white/5"
+                          isActive(n) ? "bg-black/20" : "hover:bg-white/5"
                         }`}
                         style={{ color: "var(--text-2)", fontSize: "14px", opacity: 0.9 }}
                       >
