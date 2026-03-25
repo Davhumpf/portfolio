@@ -44,6 +44,11 @@ export default function Hero() {
   const guideSnippet = t("hero_intro_guide");
   const skipLabel = t("hero_intro_skip");
 
+  const displayLine1 = heroLine1 || finalLine1;
+  const displayLine2Prefix = heroLine2Prefix || finalLine2Prefix;
+  const displayName = heroNameLine || finalNameLine;
+  const displaySnippet = displayedCode || CODE_SNIPPETS[0];
+
   const setFinalDisplay = () => {
     setHeroLine1(finalLine1);
     setHeroLine2Prefix(finalLine2Prefix);
@@ -371,10 +376,10 @@ export default function Hero() {
             <div className="w-full">
               <h1 className="font-bold leading-tight" style={{ fontSize: "var(--hero-title-size, clamp(1.25rem, 5vw, 3rem))" }}>
                 <span className="hero-text block muted" style={{ marginBottom: "clamp(0.25rem, 0.5vw, 0.5rem)" }}>
-                  {heroLine1}
+                  {displayLine1}
                 </span>
                 <span className="hero-text block" style={{ marginBottom: "clamp(0.5rem, 1vw, 0.75rem)" }}>
-                  {heroLine2Prefix}
+                  {displayLine2Prefix}
                   {heroLine2Accent && <span className="accent font-extrabold">{heroLine2Accent}</span>}
                 </span>
               </h1>
@@ -390,7 +395,7 @@ export default function Hero() {
               />
 
               <p className="hero-name font-medium" style={{ fontSize: "var(--hero-name-size, clamp(0.875rem, 2.5vw, 1.25rem))" }}>
-                — <span className="accent">{heroNameLine}</span>
+                — <span className="accent">{displayName}</span>
               </p>
             </div>
 
@@ -434,7 +439,7 @@ export default function Hero() {
                   }}
                 >
                   <pre className="whitespace-pre-wrap break-words w-full" style={{ color: "var(--text)" }}>
-                    {displayedCode}
+                    {displaySnippet}
                     {isTyping && (
                       <span
                         className="inline-block ml-0.5 align-middle animate-pulse"
