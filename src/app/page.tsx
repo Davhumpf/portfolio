@@ -15,6 +15,16 @@ export default function Home() {
   return (
     <div className="window-stack portfolio-flow">
       <Hero />
+      <About />
+      <Projects />
+      <Timeline />
+      <CaseStudies />
+      <Contacts />
+      <OpenSource />
+      <Blog />
+      <Talks />
+      <Uses />
+      <Now />
 
       <div className="portfolio-lanes">
         <div className="lane lane-wide"><About /></div>
