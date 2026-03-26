@@ -193,7 +193,43 @@
   .window-stack {
     display: flex;
     flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 2rem);
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    padding-bottom: clamp(0.75rem, 2vw, 1.5rem);
+  }
+
+  .portfolio-flow {
+    scroll-behavior: smooth;
+  }
+
+  .portfolio-columns {
+    width: min(1400px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .portfolio-col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .portfolio-col .window-section {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  @media (min-width: 1200px) {
+    .portfolio-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      column-gap: clamp(0.85rem, 2vw, 1.4rem);
+    }
+
+    .portfolio-col {
+      align-items: stretch;
+    }
   }
 
   .content-grid {
@@ -204,9 +240,9 @@
   }
 
   .hero-section {
-    min-height: 100dvh;
+    min-height: clamp(420px, 62dvh, 680px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .hero-panel {
@@ -218,14 +254,14 @@
   }
 
   .hero-terminal {
-    --hero-terminal-height: clamp(80px, 16vw, 120px);
+    --hero-terminal-height: clamp(120px, 18vw, 180px);
     --hero-code-size: clamp(9px, 1.3vw, 12px);
   }
 
   @media (max-width: 640px) {
     .hero-section {
       padding: 0.35rem;
-      min-height: 100dvh;
+      min-height: auto;
     }
 
     .hero-panel .window-bar {
