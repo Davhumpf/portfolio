@@ -26,17 +26,22 @@ export default function Home() {
       <Uses />
       <Now />
 
-      <div className="portfolio-lanes">
-        <div className="lane lane-wide"><About /></div>
-        <div className="lane lane-narrow"><Projects /></div>
-        <div className="lane lane-wide"><Timeline /></div>
-        <div className="lane lane-narrow"><CaseStudies /></div>
-        <div className="lane lane-narrow"><Contacts /></div>
-        <div className="lane lane-wide"><OpenSource /></div>
-        <div className="lane lane-narrow"><Blog /></div>
-        <div className="lane lane-narrow"><Talks /></div>
-        <div className="lane lane-wide"><Uses /></div>
-        <div className="lane lane-narrow"><Now /></div>
+      <div className="portfolio-columns">
+        <div className="portfolio-col">
+          <About />
+          <Timeline />
+          <Contacts />
+          <Blog />
+          <Uses />
+        </div>
+
+        <div className="portfolio-col">
+          <Projects />
+          <CaseStudies />
+          <OpenSource />
+          <Talks />
+          <Now />
+        </div>
       </div>
 
       <footer className="mx-auto mt-10 mb-8 max-w-6xl px-4 text-sm muted">

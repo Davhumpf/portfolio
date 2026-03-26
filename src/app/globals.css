@@ -201,41 +201,34 @@
     scroll-behavior: smooth;
   }
 
-  .portfolio-lanes {
-    width: 100%;
+  .portfolio-columns {
+    width: min(1400px, 100%);
+    margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr;
     gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
-  .lane {
-    transition: transform 240ms ease, opacity 240ms ease;
+  .portfolio-col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
-  .lane:hover {
-    transform: translateY(-2px);
+  .portfolio-col .window-section {
+    max-width: 100%;
+    padding: 0;
   }
 
   @media (min-width: 1200px) {
-    .portfolio-lanes {
-      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    .portfolio-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
+      column-gap: clamp(0.85rem, 2vw, 1.4rem);
     }
 
-    .lane-wide {
-      grid-column: span 2;
-    }
-
-    .lane-narrow {
-      grid-column: span 1;
-    }
-
-    .lane:nth-child(odd) {
-      transform: translateY(0);
-    }
-
-    .lane:nth-child(even) {
-      transform: translateY(clamp(8px, 1.2vw, 14px));
+    .portfolio-col {
+      align-items: stretch;
     }
   }
 
