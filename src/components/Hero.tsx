@@ -47,6 +47,7 @@ export default function Hero() {
   const displayLine1 = heroLine1 || finalLine1;
   const displayLine2Prefix = heroLine2Prefix || finalLine2Prefix;
   const displayName = heroNameLine || finalNameLine;
+  const displayLine2Accent = heroLine2Accent || finalLine2Accent;
   const displaySnippet = displayedCode || CODE_SNIPPETS[0];
 
   const setFinalDisplay = () => {
@@ -380,7 +381,7 @@ export default function Hero() {
                 </span>
                 <span className="hero-text block" style={{ marginBottom: "clamp(0.5rem, 1vw, 0.75rem)" }}>
                   {displayLine2Prefix}
-                  {heroLine2Accent && <span className="accent font-extrabold">{heroLine2Accent}</span>}
+                  <span className="accent font-extrabold">{displayLine2Accent}</span>
                 </span>
               </h1>
 

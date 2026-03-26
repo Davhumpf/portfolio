@@ -37,7 +37,7 @@ export default function Header() {
 
   const primaryNav = useMemo<NavItem[]>(
     () => [
-      { id: "home", label: "Inicio", href: "/", sectionId: "home" },
+      { id: "home", label: t("nav_home"), href: "/", sectionId: "home" },
       { id: "about", label: t("about"), href: "/about", sectionId: "about" },
       { id: "projects", label: t("projects"), href: "/projects", sectionId: "projects" },
       { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience", sectionId: "timeline" },
@@ -176,7 +176,7 @@ export default function Header() {
               </Link>
 
               <div className="relative" ref={moreRef}>
-                <button onClick={() => setMoreOpen((open) => !open)} className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${moreOpen ? "bg-black/20 shadow-inner" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)" }} aria-expanded={moreOpen} aria-haspopup="true">Más</button>
+                <button onClick={() => setMoreOpen((open) => !open)} className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${moreOpen ? "bg-black/20 shadow-inner" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)" }} aria-expanded={moreOpen} aria-haspopup="true">{t("nav_more")}</button>
                 {moreOpen && (
                   <div className="absolute left-0 mt-2 min-w-[200px] rounded-xl backdrop-blur-xl shadow-xl overflow-hidden" style={{ zIndex: 50, background: "color-mix(in oklab, var(--panel) 85%, transparent)", border: "1px solid color-mix(in oklab, var(--border) 40%, transparent)" }}>
                     {secondaryNav.map((n) => n.external ? (

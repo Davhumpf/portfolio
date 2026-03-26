@@ -201,6 +201,44 @@
     scroll-behavior: smooth;
   }
 
+  .portfolio-lanes {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .lane {
+    transition: transform 240ms ease, opacity 240ms ease;
+  }
+
+  .lane:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (min-width: 1200px) {
+    .portfolio-lanes {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .lane-wide {
+      grid-column: span 2;
+    }
+
+    .lane-narrow {
+      grid-column: span 1;
+    }
+
+    .lane:nth-child(odd) {
+      transform: translateY(0);
+    }
+
+    .lane:nth-child(even) {
+      transform: translateY(clamp(8px, 1.2vw, 14px));
+    }
+  }
+
   .content-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
