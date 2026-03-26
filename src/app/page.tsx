@@ -15,6 +15,16 @@ export default function Home() {
   return (
     <div className="window-stack portfolio-flow">
       <Hero />
+      <About />
+      <Projects />
+      <Timeline />
+      <CaseStudies />
+      <Contacts />
+      <OpenSource />
+      <Blog />
+      <Talks />
+      <Uses />
+      <Now />
 
       <div className="portfolio-columns">
         <div className="portfolio-col">
