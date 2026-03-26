@@ -193,7 +193,50 @@
   .window-stack {
     display: flex;
     flex-direction: column;
-    gap: clamp(1.25rem, 3vw, 2rem);
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    padding-bottom: clamp(0.75rem, 2vw, 1.5rem);
+  }
+
+  .portfolio-flow {
+    scroll-behavior: smooth;
+  }
+
+  .portfolio-lanes {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .lane {
+    transition: transform 240ms ease, opacity 240ms ease;
+  }
+
+  .lane:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (min-width: 1200px) {
+    .portfolio-lanes {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .lane-wide {
+      grid-column: span 2;
+    }
+
+    .lane-narrow {
+      grid-column: span 1;
+    }
+
+    .lane:nth-child(odd) {
+      transform: translateY(0);
+    }
+
+    .lane:nth-child(even) {
+      transform: translateY(clamp(8px, 1.2vw, 14px));
+    }
   }
 
   .content-grid {
@@ -204,9 +247,9 @@
   }
 
   .hero-section {
-    min-height: 100dvh;
+    min-height: clamp(420px, 62dvh, 680px);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .hero-panel {
@@ -218,14 +261,14 @@
   }
 
   .hero-terminal {
-    --hero-terminal-height: clamp(80px, 16vw, 120px);
+    --hero-terminal-height: clamp(120px, 18vw, 180px);
     --hero-code-size: clamp(9px, 1.3vw, 12px);
   }
 
   @media (max-width: 640px) {
     .hero-section {
       padding: 0.35rem;
-      min-height: 100dvh;
+      min-height: auto;
     }
 
     .hero-panel .window-bar {
