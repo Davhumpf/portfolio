@@ -201,34 +201,30 @@
     scroll-behavior: smooth;
   }
 
-  .portfolio-columns {
+  .portfolio-rows {
     width: min(1400px, 100%);
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(0.75rem, 2vw, 1.25rem);
-  }
-
-  .portfolio-col {
     display: flex;
     flex-direction: column;
     gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
-  .portfolio-col .window-section {
+  .portfolio-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+
+  .portfolio-cell .window-section {
     max-width: 100%;
     padding: 0;
   }
 
   @media (min-width: 1200px) {
-    .portfolio-columns {
+    .portfolio-row {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
       column-gap: clamp(0.85rem, 2vw, 1.4rem);
-    }
-
-    .portfolio-col {
-      align-items: stretch;
     }
   }
 

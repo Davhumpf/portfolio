@@ -26,21 +26,30 @@ export default function Home() {
       <Uses />
       <Now />
 
-      <div className="portfolio-columns">
-        <div className="portfolio-col">
-          <About />
-          <Timeline />
-          <Contacts />
-          <Blog />
-          <Uses />
+      <div className="portfolio-rows">
+        <div className="portfolio-row">
+          <div className="portfolio-cell"><About /></div>
+          <div className="portfolio-cell"><Projects /></div>
         </div>
 
-        <div className="portfolio-col">
-          <Projects />
-          <CaseStudies />
-          <OpenSource />
-          <Talks />
-          <Now />
+        <div className="portfolio-row">
+          <div className="portfolio-cell"><Timeline /></div>
+          <div className="portfolio-cell"><CaseStudies /></div>
+        </div>
+
+        <div className="portfolio-row">
+          <div className="portfolio-cell"><Contacts /></div>
+          <div className="portfolio-cell"><OpenSource /></div>
+        </div>
+
+        <div className="portfolio-row">
+          <div className="portfolio-cell"><Blog /></div>
+          <div className="portfolio-cell"><Talks /></div>
+        </div>
+
+        <div className="portfolio-row">
+          <div className="portfolio-cell"><Uses /></div>
+          <div className="portfolio-cell"><Now /></div>
         </div>
       </div>
 
