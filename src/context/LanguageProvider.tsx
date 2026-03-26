@@ -11,6 +11,8 @@ type BaseMessages = {
   projects: string;
   skills: string;
   contacts: string;
+  nav_home: string;
+  nav_more: string;
   // Hero
   hero_hello: string;
   hero_im: string;
@@ -204,6 +206,8 @@ const messages: Record<Lang, Messages> = {
     projects: "Proyectos",
     skills: "Habilidades",
     contacts: "Contactos",
+    nav_home: "Inicio",
+    nav_more: "Más",
 
     hero_hello: "¡Hola!",
     hero_im: "Yo soy",
@@ -381,6 +385,8 @@ const messages: Record<Lang, Messages> = {
     projects: "Projects",
     skills: "Skills",
     contacts: "Contact",
+    nav_home: "Home",
+    nav_more: "More",
 
     hero_hello: "Hello!",
     hero_im: "I am",
@@ -558,6 +564,8 @@ const messages: Record<Lang, Messages> = {
     projects: "Projekte",
     skills: "Fähigkeiten",
     contacts: "Kontakt",
+    nav_home: "Start",
+    nav_more: "Mehr",
 
     hero_hello: "Hallo!",
     hero_im: "Ich bin",
