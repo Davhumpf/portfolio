@@ -1,0 +1,18 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.9.0
+2 info using node@v24.14.0
+3 silly config load:file:C:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Davhumpf\Desktop\portfolio\.npmrc
+5 silly config load:file:C:\Users\Davhumpf\.npmrc
+6 silly config load:file:C:\Users\Davhumpf\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm exec eslint src/components/Header.tsx
+8 verbose argv "exec" "--" "eslint" "src/components/Header.tsx"
+9 verbose logfile logs-max:10 dir:C:\Users\Davhumpf\Desktop\portfolio\.npm-cache\_logs\2026-04-06T01_24_31_256Z-
+10 verbose logfile C:\Users\Davhumpf\Desktop\portfolio\.npm-cache\_logs\2026-04-06T01_24_31_256Z-debug-0.log
+11 silly logfile done cleaning log files
+12 verbose cwd C:\Users\Davhumpf\Desktop\portfolio
+13 verbose os Windows_NT 10.0.26200
+14 verbose node v24.14.0
+15 verbose npm  v11.9.0
+16 verbose exit 0
+17 info ok

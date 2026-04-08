@@ -201,28 +201,29 @@
     scroll-behavior: smooth;
   }
 
-  .portfolio-rows {
+  .portfolio-columns {
     width: min(1400px, 100%);
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.75rem, 2vw, 1.25rem);
-  }
-
-  .portfolio-row {
     display: grid;
     grid-template-columns: 1fr;
     gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
-  .portfolio-cell .window-section {
-    max-width: 100%;
-    padding: 0;
+  .portfolio-column {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
-  @media (min-width: 1200px) {
-    .portfolio-row {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  .portfolio-column > * .window-section {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .portfolio-columns {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: start;
       column-gap: clamp(0.85rem, 2vw, 1.4rem);
     }

@@ -1,16 +1,49 @@
 "use client";
+
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLang, useT } from "@/context/LanguageProvider";
-import { Sun, Moon, Laptop, Menu, X, Download } from "lucide-react";
-import { useTheme } from "next-themes";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useLang, useT } from "@/context/LanguageProvider";
+import { Download, Globe, Menu, Monitor, Moon, Search, Sun, X } from "lucide-react";
 
 const LANGS = ["es", "en", "de"] as const;
-const PRIMARY_SECTION_ORDER = ["home", "about", "projects", "timeline", "cases"] as const;
-const SCROLL_OFFSET = 180;
+const PLACEHOLDER_MESSAGES_BY_LANG: Record<(typeof LANGS)[number], string[]> = {
+  es: [
+    "Pregunta aqui tus dudas",
+    "quiero ver tus proyectos de frontend",
+    "muestrame tu experiencia",
+    "donde puedo contactarte",
+    "abre tus casos de estudio",
+  ],
+  en: [
+    "Ask your question",
+    "show me your frontend projects",
+    "show me your experience",
+    "how can I contact you",
+    "open your case studies",
+  ],
+  de: [
+    "Frage hier",
+    "zeige mir deine Frontend Projekte",
+    "zeige mir deine Erfahrung",
+    "wie kann ich dich kontaktieren",
+    "oeffne deine Fallstudien",
+  ],
+};
 
-type SectionId = (typeof PRIMARY_SECTION_ORDER)[number] | "contacts" | "opensource" | "blog" | "talks" | "uses" | "now";
+type SectionId =
+  | "home"
+  | "about"
+  | "projects"
+  | "timeline"
+  | "cases"
+  | "contacts"
+  | "opensource"
+  | "blog"
+  | "talks"
+  | "uses"
+  | "now";
 
 type NavItem = {
   id: string;
@@ -21,33 +54,52 @@ type NavItem = {
   download?: boolean;
 };
 
+type Intent = {
+  id: string;
+  sectionId: SectionId;
+  label: string;
+  hint: string;
+  keywords: string[];
+};
+
+function normalizeText(input: string) {
+  return input
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokenize(input: string) {
+  return normalizeText(input).split(" ").filter(Boolean);
+}
+
 export default function Header() {
   const t = useT();
   const { lang, setLang } = useLang();
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeSection, setActiveSection] = useState<SectionId>("home");
-  const moreRef = useRef<HTMLDivElement | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [assistantText, setAssistantText] = useState("");
+  const [suggestedSection, setSuggestedSection] = useState<SectionId | null>(null);
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => setMounted(true), []);
 
-  const primaryNav = useMemo<NavItem[]>(
+  const navItems = useMemo<NavItem[]>(
     () => [
       { id: "home", label: t("nav_home"), href: "/", sectionId: "home" },
       { id: "about", label: t("about"), href: "/about", sectionId: "about" },
       { id: "projects", label: t("projects"), href: "/projects", sectionId: "projects" },
       { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience", sectionId: "timeline" },
       { id: "cases", label: t("caseStudies") ?? "Casos", href: "/case-studies", sectionId: "cases" },
-    ],
-    [t]
-  );
-
-  const dynamicNavItems = useMemo<NavItem[]>(
-    () => [
       { id: "contacts", label: t("contacts"), href: "/contacts", sectionId: "contacts" },
       { id: "opensource", label: "Open Source", href: "/open-source", sectionId: "opensource" },
       { id: "blog", label: "Blog", href: "/blog", sectionId: "blog" },
@@ -58,170 +110,427 @@ export default function Header() {
     [t]
   );
 
-  const secondaryNav = useMemo<NavItem[]>(
+  const intents = useMemo<Intent[]>(
     () => [
-      { id: "opensource", label: "Open Source", href: "/open-source", sectionId: "opensource" },
-      { id: "blog", label: "Blog", href: "/blog", sectionId: "blog" },
-      { id: "talks", label: t("talks") ?? "Talks", href: "/talks", sectionId: "talks" },
-      { id: "uses", label: "Uses", href: "/uses", sectionId: "uses" },
-      { id: "now", label: "Now()", href: "/now", sectionId: "now" },
-      { id: "cv", label: "Mi CV", href: "/MyCv.pdf", external: true, download: true },
+      {
+        id: "about",
+        sectionId: "about",
+        label: t("about"),
+        hint: "Perfil profesional, enfoque y stack base.",
+        keywords: ["sobre mi", "perfil", "about", "quien eres", "who are you", "resumen", "bio"],
+      },
+      {
+        id: "projects",
+        sectionId: "projects",
+        label: t("projects"),
+        hint: "Proyectos principales y estado actual.",
+        keywords: ["proyecto", "projects", "portfolio", "trabajos", "apps", "nova", "itia", "miza"],
+      },
+      {
+        id: "timeline",
+        sectionId: "timeline",
+        label: t("experience") ?? "Experiencia",
+        hint: "Trayectoria academica y profesional.",
+        keywords: ["experiencia", "timeline", "career", "trayectoria", "historia", "journey"],
+      },
+      {
+        id: "cases",
+        sectionId: "cases",
+        label: t("caseStudies") ?? "Casos",
+        hint: "Problema, proceso y resultados de casos reales.",
+        keywords: ["caso", "case", "estudio", "impacto", "problem", "process", "resultado"],
+      },
+      {
+        id: "opensource",
+        sectionId: "opensource",
+        label: "Open Source",
+        hint: "Repositorios y aportes publicos.",
+        keywords: ["github", "open source", "repos", "repository", "codigo", "code"],
+      },
+      {
+        id: "blog",
+        sectionId: "blog",
+        label: "Blog",
+        hint: "Notas tecnicas y aprendizajes.",
+        keywords: ["blog", "articulos", "posts", "notas", "write", "aprendizaje"],
+      },
+      {
+        id: "talks",
+        sectionId: "talks",
+        label: t("talks") ?? "Talks",
+        hint: "Charlas, eventos y formacion continua.",
+        keywords: ["charlas", "talks", "eventos", "seminario", "conference", "workshop"],
+      },
+      {
+        id: "uses",
+        sectionId: "uses",
+        label: "Uses",
+        hint: "Hardware y software de trabajo.",
+        keywords: ["uses", "setup", "herramientas", "tools", "hardware", "software", "stack"],
+      },
+      {
+        id: "now",
+        sectionId: "now",
+        label: "Now()",
+        hint: "En que esta trabajando actualmente.",
+        keywords: ["now", "actual", "ahora", "current", "trabajando", "roadmap"],
+      },
+      {
+        id: "contacts",
+        sectionId: "contacts",
+        label: t("contacts"),
+        hint: "Canales de contacto directo.",
+        keywords: ["contacto", "contact", "email", "linkedin", "whatsapp", "hablar"],
+      },
     ],
     [t]
   );
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (moreRef.current && !moreRef.current.contains(event.target as Node)) setMoreOpen(false);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    const messages = PLACEHOLDER_MESSAGES_BY_LANG[lang];
+    if (!messages.length) return;
 
-  useEffect(() => {
-    if (pathname !== "/") return;
+    let msgIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+    let timeoutId = 0;
 
-    const ids: SectionId[] = [
-      ...PRIMARY_SECTION_ORDER,
-      "contacts",
-      "opensource",
-      "blog",
-      "talks",
-      "uses",
-      "now",
-    ];
+    const run = () => {
+      const current = messages[msgIndex];
 
-    const getSections = () =>
-      ids
-        .map((id) => ({ id, el: document.getElementById(id) }))
-        .filter((item): item is { id: SectionId; el: HTMLElement } => Boolean(item.el))
-        .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
+      if (!deleting) {
+        charIndex += 1;
+        setAnimatedPlaceholder(current.slice(0, charIndex));
 
-    let sections = getSections();
-    let ticking = false;
+        if (charIndex >= current.length) {
+          deleting = true;
+          timeoutId = window.setTimeout(run, 1300);
+          return;
+        }
 
-    const updateActiveSection = () => {
-      if (!sections.length) sections = getSections();
-      const marker = window.scrollY + SCROLL_OFFSET;
-      let current: SectionId = "home";
-      for (const section of sections) if (section.el.offsetTop <= marker) current = section.id;
-      setActiveSection(current);
-      ticking = false;
-    };
+        timeoutId = window.setTimeout(run, 55);
+        return;
+      }
 
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(updateActiveSection);
+      charIndex -= 1;
+      setAnimatedPlaceholder(current.slice(0, Math.max(0, charIndex)));
+
+      if (charIndex <= 0) {
+        deleting = false;
+        msgIndex = (msgIndex + 1) % messages.length;
+        timeoutId = window.setTimeout(run, 280);
+        return;
+      }
+
+      timeoutId = window.setTimeout(run, 35);
     };
 
-    const onResize = () => {
-      sections = getSections();
-      onScroll();
-    };
+    setAnimatedPlaceholder("");
+    timeoutId = window.setTimeout(run, 320);
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [pathname]);
+    return () => window.clearTimeout(timeoutId);
+  }, [lang]);
 
-  const isHome = pathname === "/";
+  const navigateToSection = (sectionId: SectionId) => {
+    if (pathname === "/") {
+      const target = sectionId === "home" ? document.getElementById("top") : document.getElementById(sectionId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
 
-  const isActive = (item: NavItem) => {
-    if (item.external) return false;
-    if (isHome && item.sectionId) return item.sectionId === activeSection;
-    if (item.href === "/") return pathname === "/";
-    return pathname.startsWith(item.href);
+    if (sectionId === "home") {
+      router.push("/");
+    } else {
+      router.push(`/#${sectionId}`);
+    }
   };
 
-  const resolveHref = (item: NavItem) => {
-    if (!isHome || !item.sectionId) return item.href;
-    return item.sectionId === "home" ? "#top" : `#${item.sectionId}`;
+  const findBestIntent = (rawQuery: string) => {
+    const q = normalizeText(rawQuery);
+    if (!q) return null;
+
+    let best: Intent | null = null;
+    let bestScore = 0;
+
+    for (const intent of intents) {
+      let score = 0;
+
+      const labelNorm = normalizeText(intent.label);
+      const hintNorm = normalizeText(intent.hint);
+      const idNorm = normalizeText(intent.id);
+      const sectionNorm = normalizeText(intent.sectionId);
+
+      if (q.includes(labelNorm)) score += 5;
+      if (q.includes(idNorm) || q.includes(sectionNorm)) score += 4;
+      if (q.includes(hintNorm)) score += 3;
+
+      for (const key of intent.keywords) {
+        const k = normalizeText(key);
+        if (!k) continue;
+        if (q.includes(k)) score += Math.max(2, k.split(" ").length);
+      }
+
+      const tokens = tokenize(q);
+      for (const token of tokens) {
+        if (token.length < 3) continue;
+        if (
+          intent.keywords.some((k) => normalizeText(k).includes(token)) ||
+          labelNorm.includes(token) ||
+          hintNorm.includes(token) ||
+          idNorm.includes(token) ||
+          sectionNorm.includes(token)
+        ) {
+          score += 1;
+        }
+      }
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = intent;
+      }
+    }
+
+    if (!best || bestScore < 1) return null;
+    return best;
   };
 
-  const dynamicIds: SectionId[] = ["contacts", "opensource", "blog", "talks", "uses", "now"];
-  const activeDynamicItem = dynamicNavItems.find((item) => item.sectionId === activeSection) ?? dynamicNavItems[0];
-  const isDynamicActive = dynamicIds.includes(activeSection);
+  const handleAssistantSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
-  const onNavClick = () => {
-    setMobileMenuOpen(false);
-    setMoreOpen(false);
+    const value = query.trim();
+    if (!value) {
+      setAssistantText("");
+      setSuggestedSection(null);
+      return;
+    }
+
+    const intent = findBestIntent(value);
+
+    if (!intent) {
+      setAssistantText(
+        lang === "en"
+          ? "I can guide you to Projects, Experience, Case Studies, Open Source, Blog, Talks, Uses, Now or Contacts."
+          : lang === "de"
+          ? "Ich kann dich zu Projekten, Erfahrung, Fallstudien, Open Source, Blog, Talks, Uses, Now oder Kontakt fuehren."
+          : "Te puedo guiar a Proyectos, Experiencia, Casos, Open Source, Blog, Charlas, Uses, Now o Contactos."
+      );
+      setSuggestedSection(null);
+      return;
+    }
+
+    setSuggestedSection(intent.sectionId);
+    setAssistantText(
+      lang === "en"
+        ? `Recommended section: ${intent.label}. ${intent.hint}`
+        : lang === "de"
+        ? `Empfohlener Bereich: ${intent.label}. ${intent.hint}`
+        : `Seccion recomendada: ${intent.label}. ${intent.hint}`
+    );
+
+    navigateToSection(intent.sectionId);
+    setMobileOpen(false);
   };
 
   const cycleLang = () => {
-    const currentIndex = LANGS.indexOf(lang);
-    setLang(LANGS[(currentIndex + 1) % LANGS.length]);
+    const idx = LANGS.indexOf(lang);
+    setLang(LANGS[(idx + 1) % LANGS.length]);
   };
 
+  const getThemeIcon = () => {
+    if (!mounted || theme === "system") return <Monitor size={14} />;
+    if (theme === "dark") return <Moon size={14} />;
+    return <Sun size={14} />;
+  };
+
+  const cycleTheme = () => {
+    if (!mounted) return;
+    const order: Array<"light" | "dark" | "system"> = ["light", "dark", "system"];
+    const current = theme === "light" || theme === "dark" || theme === "system" ? theme : "system";
+    const idx = order.indexOf(current);
+    setTheme(order[(idx + 1) % order.length]);
+  };
+
+  const quickSuggestions = useMemo(() => {
+    const q = normalizeText(query);
+    if (!q) return [];
+
+    return intents
+      .filter((intent) => intent.keywords.some((k) => normalizeText(k).includes(q) || q.includes(normalizeText(k))))
+      .slice(0, 4);
+  }, [intents, query]);
+
   return (
-    <header className="fixed z-[9999] w-full" style={{ top: "12px", left: "50%", transform: "translateX(-50%)", paddingLeft: "12px", paddingRight: "12px", maxWidth: "calc(100vw - 24px)" }}>
-      <div className="w-full backdrop-blur-xl bg-white/5 shadow-2xl" style={{ borderRadius: "18px", border: "1px solid color-mix(in oklab, var(--border) 35%, transparent)" }}>
-        <div className="flex items-center justify-between gap-3 px-4 py-3">
+    <header className="fixed top-3 left-1/2 z-[9999] w-full max-w-[1240px] -translate-x-1/2 px-3">
+      <div
+        className="rounded-2xl border backdrop-blur-xl"
+        style={{
+          background: "color-mix(in oklab, var(--panel) 84%, transparent)",
+          borderColor: "color-mix(in oklab, var(--border) 45%, transparent)",
+          boxShadow: "var(--shadow-sm)",
+        }}
+      >
+        <div className="flex min-h-[56px] items-center gap-2 px-3 py-2 md:px-4">
           <div className="flex items-center gap-2">
-            <button onClick={() => setMobileMenuOpen((v) => !v)} aria-expanded={mobileMenuOpen} aria-label="Toggle navigation menu" className="lg:hidden flex items-center gap-2 px-3 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all" style={{ color: "var(--text-1)" }}>
-              {mobileMenuOpen ? <X size={18} strokeWidth={2.5} /> : <Menu size={18} strokeWidth={2.5} />}<span className="text-sm font-medium">Menu</span>
+            <button
+              type="button"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border lg:hidden"
+              style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)" }}
+              aria-label="Abrir menu"
+            >
+              {mobileOpen ? <X size={16} /> : <Menu size={16} />}
             </button>
 
-            <nav className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-wrap">
-              {primaryNav.map((n) => (
-                <Link key={n.id} href={resolveHref(n)} onClick={onNavClick} className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(n) ? "bg-black/20 shadow-inner" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)" }}>{n.label}</Link>
-              ))}
-
-              <Link href={resolveHref(activeDynamicItem)} onClick={onNavClick} className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${isDynamicActive ? "bg-black/20 shadow-inner" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)" }}>
-                {activeDynamicItem.label}
-              </Link>
-
-              <div className="relative" ref={moreRef}>
-                <button onClick={() => setMoreOpen((open) => !open)} className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${moreOpen ? "bg-black/20 shadow-inner" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)" }} aria-expanded={moreOpen} aria-haspopup="true">{t("nav_more")}</button>
-                {moreOpen && (
-                  <div className="absolute left-0 mt-2 min-w-[200px] rounded-xl backdrop-blur-xl shadow-xl overflow-hidden" style={{ zIndex: 50, background: "color-mix(in oklab, var(--panel) 85%, transparent)", border: "1px solid color-mix(in oklab, var(--border) 40%, transparent)" }}>
-                    {secondaryNav.map((n) => n.external ? (
-                      <a key={n.id} href={n.href} onClick={onNavClick} download={n.download ? true : undefined} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-3 px-4 py-3 text-sm transition-all hover:bg-white/10" style={{ color: "var(--text-1)" }}><span>{n.label}</span><Download size={14} /></a>
-                    ) : (
-                      <Link key={n.id} href={resolveHref(n)} onClick={onNavClick} className={`flex items-center justify-between gap-3 px-4 py-3 text-sm transition-all ${isActive(n) ? "bg-black/20" : "hover:bg-white/10"}`} style={{ color: "var(--text-1)" }}><span>{n.label}</span></Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </nav>
+            <Link href="#top" className="rounded-md px-2 py-1 text-sm font-semibold" style={{ color: "var(--text-1)" }}>
+              David
+            </Link>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button onClick={cycleLang} className="flex items-center justify-center min-w-[48px] h-10 px-3 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all" aria-label={`Language: ${lang.toUpperCase()}`} title="Click to cycle language">
-              <span className="text-xs font-bold tracking-wider" style={{ color: "var(--text-1)" }}>{lang.toUpperCase()}</span>
-            </button>
-
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5">
-              <button onClick={() => mounted && setTheme("light")} disabled={!mounted} className={`p-2 rounded-lg transition-all ${mounted && theme === "light" ? "bg-gradient-to-br from-amber-500/20 to-yellow-500/20 text-amber-400" : "hover:bg-white/5 opacity-60 hover:opacity-100"}`} aria-label="Light theme" style={{ color: mounted && theme === "light" ? undefined : "var(--text-1)" }}><Sun size={16} /></button>
-              <button onClick={() => mounted && setTheme("dark")} disabled={!mounted} className={`p-2 rounded-lg transition-all ${mounted && theme === "dark" ? "bg-gradient-to-br from-blue-500/20 to-indigo-500/20 text-blue-400" : "hover:bg-white/5 opacity-60 hover:opacity-100"}`} aria-label="Dark theme" style={{ color: mounted && theme === "dark" ? undefined : "var(--text-1)" }}><Moon size={16} /></button>
-              <button onClick={() => mounted && setTheme("system")} disabled={!mounted} className={`p-2 rounded-lg transition-all ${mounted && (theme === "system" || !theme) ? "bg-gradient-to-br from-purple-500/20 to-pink-500/20 text-purple-400" : "hover:bg-white/5 opacity-60 hover:opacity-100"}`} aria-label="System theme" style={{ color: mounted && (theme === "system" || !theme) ? undefined : "var(--text-1)" }}><Laptop size={16} /></button>
+          <form onSubmit={handleAssistantSubmit} className="hidden min-w-0 flex-1 items-center gap-2 lg:flex">
+            <div
+              className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-xl border px-3"
+              style={{
+                borderColor: "color-mix(in oklab, var(--border) 55%, transparent)",
+                background: "color-mix(in oklab, var(--panel) 80%, transparent)",
+              }}
+            >
+              <Search size={14} className="shrink-0" style={{ color: "var(--text-2)" }} />
+              <input
+                ref={inputRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full min-w-0 bg-transparent text-sm outline-none"
+                style={{ color: "var(--text-1)" }}
+                placeholder={animatedPlaceholder || PLACEHOLDER_MESSAGES_BY_LANG[lang][0]}
+              />
             </div>
+            <button
+              type="submit"
+              className="h-9 rounded-lg px-3 text-xs font-semibold"
+              style={{ background: "var(--accent)", color: "#0b1220" }}
+            >
+              Buscar
+            </button>
+          </form>
+
+          <div className="ml-auto flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={cycleLang}
+              className="inline-flex h-8 items-center gap-1 rounded-lg border px-2 text-xs font-semibold"
+              style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)", color: "var(--text-1)" }}
+              title="Cambiar idioma"
+            >
+              <Globe size={13} /> {lang.toUpperCase()}
+            </button>
+            <button
+              type="button"
+              onClick={cycleTheme}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border"
+              style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)", color: "var(--text-1)" }}
+              title="Cambiar tema"
+              aria-label="Cambiar tema"
+            >
+              {getThemeIcon()}
+            </button>
+            <a
+              href="/MyCv.pdf"
+              download
+              className="inline-flex h-8 items-center gap-1 rounded-lg border px-2 text-xs font-semibold"
+              style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)", color: "var(--text-1)" }}
+              title="Descargar CV"
+            >
+              CV <Download size={13} />
+            </a>
           </div>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="lg:hidden" style={{ borderTop: "1px solid color-mix(in oklab, var(--border) 40%, transparent)" }}>
-            <div className="px-4 py-4 space-y-4">
-              <div className="space-y-1.5">
-                {primaryNav.map((n) => (
-                  <Link key={n.id} href={resolveHref(n)} onClick={onNavClick} className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all ${isActive(n) ? "bg-black/20" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)", fontSize: "15px" }}><span>{n.label}</span></Link>
-                ))}
-                <Link href={resolveHref(activeDynamicItem)} onClick={onNavClick} className={`flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-all ${isDynamicActive ? "bg-black/20" : "hover:bg-white/5"}`} style={{ color: "var(--text-1)", fontSize: "15px" }}><span>{activeDynamicItem.label}</span></Link>
+        {(assistantText || quickSuggestions.length > 0) && (
+          <div className="hidden border-t px-3 py-2 lg:block" style={{ borderColor: "color-mix(in oklab, var(--border) 45%, transparent)" }}>
+            {assistantText && (
+              <div className="flex items-center justify-between gap-3">
+                <p className="truncate text-xs" style={{ color: "var(--text-2)" }}>
+                  {assistantText}
+                </p>
+                {suggestedSection && (
+                  <button
+                    type="button"
+                    onClick={() => navigateToSection(suggestedSection)}
+                    className="shrink-0 rounded-md px-2 py-1 text-xs font-semibold"
+                    style={{ background: "color-mix(in oklab, var(--accent) 20%, transparent)", color: "var(--text-1)" }}
+                  >
+                    Ir a seccion
+                  </button>
+                )}
               </div>
+            )}
 
-              <div className="pt-3" style={{ borderTop: "1px solid color-mix(in oklab, var(--border) 40%, transparent)" }}>
-                <div className="space-y-1">
-                  {secondaryNav.map((n) => n.external ? (
-                    <a key={n.id} href={n.href} onClick={onNavClick} download={n.download ? true : undefined} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all hover:bg-white/5" style={{ color: "var(--text-2)", fontSize: "14px", opacity: 0.9 }}><span>{n.label}</span><Download size={14} className="opacity-70" /></a>
-                  ) : (
-                    <Link key={n.id} href={resolveHref(n)} onClick={onNavClick} className={`flex items-center justify-between px-4 py-2.5 rounded-lg font-medium transition-all ${isActive(n) ? "bg-black/20" : "hover:bg-white/5"}`} style={{ color: "var(--text-2)", fontSize: "14px", opacity: 0.9 }}><span>{n.label}</span></Link>
-                  ))}
-                </div>
+            {quickSuggestions.length > 0 && (
+              <div className={`flex flex-wrap gap-1.5 ${assistantText ? "mt-2" : ""}`}>
+                {quickSuggestions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setSuggestedSection(item.sectionId);
+                      setAssistantText(`Seccion recomendada: ${item.label}. ${item.hint}`);
+                      navigateToSection(item.sectionId);
+                    }}
+                    className="rounded-full border px-2 py-0.5 text-[11px]"
+                    style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", color: "var(--text-2)" }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
               </div>
+            )}
+          </div>
+        )}
+
+        {mobileOpen && (
+          <div className="border-t px-3 py-3 lg:hidden" style={{ borderColor: "color-mix(in oklab, var(--border) 45%, transparent)" }}>
+            <form onSubmit={handleAssistantSubmit} className="mb-3 flex items-center gap-2">
+              <div
+                className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-xl border px-3"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--border) 55%, transparent)",
+                  background: "color-mix(in oklab, var(--panel) 80%, transparent)",
+                }}
+              >
+                <Search size={14} className="shrink-0" style={{ color: "var(--text-2)" }} />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="w-full min-w-0 bg-transparent text-sm outline-none"
+                  style={{ color: "var(--text-1)" }}
+                  placeholder={animatedPlaceholder || PLACEHOLDER_MESSAGES_BY_LANG[lang][0]}
+                />
+              </div>
+              <button type="submit" className="h-9 rounded-lg px-3 text-xs font-semibold" style={{ background: "var(--accent)", color: "#0b1220" }}>
+                Ir
+              </button>
+            </form>
+
+            {assistantText && (
+              <p className="mb-2 text-xs" style={{ color: "var(--text-2)" }}>
+                {assistantText}
+              </p>
+            )}
+
+            <div className="grid gap-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.sectionId ? (item.sectionId === "home" ? "/#top" : `/#${item.sectionId}`) : item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-lg px-3 py-2 text-sm"
+                  style={{ color: "var(--text-1)", background: "color-mix(in oklab, var(--panel) 80%, transparent)" }}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
         )}
