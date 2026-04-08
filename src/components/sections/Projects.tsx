@@ -78,8 +78,8 @@ export default function Projects() {
       name: "Nova Store",
       tag: "E-commerce",
       desc: "Tienda online moderna con diseño minimalista y experiencia de usuario fluida",
-      link: "https://nova-store-page.vercel.app/inicio",
-      image: "https://nova-store-page.vercel.app/og-image.png",
+      link: "https://novahub-app.vercel.app/",
+      image: "https://novahub-app.vercel.app/og-image.png",
     },
     {
       name: "ITIA",
@@ -454,3 +454,4 @@ export default function Projects() {
     </Section>
   );
 }
+

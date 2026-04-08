@@ -31,6 +31,94 @@ const PLACEHOLDER_MESSAGES_BY_LANG: Record<(typeof LANGS)[number], string[]> = {
     "oeffne deine Fallstudien",
   ],
 };
+const HEADER_UI_BY_LANG: Record<
+  (typeof LANGS)[number],
+  {
+    openMenu: string;
+    search: string;
+    go: string;
+    changeLanguage: string;
+    changeTheme: string;
+    downloadCv: string;
+    goToSection: string;
+    noIntent: string;
+    recommendedSectionPrefix: string;
+    aboutHint: string;
+    projectsHint: string;
+    timelineHint: string;
+    casesHint: string;
+    openSourceHint: string;
+    blogHint: string;
+    talksHint: string;
+    usesHint: string;
+    nowHint: string;
+    contactsHint: string;
+  }
+> = {
+  es: {
+    openMenu: "Abrir menu",
+    search: "Buscar",
+    go: "Ir",
+    changeLanguage: "Cambiar idioma",
+    changeTheme: "Cambiar tema",
+    downloadCv: "Descargar CV",
+    goToSection: "Ir a seccion",
+    noIntent: "Te puedo guiar a Proyectos, Experiencia, Casos, Open Source, Blog, Charlas, Uses, Now o Contactos.",
+    recommendedSectionPrefix: "Seccion recomendada",
+    aboutHint: "Perfil profesional, enfoque y stack base.",
+    projectsHint: "Proyectos principales y estado actual.",
+    timelineHint: "Trayectoria academica y profesional.",
+    casesHint: "Problema, proceso y resultados de casos reales.",
+    openSourceHint: "Repositorios y aportes publicos.",
+    blogHint: "Notas tecnicas y aprendizajes.",
+    talksHint: "Charlas, eventos y formacion continua.",
+    usesHint: "Hardware y software de trabajo.",
+    nowHint: "En que esta trabajando actualmente.",
+    contactsHint: "Canales de contacto directo.",
+  },
+  en: {
+    openMenu: "Open menu",
+    search: "Search",
+    go: "Go",
+    changeLanguage: "Change language",
+    changeTheme: "Change theme",
+    downloadCv: "Download CV",
+    goToSection: "Go to section",
+    noIntent: "I can guide you to Projects, Experience, Case Studies, Open Source, Blog, Talks, Uses, Now or Contact.",
+    recommendedSectionPrefix: "Recommended section",
+    aboutHint: "Professional profile, focus and core stack.",
+    projectsHint: "Main projects and current status.",
+    timelineHint: "Academic and professional journey.",
+    casesHint: "Problem, process and outcomes from real cases.",
+    openSourceHint: "Repositories and public contributions.",
+    blogHint: "Technical notes and lessons learned.",
+    talksHint: "Talks, events and continuous learning.",
+    usesHint: "Work hardware and software.",
+    nowHint: "What I'm currently working on.",
+    contactsHint: "Direct contact channels.",
+  },
+  de: {
+    openMenu: "Menue oeffnen",
+    search: "Suchen",
+    go: "Los",
+    changeLanguage: "Sprache wechseln",
+    changeTheme: "Design wechseln",
+    downloadCv: "CV herunterladen",
+    goToSection: "Zum Bereich",
+    noIntent: "Ich kann dich zu Projekten, Erfahrung, Fallstudien, Open Source, Blog, Talks, Uses, Now oder Kontakt fuehren.",
+    recommendedSectionPrefix: "Empfohlener Bereich",
+    aboutHint: "Berufsprofil, Fokus und Kern-Stack.",
+    projectsHint: "Hauptprojekte und aktueller Status.",
+    timelineHint: "Akademischer und beruflicher Werdegang.",
+    casesHint: "Problem, Prozess und Ergebnisse realer Fallstudien.",
+    openSourceHint: "Repositories und oeffentliche Beitraege.",
+    blogHint: "Technische Notizen und Learnings.",
+    talksHint: "Vortraege, Events und kontinuierliches Lernen.",
+    usesHint: "Hardware und Software im Arbeitsalltag.",
+    nowHint: "Woran aktuell gearbeitet wird.",
+    contactsHint: "Direkte Kontaktkanaele.",
+  },
+};
 
 type SectionId =
   | "home"
@@ -79,6 +167,7 @@ function tokenize(input: string) {
 export default function Header() {
   const t = useT();
   const { lang, setLang } = useLang();
+  const ui = HEADER_UI_BY_LANG[lang];
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
@@ -101,11 +190,11 @@ export default function Header() {
       { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience", sectionId: "timeline" },
       { id: "cases", label: t("caseStudies") ?? "Casos", href: "/case-studies", sectionId: "cases" },
       { id: "contacts", label: t("contacts"), href: "/contacts", sectionId: "contacts" },
-      { id: "opensource", label: "Open Source", href: "/open-source", sectionId: "opensource" },
-      { id: "blog", label: "Blog", href: "/blog", sectionId: "blog" },
+      { id: "opensource", label: t("opensource_title"), href: "/open-source", sectionId: "opensource" },
+      { id: "blog", label: t("blog_title"), href: "/blog", sectionId: "blog" },
       { id: "talks", label: t("talks") ?? "Talks", href: "/talks", sectionId: "talks" },
-      { id: "uses", label: "Uses", href: "/uses", sectionId: "uses" },
-      { id: "now", label: "Now()", href: "/now", sectionId: "now" },
+      { id: "uses", label: t("uses_title"), href: "/uses", sectionId: "uses" },
+      { id: "now", label: t("now_title"), href: "/now", sectionId: "now" },
     ],
     [t]
   );
@@ -116,74 +205,74 @@ export default function Header() {
         id: "about",
         sectionId: "about",
         label: t("about"),
-        hint: "Perfil profesional, enfoque y stack base.",
+        hint: ui.aboutHint,
         keywords: ["sobre mi", "perfil", "about", "quien eres", "who are you", "resumen", "bio"],
       },
       {
         id: "projects",
         sectionId: "projects",
         label: t("projects"),
-        hint: "Proyectos principales y estado actual.",
+        hint: ui.projectsHint,
         keywords: ["proyecto", "projects", "portfolio", "trabajos", "apps", "nova", "itia", "miza"],
       },
       {
         id: "timeline",
         sectionId: "timeline",
         label: t("experience") ?? "Experiencia",
-        hint: "Trayectoria academica y profesional.",
+        hint: ui.timelineHint,
         keywords: ["experiencia", "timeline", "career", "trayectoria", "historia", "journey"],
       },
       {
         id: "cases",
         sectionId: "cases",
         label: t("caseStudies") ?? "Casos",
-        hint: "Problema, proceso y resultados de casos reales.",
+        hint: ui.casesHint,
         keywords: ["caso", "case", "estudio", "impacto", "problem", "process", "resultado"],
       },
       {
         id: "opensource",
         sectionId: "opensource",
-        label: "Open Source",
-        hint: "Repositorios y aportes publicos.",
+        label: t("opensource_title"),
+        hint: ui.openSourceHint,
         keywords: ["github", "open source", "repos", "repository", "codigo", "code"],
       },
       {
         id: "blog",
         sectionId: "blog",
-        label: "Blog",
-        hint: "Notas tecnicas y aprendizajes.",
+        label: t("blog_title"),
+        hint: ui.blogHint,
         keywords: ["blog", "articulos", "posts", "notas", "write", "aprendizaje"],
       },
       {
         id: "talks",
         sectionId: "talks",
         label: t("talks") ?? "Talks",
-        hint: "Charlas, eventos y formacion continua.",
+        hint: ui.talksHint,
         keywords: ["charlas", "talks", "eventos", "seminario", "conference", "workshop"],
       },
       {
         id: "uses",
         sectionId: "uses",
-        label: "Uses",
-        hint: "Hardware y software de trabajo.",
+        label: t("uses_title"),
+        hint: ui.usesHint,
         keywords: ["uses", "setup", "herramientas", "tools", "hardware", "software", "stack"],
       },
       {
         id: "now",
         sectionId: "now",
-        label: "Now()",
-        hint: "En que esta trabajando actualmente.",
+        label: t("now_title"),
+        hint: ui.nowHint,
         keywords: ["now", "actual", "ahora", "current", "trabajando", "roadmap"],
       },
       {
         id: "contacts",
         sectionId: "contacts",
         label: t("contacts"),
-        hint: "Canales de contacto directo.",
+        hint: ui.contactsHint,
         keywords: ["contacto", "contact", "email", "linkedin", "whatsapp", "hablar"],
       },
     ],
-    [t]
+    [t, ui]
   );
 
   useEffect(() => {
@@ -309,25 +398,13 @@ export default function Header() {
     const intent = findBestIntent(value);
 
     if (!intent) {
-      setAssistantText(
-        lang === "en"
-          ? "I can guide you to Projects, Experience, Case Studies, Open Source, Blog, Talks, Uses, Now or Contacts."
-          : lang === "de"
-          ? "Ich kann dich zu Projekten, Erfahrung, Fallstudien, Open Source, Blog, Talks, Uses, Now oder Kontakt fuehren."
-          : "Te puedo guiar a Proyectos, Experiencia, Casos, Open Source, Blog, Charlas, Uses, Now o Contactos."
-      );
+      setAssistantText(ui.noIntent);
       setSuggestedSection(null);
       return;
     }
 
     setSuggestedSection(intent.sectionId);
-    setAssistantText(
-      lang === "en"
-        ? `Recommended section: ${intent.label}. ${intent.hint}`
-        : lang === "de"
-        ? `Empfohlener Bereich: ${intent.label}. ${intent.hint}`
-        : `Seccion recomendada: ${intent.label}. ${intent.hint}`
-    );
+    setAssistantText(`${ui.recommendedSectionPrefix}: ${intent.label}. ${intent.hint}`);
 
     navigateToSection(intent.sectionId);
     setMobileOpen(false);
@@ -378,7 +455,7 @@ export default function Header() {
               onClick={() => setMobileOpen((v) => !v)}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg border lg:hidden"
               style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)" }}
-              aria-label="Abrir menu"
+              aria-label={ui.openMenu}
             >
               {mobileOpen ? <X size={16} /> : <Menu size={16} />}
             </button>
@@ -411,7 +488,7 @@ export default function Header() {
               className="h-9 rounded-lg px-3 text-xs font-semibold"
               style={{ background: "var(--accent)", color: "#0b1220" }}
             >
-              Buscar
+              {ui.search}
             </button>
           </form>
 
@@ -421,7 +498,7 @@ export default function Header() {
               onClick={cycleLang}
               className="inline-flex h-8 items-center gap-1 rounded-lg border px-2 text-xs font-semibold"
               style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)", color: "var(--text-1)" }}
-              title="Cambiar idioma"
+              title={ui.changeLanguage}
             >
               <Globe size={13} /> {lang.toUpperCase()}
             </button>
@@ -430,8 +507,8 @@ export default function Header() {
               onClick={cycleTheme}
               className="inline-flex h-8 w-8 items-center justify-center rounded-lg border"
               style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)", color: "var(--text-1)" }}
-              title="Cambiar tema"
-              aria-label="Cambiar tema"
+              title={ui.changeTheme}
+              aria-label={ui.changeTheme}
             >
               {getThemeIcon()}
             </button>
@@ -440,7 +517,7 @@ export default function Header() {
               download
               className="inline-flex h-8 items-center gap-1 rounded-lg border px-2 text-xs font-semibold"
               style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)", color: "var(--text-1)" }}
-              title="Descargar CV"
+              title={ui.downloadCv}
             >
               CV <Download size={13} />
             </a>
@@ -461,7 +538,7 @@ export default function Header() {
                     className="shrink-0 rounded-md px-2 py-1 text-xs font-semibold"
                     style={{ background: "color-mix(in oklab, var(--accent) 20%, transparent)", color: "var(--text-1)" }}
                   >
-                    Ir a seccion
+                    {ui.goToSection}
                   </button>
                 )}
               </div>
@@ -475,7 +552,7 @@ export default function Header() {
                     type="button"
                     onClick={() => {
                       setSuggestedSection(item.sectionId);
-                      setAssistantText(`Seccion recomendada: ${item.label}. ${item.hint}`);
+                      setAssistantText(`${ui.recommendedSectionPrefix}: ${item.label}. ${item.hint}`);
                       navigateToSection(item.sectionId);
                     }}
                     className="rounded-full border px-2 py-0.5 text-[11px]"
@@ -509,7 +586,7 @@ export default function Header() {
                 />
               </div>
               <button type="submit" className="h-9 rounded-lg px-3 text-xs font-semibold" style={{ background: "var(--accent)", color: "#0b1220" }}>
-                Ir
+                {ui.go}
               </button>
             </form>
 

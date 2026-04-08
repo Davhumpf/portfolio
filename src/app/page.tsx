@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { useT } from "@/context/LanguageProvider";
+import { useLang, useT } from "@/context/LanguageProvider";
 
 type Project = {
   name: string;
@@ -10,6 +10,7 @@ type Project = {
   status: string;
   description: string;
   href?: string;
+  previewUrl?: string;
   stack: string[];
 };
 
@@ -149,6 +150,114 @@ function SkillsTicker({ logos }: { logos: LogoItem[] }) {
 
 export default function Home() {
   const t = useT();
+  const { lang } = useLang();
+
+  const pageCopyByLang = {
+    es: {
+      heroDescription:
+        "Software Developer orientado a frontend, producto digital y experiencia de usuario. Construyo interfaces profesionales, rapidas y mantenibles para contextos reales.",
+      metricExperience: "Experiencia activa",
+      metricProjects: "Proyectos clave",
+      metricFocus: "Enfoque",
+      skillsTickerTitle: "Stack Tecnico y Habilidades Clave",
+      projectsIntro: "Productos con orientacion a impacto real y ejecucion tecnica consistente.",
+      openProject: "Abrir proyecto",
+      viewRepository: "Ver repositorio",
+      blogPosts: [
+        "Solucionando errores de hidratacion en Next.js con next-themes.",
+        "Animaciones GSAP sin romper layout ni accesibilidad.",
+        "Sistema de themes estable en Next.js sin flash visual.",
+        "Stack frontend 2025: decisiones tecnicas y trade-offs reales.",
+      ],
+      talks: [
+        {
+          title: "Seminario Nacional de Ingenieria de Software",
+          year: "2022",
+          focus: "Industria de software en Colombia",
+        },
+        {
+          title: "Seminario Privado de Desarrollo Cali - Bogota",
+          year: "2024",
+          focus: "Colaboracion tecnica entre equipos distribuidos",
+        },
+        {
+          title: "Desarrollo Frontend y Ciberseguridad",
+          year: "2025",
+          focus: "Buenas practicas de seguridad en aplicaciones web",
+        },
+      ],
+    },
+    en: {
+      heroDescription:
+        "Software Developer focused on frontend, digital products and user experience. I build professional, fast and maintainable interfaces for real-world contexts.",
+      metricExperience: "Active experience",
+      metricProjects: "Key projects",
+      metricFocus: "Focus",
+      skillsTickerTitle: "Technical Stack and Core Skills",
+      projectsIntro: "Products built for real impact with consistent technical execution.",
+      openProject: "Open project",
+      viewRepository: "View repository",
+      blogPosts: [
+        "Fixing Next.js hydration issues with next-themes.",
+        "GSAP animations without breaking layout or accessibility.",
+        "Stable theming system in Next.js without visual flash.",
+        "Frontend stack 2025: technical decisions and real trade-offs.",
+      ],
+      talks: [
+        {
+          title: "National Software Engineering Seminar",
+          year: "2022",
+          focus: "Software industry in Colombia",
+        },
+        {
+          title: "Private Development Seminar Cali - Bogota",
+          year: "2024",
+          focus: "Technical collaboration across distributed teams",
+        },
+        {
+          title: "Frontend Development and Cybersecurity",
+          year: "2025",
+          focus: "Web application security best practices",
+        },
+      ],
+    },
+    de: {
+      heroDescription:
+        "Softwareentwickler mit Fokus auf Frontend, digitale Produkte und User Experience. Ich entwickle professionelle, schnelle und wartbare Interfaces fuer reale Einsatzbereiche.",
+      metricExperience: "Aktive Erfahrung",
+      metricProjects: "Schluesselprojekte",
+      metricFocus: "Fokus",
+      skillsTickerTitle: "Technischer Stack und Kernkompetenzen",
+      projectsIntro: "Produkte mit Fokus auf echten Impact und konsistente technische Umsetzung.",
+      openProject: "Projekt oeffnen",
+      viewRepository: "Repository ansehen",
+      blogPosts: [
+        "Hydration-Fehler in Next.js mit next-themes beheben.",
+        "GSAP-Animationen ohne Layout- oder Accessibility-Probleme.",
+        "Stabiles Theme-System in Next.js ohne visuellen Flash.",
+        "Frontend-Stack 2025: technische Entscheidungen und reale Trade-offs.",
+      ],
+      talks: [
+        {
+          title: "Nationales Seminar fuer Software Engineering",
+          year: "2022",
+          focus: "Softwarebranche in Kolumbien",
+        },
+        {
+          title: "Privates Entwicklungsseminar Cali - Bogota",
+          year: "2024",
+          focus: "Technische Zusammenarbeit in verteilten Teams",
+        },
+        {
+          title: "Frontend-Entwicklung und Cybersicherheit",
+          year: "2025",
+          focus: "Best Practices fuer Websicherheit",
+        },
+      ],
+    },
+  } as const;
+
+  const copy = pageCopyByLang[lang];
 
   const skillLogos: LogoItem[] = [
     { name: "Angular", src: "/angular.png" },
@@ -178,27 +287,37 @@ export default function Home() {
   const projects: Project[] = [
     {
       name: "Nova Store",
-      category: "E-commerce Platform",
-      status: "En produccion",
-      description:
-        "Plataforma hibrida para venta de productos digitales y fisicos con enfoque en velocidad, experiencia de compra y operacion estable.",
-      href: "https://nova-store-page.vercel.app/inicio",
+      category: lang === "de" ? "E-Commerce Plattform" : lang === "en" ? "E-commerce Platform" : "Plataforma E-commerce",
+      status: lang === "de" ? "In Produktion" : lang === "en" ? "In production" : "En produccion",
+      description: lang === "de"
+        ? "Hybride Plattform fuer den Verkauf digitaler und physischer Produkte mit Fokus auf Geschwindigkeit, Kauferlebnis und stabilem Betrieb."
+        : lang === "en"
+        ? "Hybrid platform for selling digital and physical products with focus on speed, purchase experience and stable operations."
+        : "Plataforma hibrida para venta de productos digitales y fisicos con enfoque en velocidad, experiencia de compra y operacion estable.",
+      href: "https://novahub-app.vercel.app/",
+      previewUrl: "https://novahub-app.vercel.app/",
       stack: ["React", "Next.js", "TypeScript", "Supabase"],
     },
     {
       name: "ITIA",
-      category: "Computer Vision + IoT",
-      status: "En desarrollo",
-      description:
-        "Sistema orientado a inteligencia turistica con analisis de flujo de personas y visualizacion de datos para toma de decisiones.",
+      category: lang === "de" ? "Computer Vision + IoT" : "Computer Vision + IoT",
+      status: lang === "de" ? "In Entwicklung" : lang === "en" ? "In development" : "En desarrollo",
+      description: lang === "de"
+        ? "System fuer touristische Intelligenz mit Analyse von Personenstroemen und Datenvisualisierung fuer bessere Entscheidungen."
+        : lang === "en"
+        ? "System focused on tourism intelligence with people-flow analysis and data visualization for decision making."
+        : "Sistema orientado a inteligencia turistica con analisis de flujo de personas y visualizacion de datos para toma de decisiones.",
       stack: ["Python", "Cloud", "Vision", "Data"],
     },
     {
       name: "MIZA",
-      category: "AI Assistant",
-      status: "Concepto avanzado",
-      description:
-        "Asistente con enfoque emocional para interacciones mas naturales en experiencias de soporte digital y producto conversacional.",
+      category: lang === "de" ? "KI-Assistent" : lang === "en" ? "AI Assistant" : "Asistente IA",
+      status: lang === "de" ? "Fortgeschrittenes Konzept" : lang === "en" ? "Advanced concept" : "Concepto avanzado",
+      description: lang === "de"
+        ? "Assistent mit emotionalem Fokus fuer natuerlichere Interaktionen in digitalen Support- und Conversational-Product-Erlebnissen."
+        : lang === "en"
+        ? "Assistant with emotional focus for more natural interactions in digital support and conversational product experiences."
+        : "Asistente con enfoque emocional para interacciones mas naturales en experiencias de soporte digital y producto conversacional.",
       stack: ["AI", "UX", "Frontend", "Product"],
     },
   ];
@@ -224,23 +343,7 @@ export default function Home() {
     },
   ];
 
-  const talks = [
-    {
-      title: "Seminario Nacional de Ingenieria de Software",
-      year: "2022",
-      focus: "Industria de software en Colombia",
-    },
-    {
-      title: "Seminario Privado de Desarrollo Cali - Bogota",
-      year: "2024",
-      focus: "Colaboracion tecnica entre equipos distribuidos",
-    },
-    {
-      title: "Desarrollo Frontend y Ciberseguridad",
-      year: "2025",
-      focus: "Buenas practicas de seguridad en aplicaciones web",
-    },
-  ];
+  const talks = copy.talks;
 
   const repos = [
     { name: "nova-store-page", stack: "TypeScript / Next.js", href: "https://github.com/Davhumpf/nova-store-page" },
@@ -272,14 +375,13 @@ export default function Home() {
               David Esteban Rodriguez Rump
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-relaxed md:text-lg" style={{ color: "var(--text-2)" }}>
-              Software Developer orientado a frontend, producto digital y experiencia de usuario.
-              Construyo interfaces profesionales, rapidas y mantenibles para contextos reales.
+              {copy.heroDescription}
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <MetricCard label="Experiencia activa" value="2019 - 2026" />
-              <MetricCard label="Proyectos clave" value="10+" />
-              <MetricCard label="Enfoque" value="UI + Producto" />
+              <MetricCard label={copy.metricExperience} value="2019 - 2026" />
+              <MetricCard label={copy.metricProjects} value="10+" />
+              <MetricCard label={copy.metricFocus} value="UI + Producto" />
             </div>
 
           </div>
@@ -318,7 +420,7 @@ export default function Home() {
       >
         <div className="mb-3 flex items-center justify-center">
           <p className="text-sm font-semibold uppercase tracking-[0.16em] muted">
-            Stack Tecnico y Habilidades Clave
+            {copy.skillsTickerTitle}
           </p>
         </div>
         <SkillsTicker logos={skillLogos} />
@@ -344,7 +446,7 @@ export default function Home() {
 
         <section id="projects" className="rounded-2xl border p-6 lg:col-span-12" style={cardStyle}>
           <h2 className="text-xl font-semibold">{t("projects_title")}</h2>
-          <p className="mt-1 text-sm muted">Productos con orientacion a impacto real y ejecucion tecnica consistente.</p>
+          <p className="mt-1 text-sm muted">{copy.projectsIntro}</p>
 
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             {projects.map((project, idx) => (
@@ -369,6 +471,27 @@ export default function Home() {
                     className="h-9 w-9 rounded-md object-contain"
                   />
                 </div>
+                {project.previewUrl && (
+                  <div
+                    className="mb-4 overflow-hidden rounded-xl border"
+                    style={{
+                      borderColor: "color-mix(in oklab, var(--border) 62%, transparent)",
+                      background: "color-mix(in oklab, var(--panel) 72%, transparent)",
+                      contain: "layout paint size",
+                      isolation: "isolate",
+                      overscrollBehavior: "contain",
+                    }}
+                  >
+                    <iframe
+                      src={project.previewUrl}
+                      title={`${project.name} preview`}
+                      className="h-[260px] w-full"
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+                    />
+                  </div>
+                )}
                 <p className="text-xs font-semibold" style={{ color: "var(--accent)" }}>{project.status}</p>
                 <p className="mt-3 text-sm leading-relaxed muted">{project.description}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -382,7 +505,7 @@ export default function Home() {
                 </div>
                 {project.href && (
                   <a href={project.href} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm font-semibold" style={{ color: "var(--text-1)" }}>
-                    Abrir proyecto
+                    {copy.openProject}
                   </a>
                 )}
               </article>
@@ -410,7 +533,7 @@ export default function Home() {
         <section id="opensource" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
           <div className="mb-3 flex items-center gap-2">
             <Image src="/github.png" alt="GitHub" width={28} height={28} className="h-7 w-7 object-contain" />
-            <h2 className="text-xl font-semibold">Open Source</h2>
+            <h2 className="text-xl font-semibold">{t("opensource_title")}</h2>
           </div>
           <ul className="space-y-3">
             {repos.map((repo) => (
@@ -418,7 +541,7 @@ export default function Home() {
                 <p className="font-semibold">{repo.name}</p>
                 <p className="text-sm muted">{repo.stack}</p>
                 <a href={repo.href} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold" style={{ color: "var(--text-1)" }}>
-                  Ver repositorio
+                  {copy.viewRepository}
                 </a>
               </li>
             ))}
@@ -426,17 +549,16 @@ export default function Home() {
         </section>
 
         <section id="blog" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <h2 className="text-xl font-semibold">Blog tecnico</h2>
+          <h2 className="text-xl font-semibold">{t("blog_title")}</h2>
           <ul className="mt-4 space-y-3 text-sm">
-            <li>Solucionando errores de hidratacion en Next.js con next-themes.</li>
-            <li>Animaciones GSAP sin romper layout ni accesibilidad.</li>
-            <li>Sistema de themes estable en Next.js sin flash visual.</li>
-            <li>Stack frontend 2025: decisiones tecnicas y trade-offs reales.</li>
+            {copy.blogPosts.map((post) => (
+              <li key={post}>{post}</li>
+            ))}
           </ul>
         </section>
 
         <section id="talks" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <h2 className="text-xl font-semibold">Charlas y formacion</h2>
+          <h2 className="text-xl font-semibold">{t("talks_title")}</h2>
           <ul className="mt-4 space-y-3 text-sm">
             {talks.map((talk) => (
               <li key={talk.title} className="rounded-lg border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
@@ -449,10 +571,10 @@ export default function Home() {
         </section>
 
         <section id="uses" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <h2 className="text-xl font-semibold">Uses</h2>
+          <h2 className="text-xl font-semibold">{t("uses_title")}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="rounded-xl border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">Hardware</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">{t("uses_hardware_title")}</h3>
               <ul className="mt-2 space-y-1 text-sm">
                 <li>Acer Nitro AN515-58</li>
                 <li>Intel Core i7-12700H</li>
@@ -462,7 +584,7 @@ export default function Home() {
               </ul>
             </div>
             <div className="rounded-xl border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">Software</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">{t("uses_software_title")}</h3>
               <ul className="mt-2 space-y-1 text-sm">
                 <li>VS Code + Material Icons</li>
                 <li>Figma</li>
@@ -475,7 +597,7 @@ export default function Home() {
         </section>
 
         <section id="now" className="rounded-2xl border p-6 lg:col-span-8" style={cardStyle}>
-          <h2 className="text-xl font-semibold">Now()</h2>
+          <h2 className="text-xl font-semibold">{t("now_title")}</h2>
           <ul className="mt-4 space-y-2 text-sm leading-relaxed">
             <li>{t("now_item1")}</li>
             <li>{t("now_item2")}</li>
@@ -486,7 +608,7 @@ export default function Home() {
         </section>
 
         <section id="contacts" className="rounded-2xl border p-6 lg:col-span-4" style={cardStyle}>
-          <h2 className="text-xl font-semibold">Contacto</h2>
+          <h2 className="text-xl font-semibold">{t("contacts_title")}</h2>
           <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
             <a href="mailto:vincho0528@gmail.com" className="rounded-xl border p-3 text-center font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
               <Image src="/gmail.png" alt="Gmail" width={28} height={28} className="mx-auto mb-1 h-6 w-6 object-contain" />
