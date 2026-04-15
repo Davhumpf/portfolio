@@ -227,8 +227,8 @@ const messages: Record<Lang, Messages> = {
 
     about_title: "Sobre mi",
     about_sub: "UI & Frontend — enfoque en detalle y armonía diseño/función.",
-    about_p1: "Me gusta construir interfaces limpias, accesibles y con microinteracciones sutiles. Trabajo con React/Next, TypeScript y GSAP.",
-    about_p2: "Valoro la consistencia visual, el rendimiento y el cuidado por el usuario final. En este micro-portfolio iré agregando ejemplos y prácticas de UI.",
+    about_p1: "Trabajo como freelancer y como jefe de proyectos en FjordTech, una empresa noruega. Combino liderazgo, producto y desarrollo frontend con React/Next, TypeScript y GSAP.",
+    about_p2: "He dirigido 4 proyectos de mediana escala, cuidando la consistencia visual, el rendimiento y la experiencia final del usuario.",
 
     projects_title: "Proyectos",
     projects_sub: "Muestras rápidas — luego enlazamos a repos o demos.",
@@ -406,8 +406,8 @@ const messages: Record<Lang, Messages> = {
 
     about_title: "About me",
     about_sub: "UI & Frontend — detail-oriented, harmony between design & function.",
-    about_p1: "I build clean, accessible interfaces with subtle micro-interactions. I work with React/Next, TypeScript and GSAP.",
-    about_p2: "I care about visual consistency, performance and user delight. This micro-portfolio will grow with UI experiments.",
+    about_p1: "I work as a freelancer and as a project manager at FjordTech, a Norwegian company. I combine leadership, product thinking and frontend development with React/Next, TypeScript and GSAP.",
+    about_p2: "I have led 4 medium-scale projects, with a strong focus on visual consistency, performance and the end-user experience.",
 
     projects_title: "Projects",
     projects_sub: "Quick samples — we'll link repos/demos soon.",
@@ -585,8 +585,8 @@ const messages: Record<Lang, Messages> = {
 
     about_title: "Über mich",
     about_sub: "UI & Frontend — Fokus auf Details und Balance zwischen Design & Funktion.",
-    about_p1: "Ich baue klare, zugängliche Interfaces mit subtilen Mikro-Interaktionen. Ich arbeite mit React/Next, TypeScript und GSAP.",
-    about_p2: "Wichtig sind mir visuelle Konsistenz, Performance und Freude am Produkt. Dieses Mikro-Portfolio wächst mit UI-Experimenten.",
+    about_p1: "Ich arbeite als Freelancer und als Projektleiter bei FjordTech, einem norwegischen Unternehmen. Ich verbinde Führung, Produktdenken und Frontend-Entwicklung mit React/Next, TypeScript und GSAP.",
+    about_p2: "Ich habe 4 mittelgroße Projekte geleitet und dabei besonderen Wert auf visuelle Konsistenz, Performance und die Nutzererfahrung gelegt.",
 
     projects_title: "Projekte",
     projects_sub: "Schnelle Beispiele — Repos/Demos folgen.",

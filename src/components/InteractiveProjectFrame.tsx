@@ -59,13 +59,13 @@ export default function InteractiveProjectFrame({
       }}
     >
       <div
-        className="flex items-center justify-between gap-3 border-b px-3 py-2"
+        className="flex flex-wrap items-center justify-between gap-3 border-b px-3 py-2"
         style={{
           borderColor: "color-mix(in oklab, var(--border) 58%, transparent)",
           background: "color-mix(in oklab, var(--panel) 92%, transparent)",
         }}
       >
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <div className="flex items-center gap-1.5" aria-hidden>
             <span className="h-2.5 w-2.5 rounded-full bg-[#fb7185]" />
             <span className="h-2.5 w-2.5 rounded-full bg-[#fbbf24]" />
@@ -82,7 +82,7 @@ export default function InteractiveProjectFrame({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center justify-end gap-2 sm:w-auto">
           <button
             type="button"
             onClick={refreshFrame}

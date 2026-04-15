@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useLang, useT } from "@/context/LanguageProvider";
-import { Download, Globe, Menu, Monitor, Moon, Search, Sun, X } from "lucide-react";
+import { Download, Globe, Monitor, Moon, Search, Sun } from "lucide-react";
 
 const LANGS = ["es", "en", "de"] as const;
 const PLACEHOLDER_MESSAGES_BY_LANG: Record<(typeof LANGS)[number], string[]> = {
@@ -175,15 +175,6 @@ type SectionId =
   | "uses"
   | "now";
 
-type NavItem = {
-  id: string;
-  label: string;
-  href: string;
-  sectionId?: SectionId;
-  external?: boolean;
-  download?: boolean;
-};
-
 type Intent = {
   id: string;
   sectionId: SectionId;
@@ -215,7 +206,6 @@ export default function Header() {
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [assistantText, setAssistantText] = useState("");
   const [suggestedSection, setSuggestedSection] = useState<SectionId | null>(null);
@@ -223,23 +213,6 @@ export default function Header() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => setMounted(true), []);
-
-  const navItems = useMemo<NavItem[]>(
-    () => [
-      { id: "home", label: t("nav_home"), href: "/", sectionId: "home" },
-      { id: "about", label: t("about"), href: "/about", sectionId: "about" },
-      { id: "projects", label: t("projects"), href: "/projects", sectionId: "projects" },
-      { id: "timeline", label: t("experience") ?? "Experiencia", href: "/experience", sectionId: "timeline" },
-      { id: "cases", label: t("caseStudies") ?? "Casos", href: "/case-studies", sectionId: "cases" },
-      { id: "contacts", label: t("contacts"), href: "/contacts", sectionId: "contacts" },
-      { id: "opensource", label: t("opensource_title"), href: "/open-source", sectionId: "opensource" },
-      { id: "blog", label: t("blog_title"), href: "/blog", sectionId: "blog" },
-      { id: "talks", label: t("talks") ?? "Talks", href: "/talks", sectionId: "talks" },
-      { id: "uses", label: t("uses_title"), href: "/uses", sectionId: "uses" },
-      { id: "now", label: t("now_title"), href: "/now", sectionId: "now" },
-    ],
-    [t]
-  );
 
   const intents = useMemo<Intent[]>(
     () => [
@@ -362,6 +335,12 @@ export default function Header() {
     return () => window.clearTimeout(timeoutId);
   }, [lang]);
 
+  useEffect(() => {
+    if (query.trim()) return;
+    setAssistantText("");
+    setSuggestedSection(null);
+  }, [query]);
+
   const navigateToSection = (sectionId: SectionId) => {
     if (pathname === "/") {
       const target = sectionId === "home" ? document.getElementById("top") : document.getElementById(sectionId);
@@ -449,7 +428,12 @@ export default function Header() {
     setAssistantText(`${ui.recommendedSectionPrefix}: ${intent.label}. ${intent.hint}`);
 
     navigateToSection(intent.sectionId);
-    setMobileOpen(false);
+  };
+
+  const handleQueryBlur = () => {
+    if (query.trim()) return;
+    setAssistantText("");
+    setSuggestedSection(null);
   };
 
   const cycleLang = () => {
@@ -481,7 +465,7 @@ export default function Header() {
   }, [intents, query]);
 
   return (
-    <header className="fixed top-3 left-1/2 z-[9999] w-full max-w-[1240px] -translate-x-1/2 px-3">
+    <header className="fixed top-2 left-1/2 z-[9999] w-full max-w-[1240px] -translate-x-1/2 px-3 sm:top-2.5">
       <div
         className="rounded-2xl border backdrop-blur-xl"
         style={{
@@ -490,18 +474,8 @@ export default function Header() {
           boxShadow: "var(--shadow-sm)",
         }}
       >
-        <div className="flex min-h-[56px] items-center gap-2 px-3 py-2 md:px-4">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setMobileOpen((v) => !v)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border lg:hidden"
-              style={{ borderColor: "color-mix(in oklab, var(--border) 55%, transparent)" }}
-              aria-label={ui.openMenu}
-            >
-              {mobileOpen ? <X size={16} /> : <Menu size={16} />}
-            </button>
-
+        <div className="flex min-h-[56px] flex-wrap items-center gap-2 px-3 py-2 md:px-4">
+          <div className="hidden items-center gap-2 lg:flex">
             <Link href="#top" className="rounded-md px-2 py-1 text-sm font-semibold" style={{ color: "var(--text-1)" }}>
               David
             </Link>
@@ -520,6 +494,7 @@ export default function Header() {
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onBlur={handleQueryBlur}
                 className="w-full min-w-0 bg-transparent text-sm outline-none"
                 style={{ color: "var(--text-1)" }}
                 placeholder={animatedPlaceholder || PLACEHOLDER_MESSAGES_BY_LANG[lang][0]}
@@ -531,6 +506,29 @@ export default function Header() {
               style={{ background: "var(--accent)", color: "#0b1220" }}
             >
               {ui.search}
+            </button>
+          </form>
+
+          <form onSubmit={handleAssistantSubmit} className="flex min-w-0 flex-1 items-center gap-2 lg:hidden">
+            <div
+              className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-xl border px-3"
+              style={{
+                borderColor: "color-mix(in oklab, var(--border) 55%, transparent)",
+                background: "color-mix(in oklab, var(--panel) 80%, transparent)",
+              }}
+            >
+              <Search size={14} className="shrink-0" style={{ color: "var(--text-2)" }} />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onBlur={handleQueryBlur}
+                className="w-full min-w-0 bg-transparent text-sm outline-none"
+                style={{ color: "var(--text-1)" }}
+                placeholder={animatedPlaceholder || PLACEHOLDER_MESSAGES_BY_LANG[lang][0]}
+              />
+            </div>
+            <button type="submit" className="h-9 rounded-lg px-3 text-xs font-semibold" style={{ background: "var(--accent)", color: "#0b1220" }}>
+              {ui.go}
             </button>
           </form>
 
@@ -564,6 +562,12 @@ export default function Header() {
               CV <Download size={13} />
             </a>
           </div>
+
+          {assistantText && (
+            <p className="w-full text-xs lg:hidden" style={{ color: "var(--text-2)" }}>
+              {assistantText}
+            </p>
+          )}
         </div>
 
         {(assistantText || quickSuggestions.length > 0) && (
@@ -605,52 +609,6 @@ export default function Header() {
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {mobileOpen && (
-          <div className="border-t px-3 py-3 lg:hidden" style={{ borderColor: "color-mix(in oklab, var(--border) 45%, transparent)" }}>
-            <form onSubmit={handleAssistantSubmit} className="mb-3 flex items-center gap-2">
-              <div
-                className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-xl border px-3"
-                style={{
-                  borderColor: "color-mix(in oklab, var(--border) 55%, transparent)",
-                  background: "color-mix(in oklab, var(--panel) 80%, transparent)",
-                }}
-              >
-                <Search size={14} className="shrink-0" style={{ color: "var(--text-2)" }} />
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  className="w-full min-w-0 bg-transparent text-sm outline-none"
-                  style={{ color: "var(--text-1)" }}
-                  placeholder={animatedPlaceholder || PLACEHOLDER_MESSAGES_BY_LANG[lang][0]}
-                />
-              </div>
-              <button type="submit" className="h-9 rounded-lg px-3 text-xs font-semibold" style={{ background: "var(--accent)", color: "#0b1220" }}>
-                {ui.go}
-              </button>
-            </form>
-
-            {assistantText && (
-              <p className="mb-2 text-xs" style={{ color: "var(--text-2)" }}>
-                {assistantText}
-              </p>
-            )}
-
-            <div className="grid gap-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.sectionId ? (item.sectionId === "home" ? "/#top" : `/#${item.sectionId}`) : item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-2 text-sm"
-                  style={{ color: "var(--text-1)", background: "color-mix(in oklab, var(--panel) 80%, transparent)" }}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
           </div>
         )}
       </div>

@@ -13,6 +13,7 @@ import {
   Github,
   Lightbulb,
   Mail,
+  MessageSquareQuote,
   Radio,
   UserRound,
   Wrench,
@@ -46,6 +47,7 @@ const HOME_SECTION_ICONS: Record<string, LucideIcon> = {
   timeline: Clock3,
   projects: FolderKanban,
   cases: BriefcaseBusiness,
+  testimonials: MessageSquareQuote,
   opensource: Github,
   blog: BookOpen,
   talks: Radio,
@@ -58,9 +60,9 @@ function SectionHeading({ sectionId, title }: { sectionId: keyof typeof HOME_SEC
   const Icon = HOME_SECTION_ICONS[sectionId];
 
   return (
-    <div className="inline-flex items-center gap-2.5">
+    <div className="inline-flex max-w-full items-center gap-2.5">
       <span
-        className="section-accent-badge inline-flex h-9 w-9 items-center justify-center rounded-xl border"
+        className="section-accent-badge inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border sm:h-9 sm:w-9"
         style={{
           color: "#c084fc",
           borderColor: "color-mix(in oklab, #c084fc 42%, var(--border))",
@@ -71,10 +73,10 @@ function SectionHeading({ sectionId, title }: { sectionId: keyof typeof HOME_SEC
       >
         <Icon size={17} strokeWidth={2.1} />
       </span>
-      <span className="section-accent-trigger section-accent-textwrap">
+      <span className="section-accent-trigger section-accent-textwrap min-w-0">
         <WaveTitle
           text={title}
-          className="section-accent-title text-xl font-semibold tracking-[-0.01em]"
+          className="section-accent-title text-lg font-semibold tracking-[-0.01em] sm:text-xl"
         />
         <span className="section-accent-underline" aria-hidden />
       </span>
@@ -211,13 +213,20 @@ export default function Home() {
   const pageCopyByLang = {
     es: {
       heroDescription:
-        "Software Developer orientado a frontend, producto digital y experiencia de usuario. Construyo interfaces profesionales, rapidas y mantenibles para contextos reales.",
+        "Software Developer freelancer y jefe de proyectos en FjordTech, empresa noruega orientada a soluciones digitales, con enfoque en frontend, producto digital y experiencia de usuario.",
       metricExperience: "Experiencia activa",
       metricProjects: "Proyectos clave",
       metricFocus: "Enfoque",
       metricFocusValue: "UI + Producto",
       profileAlt: "Foto de perfil de David",
       skillsTickerTitle: "Stack Tecnico y Habilidades Clave",
+      testimonialsTitle: "Testimonios",
+      testimonialsIntro: "Referencias profesionales de personas con las que he trabajado de cerca.",
+      testimonialQuoteNo:
+        "I løpet av disse 3 årene har David vært en fremragende medarbeider og en pålitelig leder. Hans engasjement, dømmekraft og evne til å lede prosjekter har gjort ham til en nøkkelperson i teamet.",
+      testimonialQuoteEs:
+        "Durante estos 3 años trabajando conmigo, David ha sido un empleado destacado y un líder de confianza. Su compromiso, criterio y capacidad para liderar proyectos lo han convertido en una pieza clave dentro del equipo.",
+      testimonialAuthorRole: "Jefe directo en FjordTech",
       projectsIntro: "Productos con orientacion a impacto real y ejecucion tecnica consistente.",
       openProject: "Abrir proyecto",
       reloadPreview: "Recargar preview",
@@ -242,13 +251,20 @@ export default function Home() {
     },
     en: {
       heroDescription:
-        "Software Developer focused on frontend, digital products and user experience. I build professional, fast and maintainable interfaces for real-world contexts.",
+        "Freelance Software Developer and project manager at FjordTech, a Norwegian company focused on digital solutions, with a strong focus on frontend, digital products and user experience.",
       metricExperience: "Active experience",
       metricProjects: "Key projects",
       metricFocus: "Focus",
       metricFocusValue: "UI + Product",
       profileAlt: "David profile photo",
       skillsTickerTitle: "Technical Stack and Core Skills",
+      testimonialsTitle: "Testimonials",
+      testimonialsIntro: "Professional references from people I have worked closely with.",
+      testimonialQuoteNo:
+        "I løpet av disse 3 årene har David vært en fremragende medarbeider og en pålitelig leder. Hans engasjement, dømmekraft og evne til å lede prosjekter har gjort ham til en nøkkelperson i teamet.",
+      testimonialQuoteEs:
+        "Over these 3 years working with me, David has been an outstanding employee and a trusted leader. His commitment, judgment and ability to lead projects have made him a key part of the team.",
+      testimonialAuthorRole: "Direct manager at FjordTech",
       projectsIntro: "Products built for real impact with consistent technical execution.",
       openProject: "Open project",
       reloadPreview: "Reload preview",
@@ -273,13 +289,20 @@ export default function Home() {
     },
     de: {
       heroDescription:
-        "Softwareentwickler mit Fokus auf Frontend, digitale Produkte und User Experience. Ich entwickle professionelle, schnelle und wartbare Interfaces fuer reale Einsatzbereiche.",
+        "Freiberuflicher Softwareentwickler und Projektleiter bei FjordTech, einem norwegischen Unternehmen fuer digitale Loesungen, mit Fokus auf Frontend, digitale Produkte und User Experience.",
       metricExperience: "Aktive Erfahrung",
       metricProjects: "Schluesselprojekte",
       metricFocus: "Fokus",
       metricFocusValue: "UI + Produkt",
       profileAlt: "Profilfoto von David",
       skillsTickerTitle: "Technischer Stack und Kernkompetenzen",
+      testimonialsTitle: "Testimonials",
+      testimonialsIntro: "Berufliche Referenzen von Menschen, mit denen ich eng zusammengearbeitet habe.",
+      testimonialQuoteNo:
+        "I løpet av disse 3 årene har David vært en fremragende medarbeider og en pålitelig leder. Hans engasjement, dømmekraft og evne til å lede prosjekter har gjort ham til en nøkkelperson i teamet.",
+      testimonialQuoteEs:
+        "Waehrend dieser 3 Jahre der Zusammenarbeit mit mir war David ein herausragender Mitarbeiter und eine vertrauensvolle Fuehrungskraft. Sein Engagement, sein Urteilsvermoegen und seine Faehigkeit, Projekte zu leiten, haben ihn zu einem wichtigen Teil des Teams gemacht.",
+      testimonialAuthorRole: "Direkter Vorgesetzter bei FjordTech",
       projectsIntro: "Produkte mit Fokus auf echten Impact und konsistente technische Umsetzung.",
       openProject: "Projekt oeffnen",
       reloadPreview: "Vorschau neu laden",
@@ -378,10 +401,10 @@ export default function Home() {
   } as const;
 
   return (
-    <div className="mx-auto w-full max-w-[1220px] px-4 pb-16">
+    <div className="mx-auto w-full max-w-[1220px] px-3 pb-12 pt-4 sm:px-4 sm:pb-16 sm:pt-5 lg:pt-6">
       <section
         id="home"
-        className="relative overflow-hidden rounded-3xl border p-6 md:p-8 lg:p-10"
+        className="relative overflow-hidden rounded-[28px] border p-5 sm:p-6 md:p-8 lg:p-10"
         style={{
           ...cardStyle,
           boxShadow: "var(--shadow-md)",
@@ -389,12 +412,12 @@ export default function Home() {
             "radial-gradient(620px 340px at 88% -20%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 65%), radial-gradient(540px 280px at 10% 120%, color-mix(in oklab, var(--accent-2) 20%, transparent), transparent 70%)",
         }}
       >
-        <div className="grid gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:items-center">
-          <div>
-            <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl" style={{ color: "var(--text-1)" }}>
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] lg:items-center">
+          <div className="order-2 lg:order-1">
+            <h1 className="mt-1 max-w-[14ch] text-3xl font-semibold leading-[1.05] sm:mt-3 sm:text-4xl md:text-5xl" style={{ color: "var(--text-1)" }}>
               David Esteban Rodriguez Rump
             </h1>
-            <p className="mt-4 max-w-3xl text-base leading-relaxed md:text-lg" style={{ color: "var(--text-2)" }}>
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed sm:text-base md:text-lg" style={{ color: "var(--text-2)" }}>
               {copy.heroDescription}
             </p>
 
@@ -405,12 +428,12 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mx-auto w-full max-w-[340px]">
+          <div className="order-1 mx-auto w-full max-w-[260px] sm:max-w-[300px] lg:order-2 lg:max-w-[340px]">
             <div
               className="mx-auto relative overflow-hidden rounded-full border"
               style={{
-                width: "clamp(228px, 32vw, 348px)",
-                height: "clamp(228px, 32vw, 348px)",
+                width: "clamp(210px, 58vw, 348px)",
+                height: "clamp(210px, 58vw, 348px)",
                 borderColor: "color-mix(in oklab, var(--accent) 36%, var(--border))",
                 boxShadow: "0 14px 30px color-mix(in oklab, var(--accent) 16%, transparent)",
               }}
@@ -423,7 +446,7 @@ export default function Home() {
 
       <section
         id="skills"
-        className="mt-5 rounded-2xl border p-4"
+        className="mt-5 rounded-2xl border p-4 sm:p-5"
         style={{
           ...cardStyle,
           boxShadow: "var(--shadow-sm)",
@@ -437,16 +460,16 @@ export default function Home() {
         <SkillsTicker logos={skillLogos} />
       </section>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-12">
-        <section id="about" className="rounded-2xl border p-6 lg:col-span-7" style={cardStyle}>
+      <div className="mt-6 grid gap-4 sm:gap-5 lg:grid-cols-12 lg:gap-6">
+        <section id="about" className="rounded-2xl border p-5 sm:p-6 lg:col-span-7" style={cardStyle}>
           <SectionHeading sectionId="about" title={t("about_title")} />
-          <p className="mt-3 leading-relaxed muted">{t("about_p1")}</p>
-          <p className="mt-3 leading-relaxed muted">{t("about_p2")}</p>
+          <p className="mt-3 text-sm leading-relaxed sm:text-base muted">{t("about_p1")}</p>
+          <p className="mt-3 text-sm leading-relaxed sm:text-base muted">{t("about_p2")}</p>
         </section>
 
-        <section id="timeline" className="rounded-2xl border p-6 lg:col-span-5" style={cardStyle}>
+        <section id="timeline" className="rounded-2xl border p-5 sm:p-6 lg:col-span-5" style={cardStyle}>
           <SectionHeading sectionId="timeline" title={t("timeline_title")} />
-          <ul className="mt-4 space-y-3 text-sm">
+          <ul className="mt-4 space-y-3 text-sm leading-relaxed sm:text-[15px]">
             <li><strong>2019:</strong> {t("timeline_event1_title")}</li>
             <li><strong>2021:</strong> {t("timeline_event3_title")}</li>
             <li><strong>2023:</strong> {t("timeline_event5_title")}</li>
@@ -455,24 +478,52 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="projects" className="rounded-2xl border p-6 lg:col-span-12" style={cardStyle}>
+        <section id="testimonials" className="rounded-2xl border p-5 sm:p-6 lg:col-span-12" style={cardStyle}>
+          <SectionHeading sectionId="testimonials" title={copy.testimonialsTitle} />
+          <p className="mt-1 text-sm muted">{copy.testimonialsIntro}</p>
+
+          <article
+            className="mt-5 rounded-2xl border p-4 sm:p-5"
+            style={{
+              borderColor: "color-mix(in oklab, var(--accent) 24%, var(--border))",
+              background: "linear-gradient(135deg, color-mix(in oklab, var(--panel) 92%, white 8%), color-mix(in oklab, var(--panel) 84%, var(--accent) 8%))",
+              boxShadow: "var(--shadow-sm)",
+            }}
+          >
+            <p className="text-[15px] leading-relaxed sm:text-base" style={{ color: "var(--text-1)" }}>
+              "{copy.testimonialQuoteNo}"
+            </p>
+            <p
+              className="mt-3 text-sm leading-relaxed sm:text-[15px]"
+              style={{ color: "color-mix(in oklab, var(--text-1) 68%, white)" }}
+            >
+              {copy.testimonialQuoteEs}
+            </p>
+            <div className="mt-5 border-t pt-4" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
+              <p className="font-semibold">Xavier Johansen</p>
+              <p className="text-sm muted">{copy.testimonialAuthorRole}</p>
+            </div>
+          </article>
+        </section>
+
+        <section id="projects" className="rounded-2xl border p-5 sm:p-6 lg:col-span-12" style={cardStyle}>
           <SectionHeading sectionId="projects" title={t("projects_title")} />
           <p className="mt-1 text-sm muted">{copy.projectsIntro}</p>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((project, idx) => (
-              <article key={project.name} className="rounded-2xl border p-4" style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", background: "color-mix(in oklab, var(--panel) 82%, transparent)" }}>
-                <div className="mb-4 flex items-center justify-between gap-3">
-                  <div>
+              <article key={project.name} className="rounded-2xl border p-4 sm:p-5" style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", background: "color-mix(in oklab, var(--panel) 82%, transparent)" }}>
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div className="min-w-0">
                     <p className="text-xs uppercase tracking-[0.14em] muted">{project.category}</p>
-                    <h3 className="mt-1 text-lg font-semibold">{project.name}</h3>
+                    <h3 className="mt-1 text-lg font-semibold sm:text-xl">{project.name}</h3>
                   </div>
-                  <Image src={idx === 0 ? "/nextjs.png" : idx === 1 ? "/python.png" : "/javascript.png"} alt={`${project.name} icon`} width={36} height={36} className="h-9 w-9 rounded-md object-contain" />
+                  <Image src={idx === 0 ? "/nextjs.png" : idx === 1 ? "/python.png" : "/javascript.png"} alt={`${project.name} icon`} width={36} height={36} className="h-9 w-9 shrink-0 rounded-md object-contain" />
                 </div>
                 {project.previewUrl && (
                   <InteractiveProjectFrame
                     className="mb-4"
-                    heightClassName="h-[260px]"
+                    heightClassName="h-[220px] sm:h-[250px] lg:h-[260px]"
                     url={project.previewUrl}
                     title={project.name}
                     openLabel={copy.openProject}
@@ -502,21 +553,21 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="cases" className="rounded-2xl border p-6 lg:col-span-12" style={cardStyle}>
+        <section id="cases" className="rounded-2xl border p-5 sm:p-6 lg:col-span-12" style={cardStyle}>
           <SectionHeading sectionId="cases" title={t("cases_title")} />
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {caseStudies.map((cs) => (
-              <article key={cs.title} className="rounded-xl border p-4" style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", background: "color-mix(in oklab, var(--panel) 82%, transparent)" }}>
-                <h3 className="text-base font-semibold">{cs.title}</h3>
-                <p className="mt-3 text-sm"><strong>{t("cases_problem_label")}:</strong> {cs.problem}</p>
-                <p className="mt-3 text-sm"><strong>{t("cases_process_label")}:</strong> {cs.process}</p>
-                <p className="mt-3 text-sm"><strong>{t("cases_impact_label")}:</strong> {cs.impact}</p>
+              <article key={cs.title} className="rounded-xl border p-4 sm:p-5" style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", background: "color-mix(in oklab, var(--panel) 82%, transparent)" }}>
+                <h3 className="text-base font-semibold sm:text-lg">{cs.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed"><strong>{t("cases_problem_label")}:</strong> {cs.problem}</p>
+                <p className="mt-3 text-sm leading-relaxed"><strong>{t("cases_process_label")}:</strong> {cs.process}</p>
+                <p className="mt-3 text-sm leading-relaxed"><strong>{t("cases_impact_label")}:</strong> {cs.impact}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section id="opensource" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
+        <section id="opensource" className="rounded-2xl border p-5 sm:p-6 lg:col-span-6" style={cardStyle}>
           <div className="mb-3">
             <SectionHeading sectionId="opensource" title={t("opensource_title")} />
           </div>
@@ -533,16 +584,16 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="blog" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
+        <section id="blog" className="rounded-2xl border p-5 sm:p-6 lg:col-span-6" style={cardStyle}>
           <SectionHeading sectionId="blog" title={t("blog_title")} />
-          <ul className="mt-4 space-y-3 text-sm">
+          <ul className="mt-4 space-y-3 text-sm leading-relaxed">
             {copy.blogPosts.map((post) => (
               <li key={post}>{post}</li>
             ))}
           </ul>
         </section>
 
-        <section id="talks" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
+        <section id="talks" className="rounded-2xl border p-5 sm:p-6 lg:col-span-6" style={cardStyle}>
           <SectionHeading sectionId="talks" title={t("talks_title")} />
           <ul className="mt-4 space-y-3 text-sm">
             {talks.map((talk) => (
@@ -555,9 +606,9 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="uses" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
+        <section id="uses" className="rounded-2xl border p-5 sm:p-6 lg:col-span-6" style={cardStyle}>
           <SectionHeading sectionId="uses" title={t("uses_title")} />
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
               <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">{t("uses_hardware_title")}</h3>
               <ul className="mt-2 space-y-1 text-sm">
@@ -577,7 +628,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="now" className="rounded-2xl border p-6 lg:col-span-8" style={cardStyle}>
+        <section id="now" className="rounded-2xl border p-5 sm:p-6 lg:col-span-8" style={cardStyle}>
           <SectionHeading sectionId="now" title={t("now_title")} />
           <ul className="mt-4 space-y-2 text-sm leading-relaxed">
             <li>{t("now_item1")}</li>
@@ -588,28 +639,95 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="contacts" className="rounded-2xl border p-6 lg:col-span-4" style={cardStyle}>
+        <section id="contacts" className="rounded-2xl border p-5 sm:p-6 lg:col-span-4" style={cardStyle}>
           <SectionHeading sectionId="contacts" title={t("contacts_title")} />
-          <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-            <a href="mailto:vincho0528@gmail.com" className="rounded-xl border p-3 text-center font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
-              <Image src="/gmail.png" alt="Gmail" width={28} height={28} className="mx-auto mb-1 h-6 w-6 object-contain" />
-              Gmail
+          <div className="mt-4 grid grid-cols-2 place-items-center gap-4 sm:gap-5">
+            <a
+              href="mailto:vincho0528@gmail.com"
+              aria-label="Gmail"
+              className="group flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full transition-all duration-300 sm:h-20 sm:w-20"
+              style={{
+                background: "color-mix(in oklab, var(--panel) 72%, white)",
+                boxShadow: "0 10px 24px color-mix(in oklab, var(--text-1) 10%, transparent)",
+              }}
+            >
+              <div
+                className="flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+              >
+                <Image src="/gmail.png" alt="Gmail" width={32} height={32} className="h-7 w-7 object-contain transition-all duration-300 group-hover:blur-[0.4px] sm:h-8 sm:w-8" />
+              </div>
             </a>
-            <a href="https://www.linkedin.com/in/david-esteban-rodriguez-rhumpf-689507301" target="_blank" rel="noopener noreferrer" className="rounded-xl border p-3 text-center font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
-              <Image src="/linkedin.png" alt="LinkedIn" width={28} height={28} className="mx-auto mb-1 h-6 w-6 object-contain" />
-              LinkedIn
+            <a
+              href="https://www.linkedin.com/in/david-esteban-rodriguez-rhumpf-689507301"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="group flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full transition-all duration-300 sm:h-20 sm:w-20"
+              style={{
+                background: "color-mix(in oklab, var(--panel) 72%, white)",
+                boxShadow: "0 10px 24px color-mix(in oklab, var(--text-1) 10%, transparent)",
+              }}
+            >
+              <div
+                className="flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+              >
+                <Image src="/linkedin.png" alt="LinkedIn" width={32} height={32} className="h-7 w-7 object-contain transition-all duration-300 group-hover:blur-[0.4px] sm:h-8 sm:w-8" />
+              </div>
             </a>
-            <a href="https://github.com/Davhumpf" target="_blank" rel="noopener noreferrer" className="rounded-xl border p-3 text-center font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
-              <Image src="/github.png" alt="GitHub" width={28} height={28} className="mx-auto mb-1 h-6 w-6 object-contain" />
-              GitHub
+            <a
+              href="https://github.com/Davhumpf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="group flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full transition-all duration-300 sm:h-20 sm:w-20"
+              style={{
+                background: "color-mix(in oklab, var(--panel) 72%, white)",
+                boxShadow: "0 10px 24px color-mix(in oklab, var(--text-1) 10%, transparent)",
+              }}
+            >
+              <div
+                className="flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+              >
+                <Image src="/github.png" alt="GitHub" width={32} height={32} className="h-7 w-7 object-contain transition-all duration-300 group-hover:blur-[0.4px] sm:h-8 sm:w-8" />
+              </div>
             </a>
-            <a href="https://wa.me/573188656961" target="_blank" rel="noopener noreferrer" className="rounded-xl border p-3 text-center font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
-              <Image src="/whatsapp.png" alt="WhatsApp" width={28} height={28} className="mx-auto mb-1 h-6 w-6 object-contain" />
-              WhatsApp
+            <a
+              href="https://wa.me/573188656961"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="group flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full transition-all duration-300 sm:h-20 sm:w-20"
+              style={{
+                background: "color-mix(in oklab, var(--panel) 72%, white)",
+                boxShadow: "0 10px 24px color-mix(in oklab, var(--text-1) 10%, transparent)",
+              }}
+            >
+              <div
+                className="flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+              >
+                <Image src="/whatsapp.png" alt="WhatsApp" width={32} height={32} className="h-7 w-7 object-contain transition-all duration-300 group-hover:blur-[0.4px] sm:h-8 sm:w-8" />
+              </div>
             </a>
           </div>
         </section>
       </div>
+      <footer className="pb-4 pt-8 sm:pb-6">
+        <div
+          className="mx-auto max-w-xl rounded-2xl border px-4 py-4 text-center sm:px-6"
+          style={{
+            borderColor: "color-mix(in oklab, var(--border) 62%, transparent)",
+            background: "color-mix(in oklab, var(--panel) 82%, transparent)",
+            boxShadow: "var(--shadow-sm)",
+          }}
+        >
+          <p
+            className="text-sm font-medium"
+            style={{ color: "color-mix(in oklab, var(--text-1) 78%, white)" }}
+          >
+            Designed <span style={{ color: "#ef4444" }}>❤</span> by Davhumpf
+          </p>
+        </div>
+      </footer>
       <style jsx>{``}</style>
     </div>
   );
@@ -624,8 +742,8 @@ function MetricCard({ label, value }: { label: string; value: string }) {
         background: "color-mix(in oklab, var(--panel) 76%, transparent)",
       }}
     >
-      <p className="text-xs uppercase tracking-[0.12em] muted">{label}</p>
-      <p className="mt-1 text-sm font-semibold" style={{ color: "var(--text-1)" }}>{value}</p>
+      <p className="text-[11px] uppercase tracking-[0.12em] muted sm:text-xs">{label}</p>
+      <p className="mt-1 text-sm font-semibold sm:text-[15px]" style={{ color: "var(--text-1)" }}>{value}</p>
     </div>
   );
 }
