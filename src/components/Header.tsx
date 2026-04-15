@@ -502,10 +502,15 @@ export default function Header() {
             </div>
             <button
               type="submit"
-              className="h-9 rounded-lg px-3 text-xs font-semibold"
-              style={{ background: "var(--accent)", color: "#0b1220" }}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border"
+              style={{
+                borderColor: "color-mix(in oklab, #c084fc 42%, var(--border))",
+                background: "linear-gradient(135deg, rgba(192, 132, 252, 0.18), rgba(168, 85, 247, 0.08))",
+                color: "#c084fc",
+              }}
+              aria-label={ui.search}
             >
-              {ui.search}
+              <Search size={16} strokeWidth={2.2} />
             </button>
           </form>
 
@@ -527,8 +532,17 @@ export default function Header() {
                 placeholder={animatedPlaceholder || PLACEHOLDER_MESSAGES_BY_LANG[lang][0]}
               />
             </div>
-            <button type="submit" className="h-9 rounded-lg px-3 text-xs font-semibold" style={{ background: "var(--accent)", color: "#0b1220" }}>
-              {ui.go}
+            <button
+              type="submit"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border"
+              style={{
+                borderColor: "color-mix(in oklab, #c084fc 42%, var(--border))",
+                background: "linear-gradient(135deg, rgba(192, 132, 252, 0.18), rgba(168, 85, 247, 0.08))",
+                color: "#c084fc",
+              }}
+              aria-label={ui.go}
+            >
+              <Search size={16} strokeWidth={2.2} />
             </button>
           </form>
 
