@@ -221,7 +221,7 @@ const messages: Record<Lang, Messages> = {
     hero_intro_alias_line2: "pero puedes llamarme David.",
     hero_intro_guide:
       "Guía rápida: En el header encontrarás Sobre mí, Proyectos, Experiencia, Casos y Contactos.\n" +
-      "En “Más” tienes Open Source, Blog, Charlas, Uses y Now().\n" +
+      "En “Más” tienes Código abierto, Blog, Charlas, Setup y Ahora.\n" +
       "También puedes cambiar idioma y apariencia.",
     hero_intro_skip: "Saltar intro (ESC)",
 
@@ -323,7 +323,7 @@ const messages: Record<Lang, Messages> = {
     talks_item2_desc: "taller 90' (repo público).",
 
     // Uses
-    uses_title: "Uses",
+    uses_title: "Setup",
     uses_subtitle: "Mi setup de trabajo.",
     uses_hardware_title: "Hardware",
     uses_hardware_item1: "ThinkPad + 32GB RAM",
@@ -333,7 +333,7 @@ const messages: Record<Lang, Messages> = {
     uses_software_item2: "Figma, Raycast",
 
     // Now
-    now_title: "Now()",
+    now_title: "Ahora",
     now_subtitle: "Qué hago este mes.",
     now_item1: "Refactorizando mi sistema de componentes hacia una arquitectura más limpia, escalable y basada en slots.",
     now_item2: "Mejorando animaciones de entrada, interacción y scroll con GSAP, equilibrando fluidez, rendimiento y accesibilidad.",
@@ -374,7 +374,7 @@ const messages: Record<Lang, Messages> = {
     case6_impact: "Logré una experiencia de usuario fluida, viva y memorable, alineada con mi identidad como desarrollador de interfaces interactivas.",
 
     // Open Source
-    opensource_title: "Open Source",
+    opensource_title: "Código abierto",
     opensource_subtitle: "PRs, issues y paquetes publicados.",
     opensource_item1: "Contribución a awesome-animations — ejemplo GSAP/ARIA.",
     opensource_item2: "Paquete @dreamincode/use-keypress — hook de accesibilidad.",
@@ -579,7 +579,7 @@ const messages: Record<Lang, Messages> = {
     hero_intro_alias_line2: "aber du kannst mich David nennen.",
     hero_intro_guide:
       "Kurze Einführung: Im oberen Menü findest du Über mich, Projekte, Erfahrung, Fallstudien und Kontakt.\n" +
-      "Unter ‚Mehr‘ gibt es Open Source, Blog, Vorträge, Uses und Now().\n" +
+      "Unter ‚Mehr‘ gibt es Open-Source, Artikel, Vorträge, Setup und Aktuell.\n" +
       "Du kannst außerdem die Sprache und das Design ändern.",
     hero_intro_skip: "Intro überspringen (ESC)",
 
@@ -665,7 +665,7 @@ const messages: Record<Lang, Messages> = {
     timeline_event8_description: "Mein langfristiges Ziel ist es, Webseiten mit virtueller Realität zu entwickeln, wo der Benutzer die Schnittstelle buchstäblich berühren kann. Ich möchte Design, Technologie und Emotion verschmelzen, um Erfahrungen zu schaffen, die nicht nur gesehen oder genutzt, sondern gelebt werden.",
 
     // Blog
-    blog_title: "Blog",
+    blog_title: "Artikel",
     blog_subtitle: "Kurze Notizen, TIL und Post-Mortems.",
     blog_article1_title: "Barrierefreiheit in Menükomponenten",
     blog_article1_desc: "Focus trap, Rollen und Tastatur.",
@@ -681,7 +681,7 @@ const messages: Record<Lang, Messages> = {
     talks_item2_desc: "90' Workshop (öffentliches Repo).",
 
     // Uses
-    uses_title: "Uses",
+    uses_title: "Setup",
     uses_subtitle: "Mein Arbeitsplatz-Setup.",
     uses_hardware_title: "Hardware",
     uses_hardware_item1: "ThinkPad + 32GB RAM",
@@ -691,7 +691,7 @@ const messages: Record<Lang, Messages> = {
     uses_software_item2: "Figma, Raycast",
 
     // Now
-    now_title: "Now()",
+    now_title: "Aktuell",
     now_subtitle: "Woran ich diesen Monat arbeite.",
     now_item1: "Refactoring meines Komponenten-Systems zu einer saubereren, skalierbareren Slot-basierten Architektur.",
     now_item2: "Verbesserung von Entry-, Interaktions- und Scroll-Animationen mit GSAP, mit Fokus auf Fluidität, Leistung und Barrierefreiheit.",
@@ -732,7 +732,7 @@ const messages: Record<Lang, Messages> = {
     case6_impact: "Ich erreichte eine flüssige, lebendige und unvergessliche Benutzererfahrung, die mit meiner Identität als Entwickler interaktiver Schnittstellen übereinstimmt.",
 
     // Open Source
-    opensource_title: "Open Source",
+    opensource_title: "Open-Source",
     opensource_subtitle: "PRs, Issues und veröffentlichte Pakete.",
     opensource_item1: "Beitrag zu awesome-animations — GSAP/ARIA Beispiel.",
     opensource_item2: "Paket @dreamincode/use-keypress — Barrierefreiheits-Hook.",
@@ -772,7 +772,10 @@ export default function LanguageProvider({ children }: { children: React.ReactNo
 
   // persistir
   useEffect(() => {
-    if (typeof window !== "undefined") localStorage.setItem("lang", lang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lang", lang);
+      document.documentElement.lang = lang;
+    }
   }, [lang]);
 
   const t = (key: keyof Messages) => messages[lang][key] ?? (key as string);

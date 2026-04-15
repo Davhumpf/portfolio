@@ -2,7 +2,22 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import InteractiveProjectFrame from "@/components/InteractiveProjectFrame";
 import { useLang, useT } from "@/context/LanguageProvider";
+import WaveTitle from "@/components/WaveTitle";
+import {
+  BookOpen,
+  BriefcaseBusiness,
+  Clock3,
+  FolderKanban,
+  Github,
+  Lightbulb,
+  Mail,
+  Radio,
+  UserRound,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
 
 type Project = {
   name: string;
@@ -25,6 +40,47 @@ type LogoItem = {
   name: string;
   src: string;
 };
+
+const HOME_SECTION_ICONS: Record<string, LucideIcon> = {
+  about: UserRound,
+  timeline: Clock3,
+  projects: FolderKanban,
+  cases: BriefcaseBusiness,
+  opensource: Github,
+  blog: BookOpen,
+  talks: Radio,
+  uses: Wrench,
+  now: Lightbulb,
+  contacts: Mail,
+};
+
+function SectionHeading({ sectionId, title }: { sectionId: keyof typeof HOME_SECTION_ICONS; title: string }) {
+  const Icon = HOME_SECTION_ICONS[sectionId];
+
+  return (
+    <div className="inline-flex items-center gap-2.5">
+      <span
+        className="section-accent-badge inline-flex h-9 w-9 items-center justify-center rounded-xl border"
+        style={{
+          color: "#c084fc",
+          borderColor: "color-mix(in oklab, #c084fc 42%, var(--border))",
+          background: "linear-gradient(135deg, rgba(192, 132, 252, 0.18), rgba(168, 85, 247, 0.08))",
+          boxShadow: "0 8px 18px rgba(168, 85, 247, 0.10)",
+        }}
+        aria-hidden
+      >
+        <Icon size={17} strokeWidth={2.1} />
+      </span>
+      <span className="section-accent-trigger section-accent-textwrap">
+        <WaveTitle
+          text={title}
+          className="section-accent-title text-xl font-semibold tracking-[-0.01em]"
+        />
+        <span className="section-accent-underline" aria-hidden />
+      </span>
+    </div>
+  );
+}
 
 function SkillsTicker({ logos }: { logos: LogoItem[] }) {
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -159,10 +215,19 @@ export default function Home() {
       metricExperience: "Experiencia activa",
       metricProjects: "Proyectos clave",
       metricFocus: "Enfoque",
+      metricFocusValue: "UI + Producto",
+      profileAlt: "Foto de perfil de David",
       skillsTickerTitle: "Stack Tecnico y Habilidades Clave",
       projectsIntro: "Productos con orientacion a impacto real y ejecucion tecnica consistente.",
       openProject: "Abrir proyecto",
+      reloadPreview: "Recargar preview",
       viewRepository: "Ver repositorio",
+      projectPreviewLabel: "Vista previa de",
+      projectLoading: "Cargando experiencia interactiva",
+      projectLoadingHint: "Si tarda demasiado, puedes recargar el preview o abrir la tienda en una pestaña nueva.",
+      projectFallback: "La demo esta tardando mas de lo normal",
+      usesHardware: ["Acer Nitro AN515-58", "Intel Core i7-12700H", "24 GB RAM DDR4", "SSD NVMe 1 TB", "NVIDIA RTX 3060"],
+      usesSoftware: ["VS Code + Material Icons", "Figma", "GitHub Desktop + Git CLI", "Node.js + PNPM/Bun", "PowerShell + Windows Terminal"],
       blogPosts: [
         "Solucionando errores de hidratacion en Next.js con next-themes.",
         "Animaciones GSAP sin romper layout ni accesibilidad.",
@@ -170,21 +235,9 @@ export default function Home() {
         "Stack frontend 2025: decisiones tecnicas y trade-offs reales.",
       ],
       talks: [
-        {
-          title: "Seminario Nacional de Ingenieria de Software",
-          year: "2022",
-          focus: "Industria de software en Colombia",
-        },
-        {
-          title: "Seminario Privado de Desarrollo Cali - Bogota",
-          year: "2024",
-          focus: "Colaboracion tecnica entre equipos distribuidos",
-        },
-        {
-          title: "Desarrollo Frontend y Ciberseguridad",
-          year: "2025",
-          focus: "Buenas practicas de seguridad en aplicaciones web",
-        },
+        { title: "Seminario Nacional de Ingenieria de Software", year: "2022", focus: "Industria de software en Colombia" },
+        { title: "Seminario Privado de Desarrollo Cali - Bogota", year: "2024", focus: "Colaboracion tecnica entre equipos distribuidos" },
+        { title: "Desarrollo Frontend y Ciberseguridad", year: "2025", focus: "Buenas practicas de seguridad en aplicaciones web" },
       ],
     },
     en: {
@@ -193,10 +246,19 @@ export default function Home() {
       metricExperience: "Active experience",
       metricProjects: "Key projects",
       metricFocus: "Focus",
+      metricFocusValue: "UI + Product",
+      profileAlt: "David profile photo",
       skillsTickerTitle: "Technical Stack and Core Skills",
       projectsIntro: "Products built for real impact with consistent technical execution.",
       openProject: "Open project",
+      reloadPreview: "Reload preview",
       viewRepository: "View repository",
+      projectPreviewLabel: "Preview of",
+      projectLoading: "Loading interactive experience",
+      projectLoadingHint: "If it takes too long, you can reload the preview or open the store in a new tab.",
+      projectFallback: "The demo is taking longer than usual",
+      usesHardware: ["Acer Nitro AN515-58", "Intel Core i7-12700H", "24 GB DDR4 RAM", "1 TB NVMe SSD", "NVIDIA RTX 3060"],
+      usesSoftware: ["VS Code + Material Icons", "Figma", "GitHub Desktop + Git CLI", "Node.js + PNPM/Bun", "PowerShell + Windows Terminal"],
       blogPosts: [
         "Fixing Next.js hydration issues with next-themes.",
         "GSAP animations without breaking layout or accessibility.",
@@ -204,21 +266,9 @@ export default function Home() {
         "Frontend stack 2025: technical decisions and real trade-offs.",
       ],
       talks: [
-        {
-          title: "National Software Engineering Seminar",
-          year: "2022",
-          focus: "Software industry in Colombia",
-        },
-        {
-          title: "Private Development Seminar Cali - Bogota",
-          year: "2024",
-          focus: "Technical collaboration across distributed teams",
-        },
-        {
-          title: "Frontend Development and Cybersecurity",
-          year: "2025",
-          focus: "Web application security best practices",
-        },
+        { title: "National Software Engineering Seminar", year: "2022", focus: "Software industry in Colombia" },
+        { title: "Private Development Seminar Cali - Bogota", year: "2024", focus: "Technical collaboration across distributed teams" },
+        { title: "Frontend Development and Cybersecurity", year: "2025", focus: "Web application security best practices" },
       ],
     },
     de: {
@@ -227,10 +277,19 @@ export default function Home() {
       metricExperience: "Aktive Erfahrung",
       metricProjects: "Schluesselprojekte",
       metricFocus: "Fokus",
+      metricFocusValue: "UI + Produkt",
+      profileAlt: "Profilfoto von David",
       skillsTickerTitle: "Technischer Stack und Kernkompetenzen",
       projectsIntro: "Produkte mit Fokus auf echten Impact und konsistente technische Umsetzung.",
       openProject: "Projekt oeffnen",
+      reloadPreview: "Vorschau neu laden",
       viewRepository: "Repository ansehen",
+      projectPreviewLabel: "Vorschau von",
+      projectLoading: "Interaktive Vorschau wird geladen",
+      projectLoadingHint: "Wenn es zu lange dauert, kannst du die Vorschau neu laden oder den Shop in einem neuen Tab oeffnen.",
+      projectFallback: "Die Demo braucht gerade laenger als ueblich",
+      usesHardware: ["Acer Nitro AN515-58", "Intel Core i7-12700H", "24 GB DDR4 RAM", "1 TB NVMe SSD", "NVIDIA RTX 3060"],
+      usesSoftware: ["VS Code + Material Icons", "Figma", "GitHub Desktop + Git CLI", "Node.js + PNPM/Bun", "PowerShell + Windows Terminal"],
       blogPosts: [
         "Hydration-Fehler in Next.js mit next-themes beheben.",
         "GSAP-Animationen ohne Layout- oder Accessibility-Probleme.",
@@ -238,21 +297,9 @@ export default function Home() {
         "Frontend-Stack 2025: technische Entscheidungen und reale Trade-offs.",
       ],
       talks: [
-        {
-          title: "Nationales Seminar fuer Software Engineering",
-          year: "2022",
-          focus: "Softwarebranche in Kolumbien",
-        },
-        {
-          title: "Privates Entwicklungsseminar Cali - Bogota",
-          year: "2024",
-          focus: "Technische Zusammenarbeit in verteilten Teams",
-        },
-        {
-          title: "Frontend-Entwicklung und Cybersicherheit",
-          year: "2025",
-          focus: "Best Practices fuer Websicherheit",
-        },
+        { title: "Nationales Seminar fuer Software Engineering", year: "2022", focus: "Softwarebranche in Kolumbien" },
+        { title: "Privates Entwicklungsseminar Cali - Bogota", year: "2024", focus: "Technische Zusammenarbeit in verteilten Teams" },
+        { title: "Frontend-Entwicklung und Cybersicherheit", year: "2025", focus: "Best Practices fuer Websicherheit" },
       ],
     },
   } as const;
@@ -288,12 +335,8 @@ export default function Home() {
     {
       name: "Nova Store",
       category: lang === "de" ? "E-Commerce Plattform" : lang === "en" ? "E-commerce Platform" : "Plataforma E-commerce",
-      status: lang === "de" ? "In Produktion" : lang === "en" ? "In production" : "En produccion",
-      description: lang === "de"
-        ? "Hybride Plattform fuer den Verkauf digitaler und physischer Produkte mit Fokus auf Geschwindigkeit, Kauferlebnis und stabilem Betrieb."
-        : lang === "en"
-        ? "Hybrid platform for selling digital and physical products with focus on speed, purchase experience and stable operations."
-        : "Plataforma hibrida para venta de productos digitales y fisicos con enfoque en velocidad, experiencia de compra y operacion estable.",
+      status: lang === "de" ? "In Produktion" : lang === "en" ? "In production" : "En producción",
+      description: lang === "de" ? "Hybride Plattform fuer den Verkauf digitaler und physischer Produkte mit Fokus auf Geschwindigkeit, Kauferlebnis und stabilem Betrieb." : lang === "en" ? "Hybrid platform for selling digital and physical products with focus on speed, purchase experience and stable operations." : "Plataforma hibrida para venta de productos digitales y fisicos con enfoque en velocidad, experiencia de compra y operacion estable.",
       href: "https://novahub-app.vercel.app/",
       previewUrl: "https://novahub-app.vercel.app/",
       stack: ["React", "Next.js", "TypeScript", "Supabase"],
@@ -302,45 +345,22 @@ export default function Home() {
       name: "ITIA",
       category: lang === "de" ? "Computer Vision + IoT" : "Computer Vision + IoT",
       status: lang === "de" ? "In Entwicklung" : lang === "en" ? "In development" : "En desarrollo",
-      description: lang === "de"
-        ? "System fuer touristische Intelligenz mit Analyse von Personenstroemen und Datenvisualisierung fuer bessere Entscheidungen."
-        : lang === "en"
-        ? "System focused on tourism intelligence with people-flow analysis and data visualization for decision making."
-        : "Sistema orientado a inteligencia turistica con analisis de flujo de personas y visualizacion de datos para toma de decisiones.",
+      description: lang === "de" ? "System fuer touristische Intelligenz mit Analyse von Personenstroemen und Datenvisualisierung fuer bessere Entscheidungen." : lang === "en" ? "System focused on tourism intelligence with people-flow analysis and data visualization for decision making." : "Sistema orientado a inteligencia turistica con analisis de flujo de personas y visualizacion de datos para toma de decisiones.",
       stack: ["Python", "Cloud", "Vision", "Data"],
     },
     {
       name: "MIZA",
       category: lang === "de" ? "KI-Assistent" : lang === "en" ? "AI Assistant" : "Asistente IA",
       status: lang === "de" ? "Fortgeschrittenes Konzept" : lang === "en" ? "Advanced concept" : "Concepto avanzado",
-      description: lang === "de"
-        ? "Assistent mit emotionalem Fokus fuer natuerlichere Interaktionen in digitalen Support- und Conversational-Product-Erlebnissen."
-        : lang === "en"
-        ? "Assistant with emotional focus for more natural interactions in digital support and conversational product experiences."
-        : "Asistente con enfoque emocional para interacciones mas naturales en experiencias de soporte digital y producto conversacional.",
+      description: lang === "de" ? "Assistent mit emotionalem Fokus fuer natuerlichere Interaktionen in digitalen Support- und Conversational-Product-Erlebnissen." : lang === "en" ? "Assistant with emotional focus for more natural interactions in digital support and conversational product experiences." : "Asistente con enfoque emocional para interacciones mas naturales en experiencias de soporte digital y producto conversacional.",
       stack: ["AI", "UX", "Frontend", "Product"],
     },
   ];
 
   const caseStudies: CaseStudy[] = [
-    {
-      title: t("case1_title"),
-      problem: t("case1_problem"),
-      process: t("case1_process"),
-      impact: t("case1_impact"),
-    },
-    {
-      title: t("case3_title"),
-      problem: t("case3_problem"),
-      process: t("case3_process"),
-      impact: t("case3_impact"),
-    },
-    {
-      title: t("case5_title"),
-      problem: t("case5_problem"),
-      process: t("case5_process"),
-      impact: t("case5_impact"),
-    },
+    { title: t("case1_title"), problem: t("case1_problem"), process: t("case1_process"), impact: t("case1_impact") },
+    { title: t("case3_title"), problem: t("case3_problem"), process: t("case3_process"), impact: t("case3_impact") },
+    { title: t("case5_title"), problem: t("case5_problem"), process: t("case5_process"), impact: t("case5_impact") },
   ];
 
   const talks = copy.talks;
@@ -381,9 +401,8 @@ export default function Home() {
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               <MetricCard label={copy.metricExperience} value="2019 - 2026" />
               <MetricCard label={copy.metricProjects} value="10+" />
-              <MetricCard label={copy.metricFocus} value="UI + Producto" />
+              <MetricCard label={copy.metricFocus} value={copy.metricFocusValue} />
             </div>
-
           </div>
 
           <div className="mx-auto w-full max-w-[340px]">
@@ -396,15 +415,7 @@ export default function Home() {
                 boxShadow: "0 14px 30px color-mix(in oklab, var(--accent) 16%, transparent)",
               }}
             >
-              <Image
-                src="/profile.png"
-                alt="David profile"
-                width={640}
-                height={640}
-                className="h-full w-full object-cover"
-                style={{ objectPosition: "center 28%" }}
-                priority
-              />
+              <Image src="/profile.png" alt={copy.profileAlt} width={640} height={640} className="h-full w-full object-cover" style={{ objectPosition: "center 28%" }} priority />
             </div>
           </div>
         </div>
@@ -428,13 +439,13 @@ export default function Home() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-12">
         <section id="about" className="rounded-2xl border p-6 lg:col-span-7" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("about_title")}</h2>
+          <SectionHeading sectionId="about" title={t("about_title")} />
           <p className="mt-3 leading-relaxed muted">{t("about_p1")}</p>
           <p className="mt-3 leading-relaxed muted">{t("about_p2")}</p>
         </section>
 
         <section id="timeline" className="rounded-2xl border p-6 lg:col-span-5" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("timeline_title")}</h2>
+          <SectionHeading sectionId="timeline" title={t("timeline_title")} />
           <ul className="mt-4 space-y-3 text-sm">
             <li><strong>2019:</strong> {t("timeline_event1_title")}</li>
             <li><strong>2021:</strong> {t("timeline_event3_title")}</li>
@@ -445,60 +456,38 @@ export default function Home() {
         </section>
 
         <section id="projects" className="rounded-2xl border p-6 lg:col-span-12" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("projects_title")}</h2>
+          <SectionHeading sectionId="projects" title={t("projects_title")} />
           <p className="mt-1 text-sm muted">{copy.projectsIntro}</p>
 
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             {projects.map((project, idx) => (
-              <article
-                key={project.name}
-                className="rounded-2xl border p-4"
-                style={{
-                  borderColor: "color-mix(in oklab, var(--border) 60%, transparent)",
-                  background: "color-mix(in oklab, var(--panel) 82%, transparent)",
-                }}
-              >
+              <article key={project.name} className="rounded-2xl border p-4" style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", background: "color-mix(in oklab, var(--panel) 82%, transparent)" }}>
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs uppercase tracking-[0.14em] muted">{project.category}</p>
                     <h3 className="mt-1 text-lg font-semibold">{project.name}</h3>
                   </div>
-                  <Image
-                    src={idx === 0 ? "/nextjs.png" : idx === 1 ? "/python.png" : "/javascript.png"}
-                    alt={`${project.name} icon`}
-                    width={36}
-                    height={36}
-                    className="h-9 w-9 rounded-md object-contain"
-                  />
+                  <Image src={idx === 0 ? "/nextjs.png" : idx === 1 ? "/python.png" : "/javascript.png"} alt={`${project.name} icon`} width={36} height={36} className="h-9 w-9 rounded-md object-contain" />
                 </div>
                 {project.previewUrl && (
-                  <div
-                    className="mb-4 overflow-hidden rounded-xl border"
-                    style={{
-                      borderColor: "color-mix(in oklab, var(--border) 62%, transparent)",
-                      background: "color-mix(in oklab, var(--panel) 72%, transparent)",
-                      contain: "layout paint size",
-                      isolation: "isolate",
-                      overscrollBehavior: "contain",
-                    }}
-                  >
-                    <iframe
-                      src={project.previewUrl}
-                      title={`${project.name} preview`}
-                      className="h-[260px] w-full"
-                      loading="lazy"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
-                    />
-                  </div>
+                  <InteractiveProjectFrame
+                    className="mb-4"
+                    heightClassName="h-[260px]"
+                    url={project.previewUrl}
+                    title={project.name}
+                    openLabel={copy.openProject}
+                    loadingLabel={copy.projectLoading}
+                    loadingHint={copy.projectLoadingHint}
+                    fallbackLabel={copy.projectFallback}
+                    retryLabel={copy.reloadPreview}
+                    frameLabel={`${copy.projectPreviewLabel} ${project.name}`}
+                  />
                 )}
                 <p className="text-xs font-semibold" style={{ color: "var(--accent)" }}>{project.status}</p>
                 <p className="mt-3 text-sm leading-relaxed muted">{project.description}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {project.stack.map((item) => (
-                    <span key={item} className="rounded-full border px-2.5 py-1 text-[11px] font-semibold" style={{
-                      borderColor: "color-mix(in oklab, var(--border) 65%, transparent)",
-                    }}>
+                    <span key={item} className="rounded-full border px-2.5 py-1 text-[11px] font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 65%, transparent)" }}>
                       {item}
                     </span>
                   ))}
@@ -514,13 +503,10 @@ export default function Home() {
         </section>
 
         <section id="cases" className="rounded-2xl border p-6 lg:col-span-12" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("cases_title")}</h2>
+          <SectionHeading sectionId="cases" title={t("cases_title")} />
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             {caseStudies.map((cs) => (
-              <article key={cs.title} className="rounded-xl border p-4" style={{
-                borderColor: "color-mix(in oklab, var(--border) 60%, transparent)",
-                background: "color-mix(in oklab, var(--panel) 82%, transparent)",
-              }}>
+              <article key={cs.title} className="rounded-xl border p-4" style={{ borderColor: "color-mix(in oklab, var(--border) 60%, transparent)", background: "color-mix(in oklab, var(--panel) 82%, transparent)" }}>
                 <h3 className="text-base font-semibold">{cs.title}</h3>
                 <p className="mt-3 text-sm"><strong>{t("cases_problem_label")}:</strong> {cs.problem}</p>
                 <p className="mt-3 text-sm"><strong>{t("cases_process_label")}:</strong> {cs.process}</p>
@@ -531,9 +517,8 @@ export default function Home() {
         </section>
 
         <section id="opensource" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <div className="mb-3 flex items-center gap-2">
-            <Image src="/github.png" alt="GitHub" width={28} height={28} className="h-7 w-7 object-contain" />
-            <h2 className="text-xl font-semibold">{t("opensource_title")}</h2>
+          <div className="mb-3">
+            <SectionHeading sectionId="opensource" title={t("opensource_title")} />
           </div>
           <ul className="space-y-3">
             {repos.map((repo) => (
@@ -549,7 +534,7 @@ export default function Home() {
         </section>
 
         <section id="blog" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("blog_title")}</h2>
+          <SectionHeading sectionId="blog" title={t("blog_title")} />
           <ul className="mt-4 space-y-3 text-sm">
             {copy.blogPosts.map((post) => (
               <li key={post}>{post}</li>
@@ -558,7 +543,7 @@ export default function Home() {
         </section>
 
         <section id="talks" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("talks_title")}</h2>
+          <SectionHeading sectionId="talks" title={t("talks_title")} />
           <ul className="mt-4 space-y-3 text-sm">
             {talks.map((talk) => (
               <li key={talk.title} className="rounded-lg border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
@@ -571,33 +556,29 @@ export default function Home() {
         </section>
 
         <section id="uses" className="rounded-2xl border p-6 lg:col-span-6" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("uses_title")}</h2>
+          <SectionHeading sectionId="uses" title={t("uses_title")} />
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="rounded-xl border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
               <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">{t("uses_hardware_title")}</h3>
               <ul className="mt-2 space-y-1 text-sm">
-                <li>Acer Nitro AN515-58</li>
-                <li>Intel Core i7-12700H</li>
-                <li>24 GB RAM DDR4</li>
-                <li>SSD NVMe 1 TB</li>
-                <li>NVIDIA RTX 3060</li>
+                {copy.usesHardware.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
             </div>
             <div className="rounded-xl border p-3" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
               <h3 className="text-sm font-semibold uppercase tracking-[0.12em] muted">{t("uses_software_title")}</h3>
               <ul className="mt-2 space-y-1 text-sm">
-                <li>VS Code + Material Icons</li>
-                <li>Figma</li>
-                <li>GitHub Desktop + Git CLI</li>
-                <li>Node.js + PNPM/Bun</li>
-                <li>PowerShell + Windows Terminal</li>
+                {copy.usesSoftware.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
               </ul>
             </div>
           </div>
         </section>
 
         <section id="now" className="rounded-2xl border p-6 lg:col-span-8" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("now_title")}</h2>
+          <SectionHeading sectionId="now" title={t("now_title")} />
           <ul className="mt-4 space-y-2 text-sm leading-relaxed">
             <li>{t("now_item1")}</li>
             <li>{t("now_item2")}</li>
@@ -608,7 +589,7 @@ export default function Home() {
         </section>
 
         <section id="contacts" className="rounded-2xl border p-6 lg:col-span-4" style={cardStyle}>
-          <h2 className="text-xl font-semibold">{t("contacts_title")}</h2>
+          <SectionHeading sectionId="contacts" title={t("contacts_title")} />
           <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
             <a href="mailto:vincho0528@gmail.com" className="rounded-xl border p-3 text-center font-semibold" style={{ borderColor: "color-mix(in oklab, var(--border) 62%, transparent)" }}>
               <Image src="/gmail.png" alt="Gmail" width={28} height={28} className="mx-auto mb-1 h-6 w-6 object-contain" />
@@ -629,9 +610,7 @@ export default function Home() {
           </div>
         </section>
       </div>
-      <style jsx>{`
-        
-      `}</style>
+      <style jsx>{``}</style>
     </div>
   );
 }

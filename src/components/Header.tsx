@@ -10,10 +10,10 @@ import { Download, Globe, Menu, Monitor, Moon, Search, Sun, X } from "lucide-rea
 const LANGS = ["es", "en", "de"] as const;
 const PLACEHOLDER_MESSAGES_BY_LANG: Record<(typeof LANGS)[number], string[]> = {
   es: [
-    "Pregunta aqui tus dudas",
+    "Pregunta aquí tus dudas",
     "quiero ver tus proyectos de frontend",
-    "muestrame tu experiencia",
-    "donde puedo contactarte",
+    "muéstrame tu experiencia",
+    "dónde puedo contactarte",
     "abre tus casos de estudio",
   ],
   en: [
@@ -30,6 +30,48 @@ const PLACEHOLDER_MESSAGES_BY_LANG: Record<(typeof LANGS)[number], string[]> = {
     "wie kann ich dich kontaktieren",
     "oeffne deine Fallstudien",
   ],
+};
+
+const INTENT_KEYWORDS_BY_LANG: Record<
+  (typeof LANGS)[number],
+  Record<Exclude<SectionId, "home">, string[]>
+> = {
+  es: {
+    about: ["sobre mi", "sobre mí", "perfil", "quien eres", "quién eres", "resumen", "bio"],
+    projects: ["proyecto", "proyectos", "portfolio", "trabajos", "apps", "nova", "itia", "miza", "frontend"],
+    timeline: ["experiencia", "trayectoria", "historia", "recorrido", "carrera"],
+    cases: ["caso", "casos", "estudio", "impacto", "problema", "proceso", "resultado"],
+    opensource: ["github", "open source", "repos", "repositorios", "codigo", "código", "code"],
+    blog: ["blog", "articulos", "artículos", "posts", "notas", "aprendizaje"],
+    talks: ["charlas", "eventos", "seminario", "seminarios", "conferencia", "workshop"],
+    uses: ["uses", "setup", "herramientas", "tools", "hardware", "software", "stack"],
+    now: ["now", "actual", "ahora", "actualmente", "trabajando", "roadmap"],
+    contacts: ["contacto", "contactos", "email", "correo", "linkedin", "whatsapp", "hablar"],
+  },
+  en: {
+    about: ["about", "profile", "who are you", "summary", "bio"],
+    projects: ["project", "projects", "portfolio", "work", "apps", "nova", "itia", "miza", "frontend"],
+    timeline: ["experience", "timeline", "career", "journey", "background"],
+    cases: ["case", "cases", "study", "impact", "problem", "process", "result"],
+    opensource: ["github", "open source", "repos", "repositories", "code"],
+    blog: ["blog", "articles", "posts", "notes", "writing", "learning"],
+    talks: ["talks", "events", "seminar", "conference", "workshop"],
+    uses: ["uses", "setup", "tools", "hardware", "software", "stack"],
+    now: ["now", "current", "currently", "working", "roadmap"],
+    contacts: ["contact", "contacts", "email", "linkedin", "whatsapp", "talk"],
+  },
+  de: {
+    about: ["uber mich", "über mich", "profil", "wer bist du", "bio", "zusammenfassung"],
+    projects: ["projekt", "projekte", "portfolio", "arbeiten", "apps", "nova", "itia", "miza", "frontend"],
+    timeline: ["erfahrung", "laufbahn", "reise", "hintergrund", "karriere"],
+    cases: ["fall", "fallstudie", "fallstudien", "problem", "prozess", "ergebnis", "wirkung"],
+    opensource: ["github", "open source", "repos", "repositories", "code", "beitrage", "beiträge"],
+    blog: ["blog", "artikel", "posts", "notizen", "lernen", "lerninhalte"],
+    talks: ["vortrage", "vorträge", "events", "seminar", "konferenz", "workshop"],
+    uses: ["uses", "setup", "werkzeuge", "tools", "hardware", "software", "stack"],
+    now: ["now", "aktuell", "gerade", "derzeit", "arbeite", "roadmap"],
+    contacts: ["kontakt", "kontakte", "email", "linkedin", "whatsapp", "sprechen"],
+  },
 };
 const HEADER_UI_BY_LANG: Record<
   (typeof LANGS)[number],
@@ -63,7 +105,7 @@ const HEADER_UI_BY_LANG: Record<
     changeTheme: "Cambiar tema",
     downloadCv: "Descargar CV",
     goToSection: "Ir a seccion",
-    noIntent: "Te puedo guiar a Proyectos, Experiencia, Casos, Open Source, Blog, Charlas, Uses, Now o Contactos.",
+    noIntent: "Te puedo guiar a Proyectos, Experiencia, Casos, Código abierto, Blog, Charlas, Setup, Ahora o Contactos.",
     recommendedSectionPrefix: "Seccion recomendada",
     aboutHint: "Perfil profesional, enfoque y stack base.",
     projectsHint: "Proyectos principales y estado actual.",
@@ -105,7 +147,7 @@ const HEADER_UI_BY_LANG: Record<
     changeTheme: "Design wechseln",
     downloadCv: "CV herunterladen",
     goToSection: "Zum Bereich",
-    noIntent: "Ich kann dich zu Projekten, Erfahrung, Fallstudien, Open Source, Blog, Talks, Uses, Now oder Kontakt fuehren.",
+    noIntent: "Ich kann dich zu Projekten, Erfahrung, Fallstudien, Open-Source, Artikel, Vortraegen, Setup, Aktuell oder Kontakt fuehren.",
     recommendedSectionPrefix: "Empfohlener Bereich",
     aboutHint: "Berufsprofil, Fokus und Kern-Stack.",
     projectsHint: "Hauptprojekte und aktueller Status.",
@@ -206,73 +248,73 @@ export default function Header() {
         sectionId: "about",
         label: t("about"),
         hint: ui.aboutHint,
-        keywords: ["sobre mi", "perfil", "about", "quien eres", "who are you", "resumen", "bio"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].about,
       },
       {
         id: "projects",
         sectionId: "projects",
         label: t("projects"),
         hint: ui.projectsHint,
-        keywords: ["proyecto", "projects", "portfolio", "trabajos", "apps", "nova", "itia", "miza"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].projects,
       },
       {
         id: "timeline",
         sectionId: "timeline",
-        label: t("experience") ?? "Experiencia",
+        label: t("experience"),
         hint: ui.timelineHint,
-        keywords: ["experiencia", "timeline", "career", "trayectoria", "historia", "journey"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].timeline,
       },
       {
         id: "cases",
         sectionId: "cases",
-        label: t("caseStudies") ?? "Casos",
+        label: t("caseStudies"),
         hint: ui.casesHint,
-        keywords: ["caso", "case", "estudio", "impacto", "problem", "process", "resultado"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].cases,
       },
       {
         id: "opensource",
         sectionId: "opensource",
         label: t("opensource_title"),
         hint: ui.openSourceHint,
-        keywords: ["github", "open source", "repos", "repository", "codigo", "code"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].opensource,
       },
       {
         id: "blog",
         sectionId: "blog",
         label: t("blog_title"),
         hint: ui.blogHint,
-        keywords: ["blog", "articulos", "posts", "notas", "write", "aprendizaje"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].blog,
       },
       {
         id: "talks",
         sectionId: "talks",
-        label: t("talks") ?? "Talks",
+        label: t("talks"),
         hint: ui.talksHint,
-        keywords: ["charlas", "talks", "eventos", "seminario", "conference", "workshop"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].talks,
       },
       {
         id: "uses",
         sectionId: "uses",
         label: t("uses_title"),
         hint: ui.usesHint,
-        keywords: ["uses", "setup", "herramientas", "tools", "hardware", "software", "stack"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].uses,
       },
       {
         id: "now",
         sectionId: "now",
         label: t("now_title"),
         hint: ui.nowHint,
-        keywords: ["now", "actual", "ahora", "current", "trabajando", "roadmap"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].now,
       },
       {
         id: "contacts",
         sectionId: "contacts",
         label: t("contacts"),
         hint: ui.contactsHint,
-        keywords: ["contacto", "contact", "email", "linkedin", "whatsapp", "hablar"],
+        keywords: INTENT_KEYWORDS_BY_LANG[lang].contacts,
       },
     ],
-    [t, ui]
+    [lang, t, ui]
   );
 
   useEffect(() => {
