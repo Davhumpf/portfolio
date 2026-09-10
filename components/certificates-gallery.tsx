@@ -43,11 +43,10 @@ export function CertificatesGallery({ certifications }: { certifications: Certif
                     className="group relative overflow-hidden rounded-xl border border-white/10 bg-black/40 text-left transition-transform hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                     aria-label={`Abrir certificado ${certification.name} de ${source}`}
                   >
-                    <iframe
-                      src={`${url}#page=1&view=FitH`}
-                      title={`${source}: ${certification.name}`}
-                      className="pointer-events-none h-32 w-full bg-white transition-transform duration-300 group-hover:scale-105"
-                    />
+                    <span className="flex h-32 w-full flex-col justify-center gap-2 bg-gradient-to-br from-white/90 via-white/75 to-violet-200/70 px-3 text-neutral-900 transition-transform duration-300 group-hover:scale-105">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-700">Certificado</span>
+                      <span className="line-clamp-3 text-xs font-semibold leading-tight">{certification.name}</span>
+                    </span>
                     <span className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/75 px-2 py-1.5 text-xs text-white/80">
                       {source}
                       <Maximize2 className="h-3.5 w-3.5" />
