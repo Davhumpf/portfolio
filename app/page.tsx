@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Github, Linkedin, Mail, MapPin, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench, RotateCw } from "lucide-react"
+import { ArrowRight, Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,6 +10,8 @@ import RevealOnView from "@/components/reveal-on-view"
 import LiveClock from "@/components/live-clock"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ProjectPreview } from "@/components/project-preview"
+import { CertificatesGallery } from "@/components/certificates-gallery"
+import { GithubProfilePreview } from "@/components/github-profile-preview"
 
 // Background card component with image
 function CardWithBackground({ 
@@ -42,12 +44,17 @@ function CardWithBackground({
 }
 
 export default function Page() {
-  const timeline = [
-    { year: "2019", event: "Primer contacto con la programacion" },
-    { year: "2021", event: "Formacion tecnica y primeros proyectos personales" },
-    { year: "2023", event: "Transicion universitaria y proyectos academicos" },
-    { year: "2023-2025", event: "Nova Store: de idea a producto funcional" },
-    { year: "2025", event: "Actualidad: Frontend Dev y Experiencia Interactiva" },
+  const certifications = [
+    { name: "Networking Basics", cisco: "Networking_Basics.pdf", credly: "NetworkingBasics.pdf" },
+    { name: "Networking Devices and Initial Configuration", cisco: "Networking_Devices_and_Initial_Configuration.pdf", credly: "NetworkingDevicesandBasicConfig.pdf" },
+    { name: "Network Defense", cisco: "Network_Defense.pdf", credly: "NetworkDefense.pdf" },
+    { name: "Junior Cybersecurity Analyst Career Path", cisco: "Junior_Cybersecurity_Analyst_Career_Path.pdf", credly: "JuniorCybersecurityAnalyst.pdf" },
+    { name: "JavaScript Essentials 1", cisco: "JavaScript_Essentials_1.pdf", credly: "JavaScriptEssentials1.pdf" },
+    { name: "JavaScript Essentials 2", cisco: "JavaScript_Essentials_2.pdf", credly: "JavaScriptEssentials2.pdf" },
+    { name: "Endpoint Security", cisco: "Endpoint_Security_certificate.pdf", credly: "EndpointSecurity.pdf" },
+    { name: "Digital Safety and Security Awareness", cisco: "Digital_Safety_and_Security_Awareness.pdf", credly: "DigitalSafetyandSecurityAwareness.pdf" },
+    { name: "Cyber Threat Management", cisco: "Cyber_Threat_Management.pdf", credly: "CyberThreatManagement.pdf" },
+    { name: "Cisco and Credly certificates", cisco: "Cisco_Grated.pdf", credly: "Credly_Grated_Certificated.pdf" },
   ]
 
   const skills = {
@@ -78,18 +85,43 @@ export default function Page() {
     ],
   }
 
-  const openSourceRepos = [
-    { name: "nova-store-page", tech: "TypeScript / Next.js", url: "https://github.com/Davhumpf/nova-store-page" },
-    { name: "portfolio", tech: "TypeScript / Next.js", url: "https://github.com/Davhumpf/portfolio" },
-    { name: "ProgreS.O.S.", tech: "Python", url: "https://github.com/Davhumpf/ProgreS.O.S." },
-    { name: "gluter", tech: "Dart / Flutter", url: "https://github.com/Davhumpf/gluter" },
-  ]
-
   const blogPosts = [
-    "Solucionando errores de hidratacion en Next.js con next-themes.",
-    "Animaciones GSAP sin romper layout ni accesibilidad.",
-    "Sistema de themes estable en Next.js sin flash visual.",
-    "Stack frontend 2025: decisiones tecnicas y trade-offs reales.",
+    {
+      project: "Moka · Gestión operativa",
+      title: "Diseñar el flujo de pedidos antes que la interfaz",
+      description: "En Moka, la pantalla gira alrededor de estados operativos reales: pedidos por mesa, mostrador, confirmación, preparación y entrega. El frontend debe hacer visible cada cambio sin convertir el panel en ruido.",
+      takeaway: "Decisión: priorizar estado, contexto y acción en cada tarjeta.",
+      stack: ["React", "Node.js", "Tiempo real"],
+      type: "Caso de producto",
+      url: "https://mokaos.vercel.app/",
+    },
+    {
+      project: "LexMind Cloud · Documentos legales",
+      title: "Convertir archivos dispersos en información consultable",
+      description: "LexMind Cloud recibe PDF, Word, documentos escaneados y correos para procesarlos e indexarlos. El reto no es solo cargar archivos: es diseñar una entrada confiable para búsquedas y flujos legales posteriores.",
+      takeaway: "Aprendizaje: la experiencia de carga también es parte de la arquitectura de datos.",
+      stack: ["Next.js", "TypeScript", "Indexación"],
+      type: "Arquitectura aplicada",
+      url: "https://lex-mind-cloud.vercel.app/",
+    },
+    {
+      project: "ProgreS.O.S. · Django académico",
+      title: "Permisos y trazabilidad para proyectos académicos",
+      description: "El sistema separa las capacidades de estudiantes y docentes: enviar, revisar, calificar, aprobar o rechazar. Comentarios, estados, métricas, reportes y una API REST convierten el seguimiento en un flujo auditable.",
+      takeaway: "Principio: cada transición debe tener un rol, un estado y una evidencia.",
+      stack: ["Django", "Django REST", "Bootstrap 5"],
+      type: "Backend y seguridad",
+      url: "https://github.com/Davhumpf/ProgreS.O.S.",
+    },
+    {
+      project: "NovaHub · Comercio digital",
+      title: "Una tienda no termina en el catálogo",
+      description: "NovaHub plantea una experiencia de compra orientada a Colombia: catálogo, carrito y gestión de productos deben convivir con precios en COP y una navegación clara para reducir fricción hasta la decisión.",
+      takeaway: "Enfoque: diseñar el producto alrededor del flujo de compra, no de una colección de pantallas.",
+      stack: ["Next.js", "Tailwind CSS", "E-commerce"],
+      type: "Producto digital",
+      url: "https://novahub-app.vercel.app/",
+    },
   ]
 
   const talks = [
@@ -114,14 +146,6 @@ export default function Page() {
       "PowerShell + Windows Terminal",
     ],
   }
-
-  const nowSection = [
-    "Refactorizando mi sistema de componentes hacia una arquitectura mas limpia, escalable y basada en slots.",
-    "Mejorando animaciones de entrada, interaccion y scroll con GSAP, equilibrando fluidez, rendimiento y accesibilidad.",
-    "Estudiando patrones avanzados de UI, motion design y practicas WAI-ARIA para navegacion con teclado.",
-    "Construyendo un UI kit modular personal como espacio de experimentacion visual y tecnica.",
-    "Escribiendo un articulo sobre accesibilidad en menus, navegacion y gestion del foco.",
-  ]
 
   return (
     <main className="bg-neutral-950 dark:bg-neutral-950 text-white dark:text-white min-h-screen">
@@ -254,22 +278,18 @@ export default function Page() {
               </p>
             </CardWithBackground>
 
-            {/* Timeline Section */}
+            {/* Certifications Section */}
             <CardWithBackground imageSrc="/images/project-2.webp">
               <div className="mb-6 flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
                   <Calendar className="h-4 w-4" />
                 </div>
-                <h2 className="text-xl font-bold">Mi Trayectoria</h2>
+                <h2 className="text-xl font-bold">Certificaciones</h2>
               </div>
-              <div className="space-y-4">
-                {timeline.map((item, idx) => (
-                  <div key={idx} className="flex gap-4">
-                    <span className="shrink-0 text-sm font-bold text-white/50 w-24">{item.year}</span>
-                    <span className="text-white/80">{item.event}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="mb-6 text-white/60">
+                Formación reciente en redes, ciberseguridad y desarrollo con JavaScript.
+              </p>
+              <CertificatesGallery certifications={certifications} />
             </CardWithBackground>
 
             {/* Skills Section */}
@@ -364,7 +384,7 @@ export default function Page() {
                   title="Moka"
                   category="GESTOR DE VENTAS"
                   description="Gestor de ventas y pedidos para heladerias. Control de inventario, ordenes y reportes en tiempo real."
-                  url="https://mokaapp.vercel.app/"
+                  url="https://mokaos.vercel.app/"
                   technologies={["React", "Node.js"]}
                 />
 
@@ -388,30 +408,39 @@ export default function Page() {
                   </div>
                   <h2 className="text-lg font-bold">Codigo abierto</h2>
                 </div>
-                <div className="space-y-3">
-                  {openSourceRepos.map((repo) => (
-                    <div key={repo.name} className="group">
-                      <p className="font-medium">{repo.name}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-white/50">{repo.tech}</span>
-                        <Link href={repo.url} target="_blank" className="text-xs text-white/50 hover:text-white transition-colors">
-                          Ver repositorio
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <GithubProfilePreview url="https://github.com/Davhumpf" />
               </CardWithBackground>
 
               {/* Blog */}
               <CardWithBackground imageSrc="/images/project-1.webp" className="h-full">
                 <div className="mb-4 flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-sm font-bold">B</div>
-                  <h2 className="text-lg font-bold">Blog</h2>
+                  <div>
+                    <h2 className="text-lg font-bold">Blog</h2>
+                    <p className="text-xs text-white/50">Notas sobre proyectos, stack y aprendizaje</p>
+                  </div>
                 </div>
                 <div className="space-y-3">
-                  {blogPosts.map((post, idx) => (
-                    <p key={idx} className="text-sm text-white/70 leading-relaxed">{post}</p>
+                  {blogPosts.map((post) => (
+                    <article key={post.title} className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:border-violet-400/40 hover:bg-white/10">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-300">{post.type}</span>
+                        <a href={post.url} target="_blank" rel="noreferrer" className="text-xs text-white/40 transition-colors hover:text-white">
+                          Ver proyecto
+                        </a>
+                      </div>
+                      <p className="mb-1 text-xs font-medium text-white/50">{post.project}</p>
+                      <h3 className="font-medium text-white/90">{post.title}</h3>
+                      <p className="text-sm leading-relaxed text-white/60">{post.description}</p>
+                      <p className="mt-3 border-l-2 border-violet-400/60 pl-3 text-xs leading-relaxed text-white/70">{post.takeaway}</p>
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {post.stack.map((technology) => (
+                          <Badge key={technology} variant="secondary" className="border-white/10 bg-white/10 px-2 py-0.5 text-[10px] text-white/60">
+                            {technology}
+                          </Badge>
+                        ))}
+                      </div>
+                    </article>
                   ))}
                 </div>
               </CardWithBackground>
@@ -464,19 +493,6 @@ export default function Page() {
                 </div>
               </CardWithBackground>
             </div>
-
-            {/* Now Section */}
-            <CardWithBackground imageSrc="/images/project-4.webp">
-              <div className="mb-4 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/20 text-violet-400 text-sm font-bold">A</div>
-                <h2 className="text-xl font-bold">Ahora</h2>
-              </div>
-              <div className="space-y-3">
-                {nowSection.map((item, idx) => (
-                  <p key={idx} className="text-white/70 leading-relaxed">{item}</p>
-                ))}
-              </div>
-            </CardWithBackground>
 
             {/* Contact Section */}
             <CardWithBackground imageSrc="/images/project-5.webp">
