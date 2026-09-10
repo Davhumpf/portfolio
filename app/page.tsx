@@ -128,17 +128,12 @@ export default function Page() {
 
   const setup = {
     hardware: [
-      "ACER NITRO AN515-58",
-      "CPU: Intel Core i5-12450H 12th Gen",
-      "RAM: 24 GB",
-      "Almacenamiento: SSD NVMe 512 GB",
-      "SSD 256 GB",
-      "HDD 1 TB",
-      "GPU: NVIDIA GeForce RTX 3050 Laptop GPU",
-      "4 GB VRAM",
-      'Pantalla: 15.6" Full HD 144 Hz',
-      "Sistema: Windows 11 Home 64 bits",
-      "BIOS: UEFI V2.21",
+      "Acer Nitro AN515-58",
+      "Intel Core i5-12450H",
+      "24 GB RAM",
+      "NVIDIA RTX 3050 · 4 GB VRAM",
+      "768 GB SSD + 1 TB HDD",
+      "Pantalla Full HD · 144 Hz",
     ],
     software: [
       "VS Code + Material Icons",
