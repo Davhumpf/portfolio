@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench, Code2 } from "lucide-react"
+import { Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench, Code2, BookOpen, Mic2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -377,7 +377,9 @@ export default function Page() {
               {/* Blog */}
               <CardWithBackground imageSrc="/images/project-1.webp" className="h-full">
                 <div className="mb-4 flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-sm font-bold">B</div>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-400/15 text-violet-300">
+                    <BookOpen className="h-4 w-4" />
+                  </div>
                   <div>
                     <h2 className="text-lg font-bold">Blog</h2>
                     <p className="text-xs text-white/50">Notas sobre proyectos, stack y aprendizaje</p>
@@ -414,7 +416,9 @@ export default function Page() {
               {/* Talks */}
               <CardWithBackground imageSrc="/images/project-2.webp" className="h-full">
                 <div className="mb-4 flex items-center gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-sm font-bold">C</div>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-400/15 text-violet-300">
+                    <Mic2 className="h-4 w-4" />
+                  </div>
                   <h2 className="text-lg font-bold">Charlas & Workshops</h2>
                 </div>
                 <div className="space-y-4">
