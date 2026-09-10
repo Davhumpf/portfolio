@@ -282,6 +282,21 @@
   border: 0;
 }
 
+.certificate-item > summary::-webkit-details-marker {
+  display: none;
+}
+
+.certificate-item[open] .certificate-chevron {
+  transform: rotate(45deg);
+}
+
+.certificate-chevron {
+  display: inline-block;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
 @media (max-width: 1023px) {
   main > section {
     padding-inline: 0.75rem;

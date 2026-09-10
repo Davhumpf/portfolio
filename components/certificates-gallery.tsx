@@ -26,11 +26,14 @@ export function CertificatesGallery({ certifications }: { certifications: Certif
 
   return (
     <>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0">
         {certifications.map((certification) => (
-          <div key={certification.name} className="glass-panel rounded-2xl border border-white/10 bg-white/5 p-3">
-            <p className="mb-3 font-medium text-white/90">{certification.name}</p>
-            <div className="grid grid-cols-2 gap-2">
+          <details key={certification.name} className="certificate-item glass-panel rounded-2xl border border-white/10 bg-white/5 p-3">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium text-white/90 marker:hidden">
+              <span>{certification.name}</span>
+              <span className="certificate-chevron text-violet-300" aria-hidden="true">+</span>
+            </summary>
+            <div className="mt-3 grid grid-cols-2 gap-2">
               {(["Cisco", "Credly"] as const).map((source) => {
                 const filename = source === "Cisco" ? certification.cisco : certification.credly
                 const url = `/certificates/${source.toLowerCase()}/${filename}`
@@ -55,7 +58,7 @@ export function CertificatesGallery({ certifications }: { certifications: Certif
                 )
               })}
             </div>
-          </div>
+          </details>
         ))}
       </div>
 

@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
 import { ExternalLink } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
@@ -14,8 +13,6 @@ interface ProjectPreviewProps {
 }
 
 export function ProjectPreview({ title, category, description, url, technologies }: ProjectPreviewProps) {
-  const [isLoaded, setIsLoaded] = useState(false)
-
   return (
     <div className="project-preview group relative">
       <div className="glass-panel overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition-all hover:border-violet-500/50">
@@ -52,24 +49,14 @@ export function ProjectPreview({ title, category, description, url, technologies
         </div>
         
         <div className="relative h-[280px] overflow-hidden rounded-t-xl border-t border-white/10 bg-neutral-950">
-          {isLoaded ? (
-            <iframe
-              src={url}
-              title={`${title} Preview`}
-              className="h-full w-full border-0"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allow="fullscreen"
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={() => setIsLoaded(true)}
-              className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-neutral-900 via-neutral-950 to-violet-950/40 text-white/70 transition-colors hover:text-white"
-            >
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">Vista interactiva</span>
-              <span className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm">Cargar proyecto</span>
-            </button>
-          )}
+          <iframe
+            src={url}
+            title={`${title} Preview`}
+            className="h-full w-full border-0"
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allow="fullscreen"
+          />
         </div>
       </div>
     </div>
