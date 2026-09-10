@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench } from "lucide-react"
+import { Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench, Code2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -161,7 +161,7 @@ export default function Page() {
               <div>
                 {/* Wordmark */}
                 <div className="mb-8 flex items-center gap-2">
-                  <div className="text-2xl font-extrabold tracking-tight">DavRump</div>
+                  <div className="text-2xl font-extrabold tracking-tight">Davhumpf</div>
                   <div className="h-2 w-2 rounded-full bg-white/60" aria-hidden="true" />
                 </div>
 
@@ -223,12 +223,22 @@ export default function Page() {
             {/* About Me Section */}
             <CardWithBackground imageSrc="/images/project-1.webp">
               <div className="mb-4 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-sm font-bold">A</div>
-                <h2 className="text-xl font-bold">Sobre mi</h2>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-400/15 text-violet-300">
+                  <Code2 className="h-4 w-4" />
+                </div>
+                <h2 className="text-xl font-bold">Sobre mí</h2>
               </div>
-              <p className="text-white/70 leading-relaxed">
-                Como freelancer, combino desarrollo tecnico de alto nivel con un fuerte enfoque en el crecimiento personal, el aprendizaje continuo y la ejecucion de proyectos de calidad. Especializado en React, Next.js, TypeScript y animaciones avanzadas.
-              </p>
+              <div className="space-y-3 text-white/70 leading-relaxed">
+                <p>
+                  Soy desarrollador de software freelance desde Pasto, Nariño, Colombia. Diseño y construyo productos digitales que combinan interfaces claras, buen rendimiento y una base técnica preparada para crecer.
+                </p>
+                <p>
+                  Mi trabajo se concentra en frontend y soluciones full-stack con React, Next.js, TypeScript y Node.js. Me interesa convertir necesidades reales en experiencias útiles, accesibles y consistentes, desde la idea inicial hasta su implementación.
+                </p>
+                <p>
+                  También mantengo una formación activa en ciberseguridad, redes y arquitectura web, porque cada proyecto debe ser atractivo para las personas y confiable para quienes lo utilizan.
+                </p>
+              </div>
             </CardWithBackground>
 
             {/* Certifications Section */}
@@ -519,7 +529,7 @@ export default function Page() {
         <div className="flex items-center justify-center gap-2 text-sm text-white/50">
           <span>Designed</span>
           <span className="text-red-500">&#9829;</span>
-          <span>by DavRump</span>
+          <span>by Davhumpf</span>
         </div>
       </footer>
     </main>
