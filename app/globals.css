@@ -117,7 +117,256 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  .dot-grid-texture {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
+    background-size: 10px 10px;
+  }
+
+  .photo-pattern {
+    background-color: #09090b;
+    background-image:
+      linear-gradient(135deg, rgba(167, 139, 250, 0.14) 25%, transparent 25%),
+      linear-gradient(315deg, rgba(255, 255, 255, 0.08) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 42%, rgba(167, 139, 250, 0.12) 43%, transparent 44%);
+    background-position: 0 0, 18px 18px, 0 0;
+    background-size: 36px 36px, 36px 36px, 100% 100%;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+
+  html,
+  body,
+  .portfolio-shell,
+  .glass-panel,
+  .portfolio-shell * {
+    transition:
+      background-color 240ms ease,
+      border-color 240ms ease,
+      color 180ms ease,
+      box-shadow 240ms ease;
+  }
+
+  html.light body {
+    background: #c7cbd4;
+  }
+}
+
+.portfolio-shell {
+  --portfolio-bg: #09090b;
+  --portfolio-surface: rgba(24, 24, 28, 0.72);
+  --portfolio-surface-soft: rgba(255, 255, 255, 0.06);
+  --portfolio-text: #fafafa;
+  --portfolio-muted: rgba(255, 255, 255, 0.68);
+  --portfolio-subtle: rgba(255, 255, 255, 0.48);
+  --portfolio-border: rgba(255, 255, 255, 0.14);
+  min-height: 100svh;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(124, 58, 237, 0.12), transparent 28rem),
+    var(--portfolio-bg) !important;
+  color: var(--portfolio-text);
+}
+
+.light .portfolio-shell {
+  --portfolio-bg: #c7cbd4;
+  --portfolio-surface: rgba(226, 229, 235, 0.62);
+  --portfolio-surface-soft: rgba(214, 218, 226, 0.58);
+  --portfolio-text: #20232d;
+  --portfolio-muted: rgba(32, 35, 45, 0.74);
+  --portfolio-subtle: rgba(32, 35, 45, 0.56);
+  --portfolio-border: rgba(66, 72, 88, 0.2);
+  background:
+    radial-gradient(circle at 8% -8%, rgba(255, 255, 255, 0.38), transparent 25rem),
+    radial-gradient(circle at 88% 18%, rgba(167, 139, 250, 0.11), transparent 24rem),
+    linear-gradient(145deg, #d5d8df 0%, #bec3cd 48%, #aeb4c0 100%),
+    var(--portfolio-bg) !important;
+}
+
+.light .portfolio-shell .text-white,
+.light .portfolio-shell .text-white\/90,
+.light .portfolio-shell .text-white\/70,
+.light .portfolio-shell .text-white\/60,
+.light .portfolio-shell .text-white\/50,
+.light .portfolio-shell .text-white\/40 {
+  color: var(--portfolio-muted) !important;
+}
+
+.light .portfolio-shell h1,
+.light .portfolio-shell h2,
+.light .portfolio-shell h3,
+.light .portfolio-shell .font-bold,
+.light .portfolio-shell .font-extrabold,
+.light .portfolio-shell .font-black,
+.light .portfolio-shell .font-semibold {
+  color: var(--portfolio-text) !important;
+}
+
+.light .portfolio-shell .border-white\/10,
+.light .portfolio-shell .border-white\/20 {
+  border-color: var(--portfolio-border) !important;
+}
+
+.light .portfolio-shell .bg-neutral-900\/60,
+.light .portfolio-shell .bg-neutral-950,
+.light .portfolio-shell .bg-white\/5 {
+  background-color: var(--portfolio-surface) !important;
+}
+
+.light .portfolio-shell .bg-white\/10 {
+  background-color: var(--portfolio-surface-soft) !important;
+}
+
+.light .portfolio-shell .photo-pattern {
+  background-color: #e6e8f2;
+  background-image:
+    linear-gradient(135deg, rgba(124, 58, 237, 0.14) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(67, 56, 120, 0.08) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 42%, rgba(124, 58, 237, 0.12) 43%, transparent 44%);
+}
+
+.light .theme-toggle {
+  color: #433878 !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(67, 56, 120, 0.16);
+}
+
+.glass-panel {
+  background: linear-gradient(135deg, var(--portfolio-surface, rgba(255, 255, 255, 0.11)), rgba(255, 255, 255, 0.035));
+  border-color: var(--portfolio-border, rgba(255, 255, 255, 0.16));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 14px 40px rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+.light .glass-panel {
+  background:
+    linear-gradient(135deg, rgba(241, 243, 247, 0.68), rgba(191, 196, 207, 0.42)),
+    linear-gradient(115deg, rgba(167, 139, 250, 0.05), transparent 42%);
+  border-color: rgba(66, 72, 88, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    inset 0 -16px 30px rgba(77, 83, 99, 0.08),
+    0 16px 38px rgba(58, 63, 77, 0.18);
+}
+
+.light .glass-panel::before {
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.42), transparent 32%, transparent 68%, rgba(167, 139, 250, 0.08)),
+    linear-gradient(180deg, transparent 55%, rgba(67, 72, 88, 0.06));
+}
+
+.glass-panel::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 32%, transparent 72%, rgba(167, 139, 250, 0.05));
+}
+
+.glass-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-preview {
+  min-width: 0;
+}
+
+.project-preview iframe {
+  display: block;
+  max-width: 100%;
+  border: 0;
+}
+
+@media (max-width: 1023px) {
+  main > section {
+    padding-inline: 0.75rem;
+  }
+
+  main > section > div {
+    min-width: 0;
+  }
+
+  .glass-panel {
+    -webkit-backdrop-filter: blur(12px) saturate(115%);
+    backdrop-filter: blur(12px) saturate(115%);
+  }
+}
+
+@media (max-width: 640px) {
+  main > section {
+    padding-top: 0.75rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .glass-panel {
+    border-radius: 1.25rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13), 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .project-preview iframe {
+    min-height: 220px;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px))) {
+  .glass-panel {
+    background: rgba(22, 22, 26, 0.96);
+  }
+}
+
+@keyframes certificate-rgb-snake {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.certificate-dialog-content {
+  isolation: isolate;
+  overflow: visible;
+}
+
+.certificate-dialog-content::before,
+.certificate-dialog-content::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+
+.certificate-dialog-content::before {
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    #ffffff 0deg 18deg,
+    transparent 18deg 270deg,
+    #a78bfa 285deg 320deg,
+    #22d3ee 330deg 342deg,
+    transparent 342deg 360deg
+  );
+  animation: certificate-rgb-snake 4.5s linear infinite;
+  filter: blur(3px);
+}
+
+.certificate-dialog-content::after {
+  inset: 2px;
+  border-radius: inherit;
+  background: #0a0a0a;
+  box-shadow: 0 0 28px rgba(167, 139, 250, 0.45);
+}
+
+.certificate-dialog-inner {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .certificate-dialog-content::before {
+    animation-duration: 12s;
   }
 }

@@ -28,7 +28,7 @@ export function CertificatesGallery({ certifications }: { certifications: Certif
     <>
       <div className="grid gap-4 sm:grid-cols-2">
         {certifications.map((certification) => (
-          <div key={certification.name} className="rounded-2xl border border-white/10 bg-white/5 p-3">
+          <div key={certification.name} className="glass-panel rounded-2xl border border-white/10 bg-white/5 p-3">
             <p className="mb-3 font-medium text-white/90">{certification.name}</p>
             <div className="grid grid-cols-2 gap-2">
               {(["Cisco", "Credly"] as const).map((source) => {
@@ -61,28 +61,32 @@ export function CertificatesGallery({ certifications }: { certifications: Certif
       </div>
 
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>
-        <DialogContent className="max-w-5xl border-white/10 bg-neutral-950 p-3 text-white sm:p-5">
-          {selected && (
-            <>
-              <DialogTitle>{selected.name} - {selected.source}</DialogTitle>
-              <DialogDescription className="text-white/60">
-                Vista previa del certificado. También puedes abrir el PDF en una pestaña nueva.
-              </DialogDescription>
-              <iframe
-                src={`${selected.url}#toolbar=1&navpanes=0`}
-                title={`${selected.source}: ${selected.name}`}
-                className="h-[70vh] min-h-[420px] w-full rounded-lg bg-white"
-              />
-              <a
-                href={selected.url}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 text-sm text-white/70 transition-colors hover:text-white"
-              >
-                Abrir PDF en una pestaña nueva <ExternalLink className="h-4 w-4" />
-              </a>
-            </>
-          )}
+        <DialogContent className="certificate-dialog-content !w-[92vw] !max-w-[1200px] border-0 bg-transparent p-[2px] text-white shadow-none sm:p-[2px]">
+          <div className="certificate-dialog-inner rounded-[inherit] bg-neutral-950/95 p-4 sm:p-6">
+            {selected && (
+              <>
+                <div className="relative z-10">
+                  <DialogTitle>{selected.name} - {selected.source}</DialogTitle>
+                  <DialogDescription className="text-white/60">
+                    Vista previa del certificado. También puedes abrir el PDF en una pestaña nueva.
+                  </DialogDescription>
+                  <iframe
+                    src={`${selected.url}#toolbar=1&navpanes=0`}
+                    title={`${selected.source}: ${selected.name}`}
+                    className="mt-2 h-[calc(88vh-7rem)] min-h-[420px] w-full rounded-lg bg-white"
+                  />
+                  <a
+                    href={selected.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-2 text-sm text-white/70 transition-colors hover:text-white"
+                  >
+                    Abrir PDF en una pestaña nueva <ExternalLink className="h-4 w-4" />
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </>

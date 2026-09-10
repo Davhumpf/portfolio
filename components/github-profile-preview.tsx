@@ -17,7 +17,7 @@ export function GithubProfilePreview({ url }: GithubProfilePreviewProps) {
           <span className="sr-only">Abrir perfil en GitHub</span>
         </a>
       </div>
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-neutral-950">
+      <div className="glass-panel overflow-hidden rounded-2xl border border-white/10 bg-neutral-950">
         <div className="flex items-center gap-1 border-b border-white/10 bg-white/5 px-3 py-2">
           <span className="h-2 w-2 rounded-full bg-red-400/80" />
           <span className="h-2 w-2 rounded-full bg-yellow-400/80" />
@@ -32,7 +32,7 @@ export function GithubProfilePreview({ url }: GithubProfilePreviewProps) {
           />
           <div>
             <p className="font-semibold text-white">Davhumpf</p>
-            <p className="text-xs text-white/50">Software Developer · Colombia</p>
+            <p className="text-xs text-white/50">Software Developer · Pasto, Nariño</p>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-px border-t border-white/10 bg-white/10">
@@ -46,11 +46,11 @@ export function GithubProfilePreview({ url }: GithubProfilePreviewProps) {
           </div>
           <div className="bg-neutral-950 p-3 text-center">
             <MapPin className="mx-auto mb-1 h-4 w-4 text-violet-300" />
-            <p className="text-xs text-white/50">Colombia</p>
+            <p className="text-xs text-white/50">Pasto, Nariño, Colombia</p>
           </div>
         </div>
       </div>
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 p-3">
+      <div className="glass-panel overflow-hidden rounded-2xl border border-white/10 bg-neutral-950 p-3">
         <img
           src="https://ghchart.rshah.org/a78bfa/Davhumpf"
           alt="Gráfico de contribuciones de Davhumpf"
@@ -62,7 +62,7 @@ export function GithubProfilePreview({ url }: GithubProfilePreviewProps) {
         href={url}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 transition-colors hover:border-violet-400/50 hover:text-white"
+        className="glass-panel flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70 transition-colors hover:border-violet-400/50 hover:text-white"
       >
         <Github className="h-4 w-4" />
         Ver actividad completa en GitHub

@@ -1,17 +1,13 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench } from "lucide-react"
+import { Github, Linkedin, Mail, Calendar, ExternalLink, Terminal, Monitor, Database, Wrench } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import DotGridShader from "@/components/DotGridShader"
-import AnimatedHeading from "@/components/animated-heading"
-import RevealOnView from "@/components/reveal-on-view"
-import LiveClock from "@/components/live-clock"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ProjectPreview } from "@/components/project-preview"
 import { CertificatesGallery } from "@/components/certificates-gallery"
 import { GithubProfilePreview } from "@/components/github-profile-preview"
+import LiveClock from "@/components/live-clock"
 
 // Background card component with image
 function CardWithBackground({ 
@@ -24,7 +20,7 @@ function CardWithBackground({
   className?: string 
 }) {
   return (
-    <RevealOnView className={`relative overflow-hidden rounded-3xl border border-white/10 dark:border-white/10 light:border-black/10 bg-neutral-900/60 dark:bg-neutral-900/60 ${className}`}>
+    <div className={`glass-panel relative overflow-hidden rounded-3xl border border-white/10 dark:border-white/10 light:border-black/10 bg-neutral-900/60 dark:bg-neutral-900/60 ${className}`}>
       {imageSrc && (
         <div className="absolute inset-0">
           <Image
@@ -39,7 +35,7 @@ function CardWithBackground({
       <div className="relative p-6 sm:p-8">
         {children}
       </div>
-    </RevealOnView>
+    </div>
   )
 }
 
@@ -148,7 +144,7 @@ export default function Page() {
   }
 
   return (
-    <main className="bg-neutral-950 dark:bg-neutral-950 text-white dark:text-white min-h-screen">
+    <main className="portfolio-shell bg-neutral-950 dark:bg-neutral-950 text-white dark:text-white min-h-screen">
       {/* Theme Toggle - Fixed position */}
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
@@ -159,16 +155,9 @@ export default function Page() {
         <div className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[420px_1fr]">
           {/* LEFT: sticky sidebar */}
           <aside className="lg:sticky lg:top-4 lg:h-[calc(100svh-2rem)]">
-            <RevealOnView
-              as="div"
-              intensity="hero"
-              className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/60 p-6 sm:p-8"
-              staggerChildren
-            >
+            <div className="glass-panel relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/60 p-6 sm:p-8">
               {/* Texture background */}
-              <div className="pointer-events-none absolute inset-0 opacity-5 mix-blend-soft-light">
-                <DotGridShader />
-              </div>
+              <div className="pointer-events-none absolute inset-0 opacity-[0.08] dot-grid-texture" aria-hidden="true" />
               <div>
                 {/* Wordmark */}
                 <div className="mb-8 flex items-center gap-2">
@@ -177,12 +166,13 @@ export default function Page() {
                 </div>
 
                 {/* Headline */}
-                <AnimatedHeading
-                  className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl"
-                  lines={["David Esteban", "Rodriguez Rump"]}
-                />
+                <h1 className="text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
+                  <span className="block">David Esteban</span>
+                  <span className="block">Rodriguez Rump</span>
+                </h1>
 
                 <p className="mt-2 text-lg font-medium text-white/90">Software Developer Freelance</p>
+                <p className="mt-1 text-sm text-white/50">Pasto, Nariño, Colombia</p>
 
                 <p className="mt-4 max-w-[42ch] text-base text-white/70 leading-relaxed">
                   Desarrollador frontend y full-stack apasionado por crear experiencias digitales excepcionales. Me enfoco en construir aplicaciones web modernas, escalables y con gran atencion al detalle en UI/UX.
@@ -208,54 +198,17 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <Button asChild size="lg" className="rounded-full">
-                    <Link href="mailto:vincho0528@gmail.com">
-                      Contactar
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" size="lg" className="rounded-full border-white/20 bg-white/5 hover:bg-white/10">
-                    <Link href="#" target="_blank">
-                      Ver CV
-                    </Link>
-                  </Button>
-                </div>
               </div>
-
-              {/* Social links */}
-              <div className="mt-8 flex items-center gap-4">
-                <Link href="https://github.com/Davhumpf" target="_blank" className="text-white/50 hover:text-white transition-colors">
-                  <Github className="h-5 w-5" />
-                </Link>
-                <Link href="https://www.linkedin.com/in/davhumpf/" target="_blank" className="text-white/50 hover:text-white transition-colors">
-                  <Linkedin className="h-5 w-5" />
-                </Link>
-                <Link href="mailto:vincho0528@gmail.com" className="text-white/50 hover:text-white transition-colors">
-                  <Mail className="h-5 w-5" />
-                </Link>
-              </div>
-            </RevealOnView>
+            </div>
           </aside>
 
           {/* RIGHT: Content sections */}
           <div className="space-y-4">
             {/* Profile Image Card */}
-            <RevealOnView
-              className="relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/60 p-1"
-            >
-              <div className="relative flex aspect-[16/9] items-center justify-center overflow-hidden rounded-[1.35rem] bg-black">
-                <video
-                  className="absolute inset-0 h-full w-full object-cover opacity-70"
-                  src="/images/311046.mov"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  aria-hidden="true"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-black/30" />
-                <div className="relative h-40 w-40 overflow-hidden rounded-full border border-white/20 bg-black/30 shadow-2xl shadow-black/50 sm:h-56 sm:w-56 lg:h-64 lg:w-64">
+            <div className="glass-panel relative overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/60 p-1">
+              <div className="relative flex h-56 items-center justify-center overflow-hidden rounded-[1.35rem] bg-black photo-pattern sm:h-64 lg:h-72">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(167,139,250,0.2),transparent_52%)]" />
+                <div className="relative h-32 w-32 overflow-hidden rounded-full border border-white/20 bg-black/30 shadow-2xl shadow-violet-950/50 sm:h-44 sm:w-44 lg:h-52 lg:w-52">
                 <Image
                   src="/profile.png"
                   alt="David Esteban Rodriguez Rump"
@@ -265,7 +218,7 @@ export default function Page() {
                 />
                 </div>
               </div>
-            </RevealOnView>
+            </div>
 
             {/* About Me Section */}
             <CardWithBackground imageSrc="/images/project-1.webp">
@@ -422,7 +375,7 @@ export default function Page() {
                 </div>
                 <div className="space-y-3">
                   {blogPosts.map((post) => (
-                    <article key={post.title} className="rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:border-violet-400/40 hover:bg-white/10">
+                    <article key={post.title} className="glass-panel rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:border-violet-400/40 hover:bg-white/10">
                       <div className="mb-3 flex items-center justify-between gap-3">
                         <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-300">{post.type}</span>
                         <a href={post.url} target="_blank" rel="noreferrer" className="text-xs text-white/40 transition-colors hover:text-white">
